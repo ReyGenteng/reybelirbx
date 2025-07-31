@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReyStore - Beli Robux</title>
+<style>
+* { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1a237e, #4a148c);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  text-align: center;
+  padding: 30px 10px;
+}
+header img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #fff;
+}
+h1 { color: #ffcc80; font-size: 2rem; margin: 15px 0 5px; }
+header p { color: #ddd; margin: 0; }
+
+.container {
+  max-width: 400px;
+  margin: 20px auto 40px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  animation: fadeIn 0.6s ease;
+}
+label { display: block; margin-top: 12px; font-weight: 600; }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background: #ffcc80;
+  border: none;
+  color: #222;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+button:hover {
+  background: #ffb74d;
+  transform: scale(1.03);
+}
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  animation: fadeIn 0.5s ease;
+}
+.result h3 {
+  color: #ffcc80;
+  margin-top: 0;
+  font-size: 1.4rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+<header>
+  <img src="https://raw.githubusercontent.com/edent/SuperTinyIcons/master/images/svg/r.svg" alt="Logo">
+  <h1>ReyStore</h1>
+  <p>Beli Robux cepat, aman, dan terpercaya</p>
+</header>
+
+<div class="container">
+  <label>Username Roblox:</label>
+  <input type="text" id="username" placeholder="Masukkan username">
+
+  <label>Jumlah Robux:</label>
+  <input type="number" id="jumlah" placeholder="Contoh: 80">
+
+  <label>Metode Pembayaran:</label>
+  <select id="metode">
+    <option value="QRIS">QRIS</option>
+    <option value="Dana">Dana</option>
+    <option value="OVO">OVO</option>
+    <option value="Gopay">Gopay</option>
+  </select>
+
+  <button id="cekHarga">Hitung Harga</button>
+
+  <div class="result" id="resultBox" style="display:none;"></div>
+</div>
+
+<script>
+document.getElementById('cekHarga').addEventListener('click', () => {
+  const username = document.getElementById('username').value.trim();
+  const jumlah = parseInt(document.getElementById('jumlah').value);
+  const metode = document.getElementById('metode').value;
+  const box = document.getElementById('resultBox');
+
+  if (!username || isNaN(jumlah) || jumlah <= 0) {
+    alert("Isi semua data dengan benar!");
+    return;
+  }
+
+  // Hitung harga
+  const hargaDasar = (jumlah / 20) * 2800;
+  const pajak = 3000;
+  const total = Math.round(hargaDasar + pajak);
+
+  // Hitung Gamepass agar 70% hasilnya sesuai
+  const gamepass = Math.ceil(jumlah / 0.7);
+
+  box.style.display = 'block';
+  box.innerHTML = `
+    <h3>Buat Gamepass Senilai ${gamepass}</h3>
+    <p><b>Username:</b> ${username}</p>
+    <p><b>Jumlah Robux:</b> ${jumlah}</p>
+    <p><b>Metode Pembayaran:</b> ${metode}</p>
+    <p><b>Total:</b> Rp ${total.toLocaleString('id-ID')}</p>
+    <p>Setelah membuat gamepass dengan harga <b>${gamepass}</b>, klik tombol di bawah untuk chat WhatsApp admin.</p>
+    <button onclick="lanjutWA('${username}', ${jumlah}, '${metode}', ${total})">Sudah Buat Gamepass</button>
+  `;
+});
+
+function lanjutWA(username, jumlah, metode, total) {
+  const pesan = `Halo Kak, saya pembeli dengan Username ${username}. Saya Topup ${jumlah} Robux dengan pembayaran ${metode}. Total Rp ${total}`;
+  const url = "https://wa.me/6287887028120?text=" + encodeURIComponent(pesan);
+  window.open(url, "_blank");
+}
+</script>
+</body>
+</html>
