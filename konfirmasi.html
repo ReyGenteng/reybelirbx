@@ -3,51 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Konfirmasi Pesanan - ReyStore</title>
+<title>Konfirmasi Top-up Robux</title>
 <style>
-body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#fff;min-height:100vh;
-  display:flex;justify-content:center;align-items:center;padding:20px;
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: #fff; display: flex;
+  align-items: center; justify-content: center;
+  height: 100vh; margin: 0;
 }
-.card{
-  background:rgba(255,255,255,0.08);
-  padding:25px;border-radius:20px;
-  backdrop-filter:blur(12px);text-align:center;
-  max-width:400px;width:100%;
+.container {
+  background: rgba(255,255,255,0.1);
+  padding: 20px; border-radius: 15px;
+  max-width: 400px; width: 90%;
+  text-align: center;
 }
-h1{color:#ffd369;margin-bottom:15px;}
-input{
-  width:100%;padding:12px;margin:10px 0;
-  border:none;border-radius:12px;font-size:15px;
+input, button {
+  width: 100%; padding: 10px; margin: 8px 0;
+  border: none; border-radius: 8px;
 }
-button{
-  background:linear-gradient(135deg,#ffd369,#ffb74d);
-  border:none;padding:12px 20px;border-radius:12px;
-  font-weight:bold;cursor:pointer;margin-top:10px;width:100%;
+button {
+  background: #ffd369; color: #222; font-weight: bold;
+  cursor: pointer;
 }
-#msgBox{
-  display:none;margin-top:20px;padding:12px;
-  border-radius:10px;background:#4caf50;color:#fff;
-}
+button:hover {background: #ffb347;}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>Konfirmasi Pesanan</h1>
-  <p>Isi data ini setelah kamu membayar. Pesananmu akan masuk ke invoice otomatis.</p>
-  <input type="text" id="username" placeholder="Username Roblox">
-  <input type="number" id="jumlah" placeholder="Jumlah Robux">
-  <button onclick="konfirmasi()">Kirim Konfirmasi</button>
-
-  <div id="msgBox">Berhasil disimpan! Kamu bisa cek di halaman invoice.</div>
-  <button onclick="window.location.href='index.html'">Kembali</button>
+<div class="container">
+  <h2>Konfirmasi Pesanan</h2>
+  <input id="username" placeholder="Username Roblox">
+  <input id="jumlah" type="number" placeholder="Jumlah Robux">
+  <button onclick="simpan()">Simpan</button>
+  <p id="status"></p>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
@@ -63,30 +56,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-window.konfirmasi = function() {
-  const user = document.getElementById('username').value.trim();
-  const jumlah = document.getElementById('jumlah').value.trim();
-  if (!user || !jumlah || jumlah <= 0) {
-    alert("Isi username dan jumlah Robux dengan benar.");
-    return;
-  }
+function randomHari() {
+  return Math.random() < 0.5 ? 6 : 7;
+}
 
-  // Random estimasi 6 atau 7 hari
-  const estimasi = (Math.random() < 0.5 ? 6 : 7);
-  const data = {
-    username: user,
-    jumlah: jumlah,
-    mulai: Date.now(),
-    estimasi: estimasi
-  };
+window.simpan = function() {
+  const username = document.getElementById("username").value.trim();
+  const jumlah = parseInt(document.getElementById("jumlah").value);
+  const statusEl = document.getElementById("status");
+  if (!username || !jumlah) { alert("Lengkapi data!"); return; }
 
-  const newRef = push(ref(db, 'invoices'));
-  set(newRef, data)
-    .then(() => {
-      document.getElementById('msgBox').style.display = 'block';
-    })
-    .catch(err => alert('Gagal simpan: ' + err));
-};
+  const waktuMulai = Date.now();
+  const lama = randomHari();
+
+  set(ref(db, 'pesanan/' + username.toLowerCase()), {
+    username, jumlah, waktuMulai, lama
+  }).then(()=>{
+    statusEl.innerText = "Pesanan berhasil disimpan!";
+  }).catch(err=>{
+    statusEl.innerText = "Gagal: " + err;
+  });
+}
 </script>
 </body>
 </html>
