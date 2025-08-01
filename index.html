@@ -3,182 +3,149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beli Robux - ReyStore</title>
+<title>Chat Support - ReyStore</title>
 <style>
+  * {box-sizing: border-box;}
   body {
     margin: 0;
-    padding: 0;
     font-family: Arial, sans-serif;
-    background: url('https://tr.rbxcdn.com/63e7b03c9c501d29ff0f7b196ee83d6f/768/432/Image/Png') center/cover no-repeat fixed;
-    color: white;
+    background: #eceff1;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .main-box {
-    background: rgba(0,0,0,0.5);
-    padding: 30px;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    max-width: 400px;
-    width: 100%;
-  }
-  h1 { margin-bottom: 20px; }
-  .button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 14px;
-    background: #0ea5e9;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .button:hover { background: #0284c7; }
-
-  /* kotak form popup */
-  .popup {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    background: rgba(30,30,30,0.95);
-    padding: 20px;
-    border-radius: 16px;
-    max-width: 400px; width: 90%;
-    display: none;
-    z-index: 100;
-  }
-  label { display:block; margin-top:15px; text-align:left; }
-  input {
-    width: 100%; padding: 10px; margin-top: 5px;
-    border: none; border-radius: 8px;
-    background: #334155; color: white;
-    font-size: 16px;
-  }
-  .avatar-preview { text-align:center; margin-top:15px; }
-  .avatar-preview img { width: 80px; height: 80px; border-radius: 50%; }
-
-  #searchResults {
-    background: #1e293b;
-    position: absolute;
-    width: calc(100% - 40px);
-    max-height: 200px;
-    overflow-y: auto;
-    border-radius: 8px;
-    border: 1px solid #334155;
-    display: none;
-    z-index: 200;
-  }
-  .result-item {
-    padding: 8px;
-    cursor: pointer;
+  .chat-container {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
   }
-  .result-item:hover { background: #334155; }
-  .result-item img { width: 32px; height: 32px; border-radius: 50%; }
+  .chat-header {
+    background: #00aaff;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+  .messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f5f5f5;
+  }
+  .bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    clear: both;
+  }
+  .bubble.user {
+    background: #00aaff;
+    color: white;
+    float: right;
+    border-bottom-right-radius: 0;
+  }
+  .bubble.admin {
+    background: #e0e0e0;
+    float: left;
+    border-bottom-left-radius: 0;
+  }
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+  }
+  .chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 10px;
+    outline: none;
+  }
+  .chat-input button {
+    background: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    font-size: 18px;
+  }
 </style>
 </head>
 <body>
-<div class="main-box" id="mainBox">
-  <h1>ReyStore</h1>
-  <button class="button" onclick="bukaPopup()">Beli Robux</button>
-  <button class="button" onclick="window.location.href='invoice.html'">Cek Pesanan</button>
-  <button class="button" onclick="window.location.href='https://support.reyambon.xyz'">Customer Service</button>
-</div>
-
-<div class="popup" id="popup">
-  <h2>Beli Robux</h2>
-  <label>Username Roblox</label>
-  <div style="position:relative;">
-    <input type="text" id="username" placeholder="Ketik username Roblox...">
-    <div id="searchResults"></div>
+<div class="chat-container">
+  <div class="chat-header">Support ReyStore</div>
+  <div class="messages" id="messages"></div>
+  <div class="chat-input">
+    <input type="text" id="nama" placeholder="Nama kamu" style="max-width:120px;">
+    <input type="text" id="pesan" placeholder="Tulis pesan...">
+    <button onclick="kirimPesan()">➤</button>
   </div>
-
-  <div class="avatar-preview" id="avatarPreview"></div>
-
-  <label>Jumlah Robux</label>
-  <input type="number" id="jumlah" placeholder="Contoh: 80">
-
-  <button class="button" onclick="lanjut()">Lanjut</button>
-  <button class="button" onclick="tutupPopup()">Kembali</button>
 </div>
 
-<script>
-let selectedUser = null;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded, set } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
-function bukaPopup() {
-  document.getElementById('popup').style.display = 'block';
-}
-function tutupPopup() {
-  document.getElementById('popup').style.display = 'none';
-}
+  const firebaseConfig = {
+    apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
+    authDomain: "reystore-support.firebaseapp.com",
+    databaseURL: "https://reystore-support-default-rtdb.firebaseio.com",
+    projectId: "reystore-support",
+    storageBucket: "reystore-support.firebasestorage.app",
+    messagingSenderId: "446513200960",
+    appId: "1:446513200960:web:cbd40ca4315a8bf47044a5",
+    measurementId: "G-YEBFKLREK5"
+  };
 
-document.getElementById('username').addEventListener('input', async function() {
-  const keyword = this.value.trim();
-  const resultsDiv = document.getElementById('searchResults');
-  resultsDiv.innerHTML = '';
-  document.getElementById('avatarPreview').innerHTML = '';
-  selectedUser = null;
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-  if (keyword.length < 3) {
-    resultsDiv.style.display = 'none';
-    return;
+  let chatId = null;
+  const messagesDiv = document.getElementById("messages");
+
+  function addBubble(sender, text) {
+    const div = document.createElement("div");
+    div.className = `bubble ${sender}`;
+    div.textContent = text;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
 
-  const url = `https://users.roblox.com/v1/usernames/search?keyword=${encodeURIComponent(keyword)}&limit=5`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!data.data || data.data.length === 0) {
-      resultsDiv.style.display = 'none';
+  function kirimPesan() {
+    const nama = document.getElementById("nama").value.trim();
+    const pesan = document.getElementById("pesan").value.trim();
+    if (!nama || !pesan) {
+      alert("Isi nama dan pesan");
       return;
     }
 
-    resultsDiv.style.display = 'block';
-    data.data.forEach(user => {
-      const div = document.createElement('div');
-      div.className = 'result-item';
-      const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=48&height=48&format=png`;
-      div.innerHTML = `<img src="${avatarUrl}"><span>${user.name}</span>`;
-      div.onclick = () => pilihUser(user);
-      resultsDiv.appendChild(div);
-    });
-  } catch (err) {
-    console.error(err);
-  }
-});
+    if (!chatId) {
+      chatId = push(ref(db, "chats")).key;
+      set(ref(db, "chats/" + chatId + "/username"), nama);
 
-function pilihUser(user) {
-  document.getElementById('username').value = user.name;
-  document.getElementById('searchResults').style.display = 'none';
-  selectedUser = user;
+      onChildAdded(ref(db, "chats/" + chatId + "/messages"), (snap) => {
+        const d = snap.val();
+        addBubble(d.sender, d.text);
+      });
+    }
 
-  const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=100&height=100&format=png`;
-  document.getElementById('avatarPreview').innerHTML = `
-    <p>Apakah ini akunmu?</p>
-    <img src="${avatarUrl}" alt="avatar"><p>${user.displayName} (${user.name})</p>`;
-}
-
-function lanjut() {
-  if (!selectedUser) {
-    alert('Pilih akun Roblox dulu dari daftar!');
-    return;
-  }
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if (!jumlah || jumlah <= 0) {
-    alert('Masukkan jumlah Robux.');
-    return;
+    const msgRef = push(ref(db, "chats/" + chatId + "/messages"));
+    set(msgRef, { sender: "user", text: pesan, time: Date.now() });
+    document.getElementById("pesan").value = "";
   }
 
-  alert(`Akun: ${selectedUser.name} (ID: ${selectedUser.id})\nJumlah: ${jumlah}`);
-}
+  window.kirimPesan = kirimPesan;
 </script>
 </body>
 </html>
