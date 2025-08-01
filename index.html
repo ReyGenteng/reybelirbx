@@ -3,116 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beli Robux - ReyStore</title>
+<title>Beli Robux</title>
 <style>
   body {
-    margin: 0; padding: 0;
+    margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1d4ed8, #60a5fa);
-    height: 100vh; display: flex;
-    justify-content: center; align-items: center;
+    background: #111;
     color: white;
   }
-  .main-box {
-    background: rgba(0,0,0,0.5);
-    padding: 30px;
-    border-radius: 16px;
+  .container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  h1 {
     text-align: center;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    max-width: 400px; width: 100%;
+    margin-top: 20px;
   }
-  h1 { margin-bottom: 20px; }
-  .button {
-    display: block; width: 100%;
-    margin: 10px 0; padding: 14px;
-    background: #0ea5e9; color: white;
-    font-weight: bold; font-size: 18px;
-    border: none; border-radius: 8px; cursor: pointer;
-  }
-  .button:hover { background: #0284c7; }
-
-  .popup {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    background: rgba(30,30,30,0.95);
-    padding: 20px; border-radius: 16px;
-    max-width: 400px; width: 90%;
-    display: none; z-index: 100;
-    text-align: center;
-  }
-  label { display:block; margin-top:15px; text-align:left; }
-  input {
-    width: 100%; padding: 10px; margin-top: 5px;
-    border: none; border-radius: 8px;
-    background: #334155; color: white;
+  button {
+    background-color: #f59e0b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin: 10px 0;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
     font-size: 16px;
   }
-  .popup-buttons {
+  button:hover {
+    background-color: #d97706;
+  }
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1f2937;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    display: none;
+    z-index: 1000;
+    text-align: center;
+  }
+  .popup h2 {
+    color: #f59e0b;
+    margin-bottom: 15px;
+  }
+  .popup iframe {
+    width: 100%;
+    height: 200px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  .popup .btn-row {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
     gap: 10px;
   }
-  .popup-buttons .big {
-    flex: 2;
-    background: #16a34a;
-  }
-  .popup-buttons button {
-    flex: 1; padding: 12px;
-    border: none; border-radius: 8px;
-    color: white; font-weight: bold;
-    cursor: pointer; font-size: 14px;
-    background: #0ea5e9;
-  }
-  .popup-buttons button:hover {
-    background: #0284c7;
+  .popup .btn-row button {
+    flex: 1;
   }
 </style>
 </head>
 <body>
-<div class="main-box">
-  <h1>ReyStore</h1>
-  <button class="button" onclick="bukaPopup()">Beli Robux</button>
-  <button class="button" onclick="window.location.href='invoice.html'">Cek Pesanan</button>
-  <button class="button" onclick="window.location.href='https://support.reyambon.xyz'">Customer Service</button>
-</div>
-
-<div class="popup" id="popup">
-  <h2 id="judulPopup">Buat Game Pass Senilai ...</h2>
-  <label>Username Roblox</label>
-  <input type="text" id="username" placeholder="Masukkan username Roblox">
-  <label>Jumlah Robux</label>
-  <input type="number" id="jumlah" placeholder="Contoh: 80">
-  <div class="popup-buttons">
-    <button onclick="buatGamepass()">Buat Gamepass</button>
-    <button class="big" onclick="sudah()">Sudah Buat Gamepass</button>
-    <button onclick="tutupPopup()">Kembali</button>
+  <div class="container">
+    <h1>Beli Robux</h1>
+    <button onclick="openPopup()">Beli Gamepass</button>
+    <button onclick="window.location.href='invoice.html'">Cek Pesanan</button>
   </div>
-</div>
+
+  <div class="popup" id="popup">
+    <h2 id="popupTitle">Buat Game Pass Senilai 115</h2>
+    <button onclick="alert('Panduan membuat gamepass!')">Buat GamePass</button>
+    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+    <div class="btn-row">
+      <button onclick="sudah()">Sudah Buat Gamepass</button>
+      <button onclick="closePopup()">Kembali</button>
+    </div>
+  </div>
 
 <script>
-function bukaPopup() {
-  document.getElementById('popup').style.display = 'block';
-}
-function tutupPopup() {
-  document.getElementById('popup').style.display = 'none';
-}
-function buatGamepass() {
-  alert('Panduan cara buat gamepass akan ditampilkan di sini.');
-}
-function sudah() {
-  const username = document.getElementById('username').value.trim();
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if (!username || !jumlah || jumlah <= 0) {
-    alert('Isi username dan jumlah Robux dengan benar!');
-    return;
+  function openPopup(){
+    document.getElementById("popup").style.display="block";
   }
-  document.getElementById('judulPopup').innerText =
-    `Buat Game Pass Senilai ${Math.round(jumlah * 1.43)}`;
-  // nanti bisa diarahkan ke WhatsApp
-  alert(`Halo! Username: ${username}\nJumlah Robux: ${jumlah}`);
-}
+  function closePopup(){
+    document.getElementById("popup").style.display="none";
+  }
+  function sudah(){
+    // Bisa diarahkan ke WA
+    window.location.href = "https://wa.me/6287887028120?text=Halo Kak%2C%20saya%20sudah%20buat%20gamepass";
+  }
 </script>
 </body>
 </html>
