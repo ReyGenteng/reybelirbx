@@ -6,15 +6,12 @@
 <title>Beli Robux - ReyStore</title>
 <style>
   body {
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #1d4ed8, #60a5fa);
+    height: 100vh; display: flex;
+    justify-content: center; align-items: center;
     color: white;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
   .main-box {
     background: rgba(0,0,0,0.5);
@@ -22,22 +19,15 @@
     border-radius: 16px;
     text-align: center;
     box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    max-width: 400px;
-    width: 100%;
+    max-width: 400px; width: 100%;
   }
   h1 { margin-bottom: 20px; }
   .button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 14px;
-    background: #0ea5e9;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    display: block; width: 100%;
+    margin: 10px 0; padding: 14px;
+    background: #0ea5e9; color: white;
+    font-weight: bold; font-size: 18px;
+    border: none; border-radius: 8px; cursor: pointer;
   }
   .button:hover { background: #0284c7; }
 
@@ -46,11 +36,10 @@
     top: 50%; left: 50%;
     transform: translate(-50%,-50%);
     background: rgba(30,30,30,0.95);
-    padding: 20px;
-    border-radius: 16px;
+    padding: 20px; border-radius: 16px;
     max-width: 400px; width: 90%;
-    display: none;
-    z-index: 100;
+    display: none; z-index: 100;
+    text-align: center;
   }
   label { display:block; margin-top:15px; text-align:left; }
   input {
@@ -59,10 +48,30 @@
     background: #334155; color: white;
     font-size: 16px;
   }
+  .popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  .popup-buttons .big {
+    flex: 2;
+    background: #16a34a;
+  }
+  .popup-buttons button {
+    flex: 1; padding: 12px;
+    border: none; border-radius: 8px;
+    color: white; font-weight: bold;
+    cursor: pointer; font-size: 14px;
+    background: #0ea5e9;
+  }
+  .popup-buttons button:hover {
+    background: #0284c7;
+  }
 </style>
 </head>
 <body>
-<div class="main-box" id="mainBox">
+<div class="main-box">
   <h1>ReyStore</h1>
   <button class="button" onclick="bukaPopup()">Beli Robux</button>
   <button class="button" onclick="window.location.href='invoice.html'">Cek Pesanan</button>
@@ -70,15 +79,16 @@
 </div>
 
 <div class="popup" id="popup">
-  <h2>Beli Robux</h2>
+  <h2 id="judulPopup">Buat Game Pass Senilai ...</h2>
   <label>Username Roblox</label>
   <input type="text" id="username" placeholder="Masukkan username Roblox">
-
   <label>Jumlah Robux</label>
   <input type="number" id="jumlah" placeholder="Contoh: 80">
-
-  <button class="button" onclick="lanjut()">Lanjut</button>
-  <button class="button" onclick="tutupPopup()">Kembali</button>
+  <div class="popup-buttons">
+    <button onclick="buatGamepass()">Buat Gamepass</button>
+    <button class="big" onclick="sudah()">Sudah Buat Gamepass</button>
+    <button onclick="tutupPopup()">Kembali</button>
+  </div>
 </div>
 
 <script>
@@ -88,17 +98,20 @@ function bukaPopup() {
 function tutupPopup() {
   document.getElementById('popup').style.display = 'none';
 }
-function lanjut() {
+function buatGamepass() {
+  alert('Panduan cara buat gamepass akan ditampilkan di sini.');
+}
+function sudah() {
   const username = document.getElementById('username').value.trim();
   const jumlah = parseInt(document.getElementById('jumlah').value);
-
   if (!username || !jumlah || jumlah <= 0) {
     alert('Isi username dan jumlah Robux dengan benar!');
     return;
   }
-
-  // Nanti bisa diganti kirim ke WhatsApp
-  alert(`Username: ${username}\nJumlah Robux: ${jumlah}`);
+  document.getElementById('judulPopup').innerText =
+    `Buat Game Pass Senilai ${Math.round(jumlah * 1.43)}`;
+  // nanti bisa diarahkan ke WhatsApp
+  alert(`Halo! Username: ${username}\nJumlah Robux: ${jumlah}`);
 }
 </script>
 </body>
