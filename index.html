@@ -5,43 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beli Robux - ReyStore</title>
 <style>
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
 body {
-  min-height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#fff;display:flex;align-items:center;justify-content:center;padding:20px
+  min-height: 100vh;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
 }
-.wrapper{width:100%;max-width:480px}
+.wrapper { width: 100%; max-width: 480px; }
 .card {
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  border-radius:20px;padding:25px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.5);
-  text-align:center;animation:fadeIn .7s ease
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+  text-align: center;
+  animation: fadeIn 0.7s ease;
 }
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-h1{font-size:28px;margin-bottom:5px;color:#ffd369}
-.tagline{font-size:14px;color:#ccc;margin-bottom:20px}
+@keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+h1 { font-size: 28px; margin-bottom: 5px; color: #ffd369; }
+.tagline { font-size: 14px; color: #ccc; margin-bottom: 20px; }
 button {
-  width:100%;background:linear-gradient(135deg,#ffd369,#ffb74d);
-  color:#222;border:none;padding:12px;margin:6px 0;font-size:15px;font-weight:bold;
-  border-radius:12px;cursor:pointer;transition:transform .2s ease
+  width: 100%;
+  background: linear-gradient(135deg,#ffd369,#ffb74d);
+  color: #222; border: none;
+  padding: 12px; margin: 6px 0;
+  font-size: 15px; font-weight: bold;
+  border-radius: 12px; cursor: pointer;
+  transition: transform 0.2s ease;
 }
-button:hover{transform:scale(1.04)}
-input,select {
-  width:100%;padding:12px;margin:8px 0;border-radius:10px;
-  border:none;outline:none;font-size:14px
+button:hover { transform: scale(1.04); }
+input, select {
+  width: 100%; padding: 12px; margin: 8px 0;
+  border-radius: 10px; border: none; outline: none;
+  font-size: 14px;
 }
-.section-title{margin-top:20px;font-weight:bold;font-size:18px;margin-bottom:10px}
+.section-title { margin-top: 20px; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
 .result {
-  margin-top:20px;padding:15px;border-radius:14px;
-  background:rgba(0,0,0,0.3);display:none;animation:fadeIn .6s ease
+  margin-top: 20px; padding: 15px; border-radius: 14px;
+  background: rgba(0,0,0,0.3);
+  display: none; animation: fadeIn 0.6s ease;
 }
-.result p{margin:6px 0;font-size:14px}
+.result p { margin: 6px 0; font-size: 14px; }
 .preview {
-  margin-top:10px;display:flex;align-items:center;gap:10px;justify-content:center
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px; justify-content: center;
 }
-.preview img{width:50px;height:50px;border-radius:50%;border:2px solid #ffd369}
+.preview img {
+  width: 50px; height: 50px;
+  border-radius: 50%; border: 2px solid #ffd369;
+}
 </style>
 </head>
 <body>
@@ -50,11 +67,12 @@ input,select {
     <h1>ReyStore</h1>
     <div class="tagline">Top-up Robux aman, cepat, terpercaya</div>
 
+    <!-- Tombol pintasan -->
     <button onclick="window.location.href='invoice.html'">🔎 Cek Pesanan</button>
     <button onclick="window.location.href='https://support.reyambon.xyz'">💬 Customer Service</button>
 
     <div class="section-title">Form Pembelian Robux</div>
-    <input type="text" id="username" placeholder="Username Roblox" oninput="cekUsername()">
+    <input type="text" id="username" placeholder="Username Roblox" onblur="cekUsername()">
     <div id="preview"></div>
     <input type="number" id="jumlah" placeholder="Jumlah Robux">
     <select id="metode">
@@ -74,39 +92,33 @@ async function cekUsername() {
   const username = document.getElementById('username').value.trim();
   const previewDiv = document.getElementById('preview');
   previewDiv.innerHTML = "";
-
   if (!username) return;
 
   try {
-    let res = await fetch("https://users.roblox.com/v1/usernames/users", {
+    // API Roblox via proxy (agar bebas CORS)
+    let res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ usernames: [username] })
     });
     let data = await res.json();
-
-    if (data.data && data.data.length > 0) {
-      let user = data.data[0];
-      if (!user.id) {
-        previewDiv.innerHTML = `<p style="color:red">Username tidak ditemukan!</p>`;
-        return;
-      }
-
-      let avatarRes = await fetch(
-        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=150x150&format=Png`
-      );
-      let avatarData = await avatarRes.json();
-      let img = avatarData.data[0].imageUrl;
-
-      previewDiv.innerHTML = `
-        <div class="preview">
-          <img src="${img}">
-          <span style="font-weight:bold;color:#ffd369">${user.name}</span>
-        </div>
-      `;
-    } else {
+    if (!data.data || data.data.length === 0 || !data.data[0].id) {
       previewDiv.innerHTML = `<p style="color:red">Username tidak ditemukan!</p>`;
+      return;
     }
+    const id = data.data[0].id;
+
+    // Ambil avatar via RoProxy
+    const thumbRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
+    const thumbData = await thumbRes.json();
+    const img = thumbData.data[0].imageUrl;
+
+    previewDiv.innerHTML = `
+      <div class="preview">
+        <img src="${img}">
+        <span style="font-weight:bold;color:#ffd369">${data.data[0].name}</span>
+      </div>
+    `;
   } catch (e) {
     console.error(e);
     previewDiv.innerHTML = `<p style="color:red">Gagal cek username!</p>`;
@@ -131,7 +143,8 @@ function hitung() {
     harga = Math.floor(harga * 0.9);
   }
 
-  const totalGamepass = Math.ceil(jumlah / 0.7);
+  const target = jumlah;
+  const totalGamepass = Math.ceil(target / 0.7);
 
   const hasilDiv = document.getElementById('hasil');
   hasilDiv.style.display = 'block';
