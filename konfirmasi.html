@@ -3,49 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pembelian Berhasil</title>
+<title>Konfirmasi Pesanan - ReyStore</title>
 <style>
 body{
   font-family:'Segoe UI',Arial,sans-serif;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:#fff;min-height:100vh;
-  display:flex;justify-content:center;align-items:center;
+  display:flex;justify-content:center;align-items:center;padding:20px;
 }
 .card{
   background:rgba(255,255,255,0.08);
   padding:25px;border-radius:20px;
   backdrop-filter:blur(12px);text-align:center;
-  max-width:400px;width:90%;
+  max-width:400px;width:100%;
 }
 h1{color:#ffd369;margin-bottom:15px;}
+input{
+  width:100%;padding:12px;margin:10px 0;
+  border:none;border-radius:12px;font-size:15px;
+}
 button{
   background:linear-gradient(135deg,#ffd369,#ffb74d);
   border:none;padding:12px 20px;border-radius:12px;
-  font-weight:bold;cursor:pointer;
+  font-weight:bold;cursor:pointer;margin-top:10px;width:100%;
+}
+#msgBox{
+  display:none;margin-top:20px;padding:12px;
+  border-radius:10px;background:#4caf50;color:#fff;
 }
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>Pembelian Berhasil</h1>
-  <p id="pesan"></p>
-  <button onclick="keInvoice()">Lihat Invoice</button>
+  <h1>Konfirmasi Pesanan</h1>
+  <p>Isi data ini setelah kamu membayar. Pesananmu akan masuk ke invoice otomatis.</p>
+  <input type="text" id="username" placeholder="Username Roblox">
+  <input type="number" id="jumlah" placeholder="Jumlah Robux">
+  <button onclick="konfirmasi()">Kirim Konfirmasi</button>
+
+  <div id="msgBox">Berhasil disimpan! Kamu bisa cek di halaman invoice.</div>
+  <button onclick="window.location.href='index.html'">Kembali</button>
 </div>
 
-<script>
-const params = new URLSearchParams(location.search);
-const username = params.get('username') || '';
-const jumlah = params.get('jumlah') || '';
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-document.getElementById('pesan').textContent =
-  `Pesanan atas nama ${username} sebanyak ${jumlah} Robux telah tercatat.`;
+const firebaseConfig = {
+  apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
+  authDomain: "reystore-support.firebaseapp.com",
+  databaseURL: "https://reystore-support-default-rtdb.firebaseio.com",
+  projectId: "reystore-support",
+  storageBucket: "reystore-support.firebasestorage.app",
+  messagingSenderId: "446513200960",
+  appId: "1:446513200960:web:cbd40ca4315a8bf47044a5",
+  measurementId: "G-YEBFKLREK5"
+};
 
-function keInvoice(){
-  // simpan data ke localStorage supaya invoice bisa baca
-  localStorage.setItem('lastUser', username);
-  localStorage.setItem('lastJumlah', jumlah);
-  location.href = 'invoice.html';
-}
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.konfirmasi = function() {
+  const user = document.getElementById('username').value.trim();
+  const jumlah = document.getElementById('jumlah').value.trim();
+  if (!user || !jumlah || jumlah <= 0) {
+    alert("Isi username dan jumlah Robux dengan benar.");
+    return;
+  }
+
+  // Random estimasi 6 atau 7 hari
+  const estimasi = (Math.random() < 0.5 ? 6 : 7);
+  const data = {
+    username: user,
+    jumlah: jumlah,
+    mulai: Date.now(),
+    estimasi: estimasi
+  };
+
+  const newRef = push(ref(db, 'invoices'));
+  set(newRef, data)
+    .then(() => {
+      document.getElementById('msgBox').style.display = 'block';
+    })
+    .catch(err => alert('Gagal simpan: ' + err));
+};
 </script>
 </body>
 </html>
