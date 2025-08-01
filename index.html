@@ -3,149 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat Support - ReyStore</title>
+<title>Beli Robux - ReyStore</title>
 <style>
-  * {box-sizing: border-box;}
   body {
     margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
-    background: #eceff1;
+    background: linear-gradient(135deg, #1d4ed8, #60a5fa);
+    color: white;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .chat-container {
-    display: flex;
-    flex-direction: column;
-    background: white;
-    width: 100%;
-    max-width: 500px;
-    height: 100vh;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  }
-  .chat-header {
-    background: #00aaff;
-    color: white;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
+  .main-box {
+    background: rgba(0,0,0,0.5);
+    padding: 30px;
+    border-radius: 16px;
     text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    max-width: 400px;
+    width: 100%;
   }
-  .messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    background: #f5f5f5;
-  }
-  .bubble {
-    max-width: 80%;
-    padding: 10px 14px;
-    margin-bottom: 10px;
-    border-radius: 15px;
-    clear: both;
-  }
-  .bubble.user {
-    background: #00aaff;
+  h1 { margin-bottom: 20px; }
+  .button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 14px;
+    background: #0ea5e9;
     color: white;
-    float: right;
-    border-bottom-right-radius: 0;
-  }
-  .bubble.admin {
-    background: #e0e0e0;
-    float: left;
-    border-bottom-left-radius: 0;
-  }
-  .chat-input {
-    display: flex;
-    padding: 10px;
-    background: #fff;
-    border-top: 1px solid #ddd;
-  }
-  .chat-input input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    margin-right: 10px;
-    outline: none;
-  }
-  .chat-input button {
-    background: #00aaff;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    cursor: pointer;
+    font-weight: bold;
     font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .button:hover { background: #0284c7; }
+
+  .popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(30,30,30,0.95);
+    padding: 20px;
+    border-radius: 16px;
+    max-width: 400px; width: 90%;
+    display: none;
+    z-index: 100;
+  }
+  label { display:block; margin-top:15px; text-align:left; }
+  input {
+    width: 100%; padding: 10px; margin-top: 5px;
+    border: none; border-radius: 8px;
+    background: #334155; color: white;
+    font-size: 16px;
   }
 </style>
 </head>
 <body>
-<div class="chat-container">
-  <div class="chat-header">Support ReyStore</div>
-  <div class="messages" id="messages"></div>
-  <div class="chat-input">
-    <input type="text" id="nama" placeholder="Nama kamu" style="max-width:120px;">
-    <input type="text" id="pesan" placeholder="Tulis pesan...">
-    <button onclick="kirimPesan()">➤</button>
-  </div>
+<div class="main-box" id="mainBox">
+  <h1>ReyStore</h1>
+  <button class="button" onclick="bukaPopup()">Beli Robux</button>
+  <button class="button" onclick="window.location.href='invoice.html'">Cek Pesanan</button>
+  <button class="button" onclick="window.location.href='https://support.reyambon.xyz'">Customer Service</button>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-  import { getDatabase, ref, push, onChildAdded, set } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+<div class="popup" id="popup">
+  <h2>Beli Robux</h2>
+  <label>Username Roblox</label>
+  <input type="text" id="username" placeholder="Masukkan username Roblox">
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
-    authDomain: "reystore-support.firebaseapp.com",
-    databaseURL: "https://reystore-support-default-rtdb.firebaseio.com",
-    projectId: "reystore-support",
-    storageBucket: "reystore-support.firebasestorage.app",
-    messagingSenderId: "446513200960",
-    appId: "1:446513200960:web:cbd40ca4315a8bf47044a5",
-    measurementId: "G-YEBFKLREK5"
-  };
+  <label>Jumlah Robux</label>
+  <input type="number" id="jumlah" placeholder="Contoh: 80">
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  <button class="button" onclick="lanjut()">Lanjut</button>
+  <button class="button" onclick="tutupPopup()">Kembali</button>
+</div>
 
-  let chatId = null;
-  const messagesDiv = document.getElementById("messages");
+<script>
+function bukaPopup() {
+  document.getElementById('popup').style.display = 'block';
+}
+function tutupPopup() {
+  document.getElementById('popup').style.display = 'none';
+}
+function lanjut() {
+  const username = document.getElementById('username').value.trim();
+  const jumlah = parseInt(document.getElementById('jumlah').value);
 
-  function addBubble(sender, text) {
-    const div = document.createElement("div");
-    div.className = `bubble ${sender}`;
-    div.textContent = text;
-    messagesDiv.appendChild(div);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  if (!username || !jumlah || jumlah <= 0) {
+    alert('Isi username dan jumlah Robux dengan benar!');
+    return;
   }
 
-  function kirimPesan() {
-    const nama = document.getElementById("nama").value.trim();
-    const pesan = document.getElementById("pesan").value.trim();
-    if (!nama || !pesan) {
-      alert("Isi nama dan pesan");
-      return;
-    }
-
-    if (!chatId) {
-      chatId = push(ref(db, "chats")).key;
-      set(ref(db, "chats/" + chatId + "/username"), nama);
-
-      onChildAdded(ref(db, "chats/" + chatId + "/messages"), (snap) => {
-        const d = snap.val();
-        addBubble(d.sender, d.text);
-      });
-    }
-
-    const msgRef = push(ref(db, "chats/" + chatId + "/messages"));
-    set(msgRef, { sender: "user", text: pesan, time: Date.now() });
-    document.getElementById("pesan").value = "";
-  }
-
-  window.kirimPesan = kirimPesan;
+  // Nanti bisa diganti kirim ke WhatsApp
+  alert(`Username: ${username}\nJumlah Robux: ${jumlah}`);
+}
 </script>
 </body>
 </html>
