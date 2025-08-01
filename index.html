@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReyStore</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;}
+body {
+  height:100vh;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family:'Segoe UI',Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  color:#fff;
+}
+.container {
+  position:relative;
+  width:100%;
+  max-width:420px;
+  text-align:center;
+  animation:fadeIn 1s ease;
+  z-index:2;
+}
+h1 {
+  font-size:34px;
+  color:#ffd369;
+  margin-bottom:20px;
+  text-shadow:0 0 10px rgba(255,211,105,0.6);
+}
+button {
+  width:100%;
+  background:linear-gradient(135deg,#ffd369,#ffb74d);
+  color:#222;
+  border:none;
+  padding:14px;
+  margin:10px 0;
+  font-size:17px;
+  font-weight:bold;
+  border-radius:14px;
+  cursor:pointer;
+  transition:transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow:0 0 10px rgba(255,183,77,0.4);
+}
+button:hover {
+  transform:scale(1.06);
+  box-shadow:0 0 20px rgba(255,183,77,0.8);
+}
+.roblox-img {
+  position:absolute;
+  top:50%;
+  width:180px;
+  transform:translateY(-50%);
+  mix-blend-mode:screen; /* efek green screen */
+  object-fit:contain;
+  z-index:1;
+}
+.roblox-left {left:-60px;animation:float 3s ease-in-out infinite;}
+.roblox-right {right:-60px;animation:float 3s ease-in-out infinite;animation-delay:1.5s;}
+@keyframes float {
+  0%,100%{transform:translateY(-50%) translateX(0);}
+  50%{transform:translateY(-55%) translateX(5px);}
+}
+@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+</style>
+</head>
+<body>
+  <!-- Karakter Roblox -->
+  <img src="char1.png" alt="Roblox kiri" class="roblox-img roblox-left">
+  <img src="char2.png" alt="Roblox kanan" class="roblox-img roblox-right">
 
+  <div class="container">
+    <h1>ReyStore</h1>
+    <button onclick="window.location.href='belirobux/'">Beli Robux</button>
+    <button onclick="window.location.href='invoice.html'">Cek Pesanan</button>
+    <button onclick="window.location.href='https://support.reyambon.xyz'">Customer Service</button>
+  </div>
+</body>
+</html>
