@@ -5,142 +5,112 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cek Pesanan - ReyStore</title>
 <style>
-* { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-body {
+* {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #1a237e, #4a148c);
-  color: #fff;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+body {
   min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
-header {
-  text-align: center;
-  padding: 30px 10px;
+.wrapper {
+  width: 100%;
+  max-width: 480px;
 }
-header h1 {
-  color: #ffcc80;
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-header p { color: #ddd; }
-
-.container {
-  max-width: 500px;
-  margin: 20px auto 40px;
-  background: rgba(0, 0, 0, 0.4);
+.card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
   padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-  animation: fadeIn 0.6s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
   text-align: center;
+  animation: fadeIn 0.7s ease;
 }
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1; transform:translateY(0);}
+}
+h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+  color: #ffd369;
+}
+p { color: #ccc; }
 input {
+  width: 100%;
   padding: 12px;
+  margin: 12px 0;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
-  width: 70%;
-  font-size: 1rem;
+  outline: none;
+  font-size: 14px;
 }
 button {
-  padding: 12px 20px;
-  margin-left: 5px;
-  background: #ffcc80;
+  width: 100%;
+  background: linear-gradient(135deg,#ffd369,#ffb74d);
   color: #222;
   border: none;
-  border-radius: 8px;
+  padding: 12px;
+  margin: 6px 0;
+  font-size: 15px;
   font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-button:hover { background: #ffb74d; transform: scale(1.03); }
-
-.result {
-  margin-top: 25px;
-  background: rgba(255,255,255,0.08);
-  padding: 20px;
   border-radius: 12px;
-  text-align: left;
-  animation: fadeIn 0.5s ease;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
-.result h3 {
-  color: #ffcc80;
-  margin-top: 0;
-  font-size: 1.5rem;
+button:hover {
+  transform: scale(1.04);
 }
-.result p { margin: 6px 0; }
-
-.status {
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  display: inline-block;
+.result {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.3);
+  display: none;
+  animation: fadeIn 0.6s ease;
 }
-.status.selesai { background: #4caf50; color: #fff; }
-.status.proses { background: #ff9800; color: #fff; }
-.status.menunggu { background: #f44336; color: #fff; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.result p { margin: 6px 0; font-size: 14px; }
 </style>
 </head>
 <body>
-<header>
-  <h1>Cek Pesanan Robux</h1>
-  <p>Masukkan username Roblox kamu untuk melihat detail transaksi</p>
-</header>
+<div class="wrapper">
+  <div class="card">
+    <h1>Cek Pesanan</h1>
+    <p>Masukkan username Roblox Anda untuk melihat detail pesanan:</p>
+    <input type="text" id="username" placeholder="Username Roblox">
+    <button onclick="cekPesanan()">Cek Pesanan</button>
+    <button onclick="window.location.href='index.html'">Kembali ke Beranda</button>
 
-<div class="container">
-  <div>
-    <input type="text" id="searchUser" placeholder="Username Roblox">
-    <button id="btnSearch">Cari</button>
+    <div id="hasil" class="result"></div>
   </div>
-
-  <div class="result" id="resultBox" style="display:none;"></div>
 </div>
 
 <script>
-// ===============================
-// DATA PESANAN (CONTOH)
-// ===============================
-const data = [
-  { username: "Amak123", robux: 80, harga: 13900, metode: "QRIS", status: "Selesai" },
-  { username: "TestUser", robux: 21, harga: 5970, metode: "Dana", status: "Proses" },
-  { username: "PlayerX", robux: 200, harga: 31000, metode: "OVO", status: "Menunggu Pembayaran" }
-];
-
-function statusClass(status) {
-  const low = status.toLowerCase();
-  if (low === "selesai") return "status selesai";
-  if (low === "proses") return "status proses";
-  return "status menunggu";
-}
-
-document.getElementById('btnSearch').addEventListener('click', () => {
-  const username = document.getElementById('searchUser').value.trim();
-  const box = document.getElementById('resultBox');
-  if (!username) { alert('Masukkan username!'); return; }
-
-  const item = data.find(d => d.username.toLowerCase() === username.toLowerCase());
-
-  if (item) {
-    box.style.display = 'block';
-    box.innerHTML = `
-      <h3>Detail Pesanan</h3>
-      <p><b>Username:</b> ${item.username}</p>
-      <p><b>Jumlah Robux:</b> ${item.robux}</p>
-      <p><b>Harga:</b> Rp ${item.harga.toLocaleString('id-ID')}</p>
-      <p><b>Metode Pembayaran:</b> ${item.metode}</p>
-      <p><b>Status:</b> <span class="${statusClass(item.status)}">${item.status}</span></p>
-    `;
-  } else {
-    box.style.display = 'block';
-    box.innerHTML = '<h3>Data Tidak Ditemukan</h3><p>Pastikan username yang kamu masukkan benar dan sudah terdaftar.</p>';
+function cekPesanan() {
+  const user = document.getElementById('username').value.trim();
+  if (!user) {
+    alert('Isi username terlebih dahulu.');
+    return;
   }
-});
+
+  // Contoh data dummy
+  const hasil = document.getElementById('hasil');
+  hasil.style.display = 'block';
+  hasil.innerHTML = `
+    <h3>Pesanan ditemukan</h3>
+    <p><b>Username:</b> ${user}</p>
+    <p><b>Jumlah Robux:</b> 80</p>
+    <p><b>Status:</b> Dalam proses</p>
+    <p><b>Metode Pembayaran:</b> Dana</p>
+  `;
+}
 </script>
 </body>
 </html>
