@@ -3,114 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cek Pesanan - ReyStore</title>
+<title>Invoice Pesanan</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:#fff;min-height:100vh;
+  display:flex;justify-content:center;align-items:center;
 }
-body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+.card{
+  background:rgba(255,255,255,0.08);
+  padding:25px;border-radius:20px;
+  backdrop-filter:blur(12px);text-align:center;
+  max-width:400px;width:90%;
 }
-.wrapper {
-  width: 100%;
-  max-width: 480px;
+h1{color:#ffd369;margin-bottom:15px;}
+.info{text-align:left;background:rgba(0,0,0,0.3);padding:15px;border-radius:12px;}
+.status{display:inline-block;padding:8px 12px;margin-top:10px;border-radius:8px;font-weight:bold;}
+.pending{background:orange;color:#222;}
+.proses{background:#00bcd4;}
+.selesai{background:#4caf50;}
+button{
+  margin-top:15px;
+  background:linear-gradient(135deg,#ffd369,#ffb74d);
+  border:none;padding:12px 20px;border-radius:12px;
+  font-weight:bold;cursor:pointer;
 }
-.card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-  text-align: center;
-  animation: fadeIn 0.7s ease;
-}
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(20px);}
-  to {opacity:1; transform:translateY(0);}
-}
-h1 {
-  font-size: 28px;
-  margin-bottom: 5px;
-  color: #ffd369;
-}
-p { color: #ccc; }
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 12px 0;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-button {
-  width: 100%;
-  background: linear-gradient(135deg,#ffd369,#ffb74d);
-  color: #222;
-  border: none;
-  padding: 12px;
-  margin: 6px 0;
-  font-size: 15px;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-button:hover {
-  transform: scale(1.04);
-}
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 14px;
-  background: rgba(0,0,0,0.3);
-  display: none;
-  animation: fadeIn 0.6s ease;
-}
-.result p { margin: 6px 0; font-size: 14px; }
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="card">
-    <h1>Cek Pesanan</h1>
-    <p>Masukkan username Roblox Anda untuk melihat detail pesanan:</p>
-    <input type="text" id="username" placeholder="Username Roblox">
-    <button onclick="cekPesanan()">Cek Pesanan</button>
-    <button onclick="window.location.href='index.html'">Kembali ke Beranda</button>
-
-    <div id="hasil" class="result"></div>
+<div class="card">
+  <h1>Invoice</h1>
+  <div class="info">
+    <p><b>Username:</b> <span id="u"></span></p>
+    <p><b>Jumlah Robux:</b> <span id="j"></span></p>
+    <p><b>Estimasi masuk:</b> 6–7 hari</p>
+    <div id="statusBox"></div>
   </div>
+  <button onclick="window.location.href='index.html'">Kembali</button>
 </div>
 
 <script>
-function cekPesanan() {
-  const user = document.getElementById('username').value.trim();
-  if (!user) {
-    alert('Isi username terlebih dahulu.');
-    return;
-  }
+const u = localStorage.getItem('lastUser') || '';
+const j = localStorage.getItem('lastJumlah') || '';
 
-  // Contoh data dummy
-  const hasil = document.getElementById('hasil');
-  hasil.style.display = 'block';
-  hasil.innerHTML = `
-    <h3>Pesanan ditemukan</h3>
-    <p><b>Username:</b> ${user}</p>
-    <p><b>Jumlah Robux:</b> 80</p>
-    <p><b>Status:</b> Dalam proses</p>
-    <p><b>Metode Pembayaran:</b> Dana</p>
-  `;
-}
+document.getElementById('u').textContent = u;
+document.getElementById('j').textContent = j;
+
+const hari = Math.floor(Math.random()*7)+1;
+let statusText='', cls='';
+if(hari===1){statusText='Menunggu dikirim (hari ke-1)';cls='pending';}
+else if(hari<=5){statusText=`Dikirim (hari ke-${hari})`;cls='proses';}
+else{statusText=`Selesai (hari ke-${hari})`;cls='selesai';}
+
+document.getElementById('statusBox').innerHTML =
+  `<div class="status ${cls}">${statusText}</div>`;
 </script>
 </body>
 </html>
