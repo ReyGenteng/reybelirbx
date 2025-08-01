@@ -3,157 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beli Robux - ReyStore</title>
+<title>Beli Robux</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.wrapper {
-  width: 100%;
-  max-width: 480px;
-}
-.card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-  text-align: center;
-  animation: fadeIn 0.7s ease;
-}
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(20px);}
-  to {opacity:1; transform:translateY(0);}
-}
-h1 {
-  font-size: 28px;
-  margin-bottom: 5px;
-  color: #ffd369;
-}
-.tagline {
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 20px;
-}
-button {
-  width: 100%;
-  background: linear-gradient(135deg,#ffd369,#ffb74d);
-  color: #222;
-  border: none;
-  padding: 12px;
-  margin: 6px 0;
-  font-size: 15px;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-button:hover {
-  transform: scale(1.04);
-}
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-.section-title {
-  margin-top: 20px;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-.result {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 14px;
-  background: rgba(0,0,0,0.3);
-  display: none;
-  animation: fadeIn 0.6s ease;
-}
-.result p { margin: 6px 0; font-size: 14px; }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    min-height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .menu, .form-box {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    max-width: 400px; width: 100%;
+    text-align: center;
+  }
+  h2 { margin-bottom: 20px; }
+  button {
+    width: 100%; padding: 12px; margin: 10px 0;
+    font-size: 16px; font-weight: bold;
+    border: none; border-radius: 8px; cursor: pointer;
+    background: #0ea5e9; color: white;
+  }
+  button:hover { background: #0284c7; }
+  input {
+    width: 100%; padding: 10px; margin: 5px 0;
+    border: none; border-radius: 8px;
+    background: #334155; color: white; font-size: 16px;
+  }
+  label { display:block; margin-top:15px; text-align:left; }
+  #searchResults {
+    background: #1e293b;
+    position: absolute;
+    width: calc(100% - 40px);
+    max-height: 200px; overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    display: none; z-index: 100;
+  }
+  .result-item {
+    padding: 8px; cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .result-item:hover { background: #334155; }
+  .result-item img { width: 32px; height: 32px; border-radius: 50%; }
+  .avatar-preview { text-align:center; margin-top:15px; }
+  .avatar-preview img { width: 80px; height: 80px; border-radius: 50%; }
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="card">
-    <h1>ReyStore</h1>
-    <div class="tagline">Top-up Robux aman, cepat, terpercaya</div>
+<div class="menu" id="menuBox">
+  <h2>ReyStore</h2>
+  <button onclick="bukaForm()">Beli Robux</button>
+  <button onclick="window.location.href='invoice.html'">Cek Pesanan</button>
+  <button onclick="window.location.href='https://support.reyambon.xyz'">Customer Service</button>
+</div>
 
-    <!-- Tombol pintasan -->
-    <button onclick="window.location.href='invoice.html'">🔎 Cek Pesanan</button>
-    <button onclick="window.location.href='https://reyambon.xyz'">💬 Customer Service</button>
+<div class="form-box" id="formBox" style="display:none;">
+  <h2>Beli Robux</h2>
 
-    <div class="section-title">Form Pembelian Robux</div>
-    <input type="text" id="username" placeholder="Username Roblox">
-    <input type="number" id="jumlah" placeholder="Jumlah Robux">
-    <select id="metode">
-      <option value="Dana">Dana</option>
-      <option value="QRIS">QRIS</option>
-      <option value="OVO">OVO</option>
-    </select>
-    <input type="text" id="kupon" placeholder="Kode Kupon (opsional)">
-    <button onclick="hitung()">Beli</button>
-
-    <div id="hasil" class="result"></div>
+  <label>Username Roblox</label>
+  <div style="position:relative;">
+    <input type="text" id="username" placeholder="Ketik username Roblox...">
+    <div id="searchResults"></div>
   </div>
+
+  <div class="avatar-preview" id="avatarPreview"></div>
+
+  <label>Jumlah Robux</label>
+  <input type="number" id="jumlah" placeholder="Contoh: 80">
+
+  <button onclick="lanjut()">Lanjut</button>
+  <button onclick="kembali()">Kembali</button>
 </div>
 
 <script>
-function hitung() {
-  const username = document.getElementById('username').value.trim();
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  const metode = document.getElementById('metode').value;
-  const kupon = document.getElementById('kupon').value.trim();
+let selectedUser = null;
 
-  if (!username || isNaN(jumlah) || jumlah <= 0) {
-    alert("Isi username dan jumlah robux!");
+function bukaForm(){
+  document.getElementById('menuBox').style.display = 'none';
+  document.getElementById('formBox').style.display = 'block';
+}
+function kembali(){
+  document.getElementById('formBox').style.display = 'none';
+  document.getElementById('menuBox').style.display = 'block';
+}
+
+document.getElementById('username').addEventListener('input', async function() {
+  const keyword = this.value.trim();
+  const resultsDiv = document.getElementById('searchResults');
+  resultsDiv.innerHTML = '';
+  document.getElementById('avatarPreview').innerHTML = '';
+  selectedUser = null;
+
+  if (keyword.length < 3) {
+    resultsDiv.style.display = 'none';
     return;
   }
 
-  let hargaPer20 = 2800;
-  let harga = Math.ceil(jumlah / 20) * hargaPer20 + 3000; // pajak 3 ribu
+  const url = `https://users.roblox.com/v1/usernames/search?keyword=${encodeURIComponent(keyword)}&limit=5`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.data || data.data.length === 0) {
+      resultsDiv.style.display = 'none';
+      return;
+    }
 
-  if (kupon.toLowerCase() === "diskon10") {
-    harga = Math.floor(harga * 0.9);
+    resultsDiv.style.display = 'block';
+    data.data.forEach(user => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=48&height=48&format=png`;
+      div.innerHTML = `<img src="${avatarUrl}"><span>${user.name}</span>`;
+      div.onclick = () => pilihUser(user);
+      resultsDiv.appendChild(div);
+    });
+  } catch (err) {
+    console.error(err);
   }
+});
 
-  const target = jumlah;
-  const totalGamepass = Math.ceil(target / 0.7);
+function pilihUser(user) {
+  document.getElementById('username').value = user.name;
+  document.getElementById('searchResults').style.display = 'none';
+  selectedUser = user;
 
-  const hasilDiv = document.getElementById('hasil');
-  hasilDiv.style.display = 'block';
-  hasilDiv.innerHTML = `
-    <h3>Detail Pesanan</h3>
-    <p><b>Username:</b> ${username}</p>
-    <p><b>Jumlah Robux:</b> ${jumlah}</p>
-    <p><b>Harga:</b> Rp ${harga.toLocaleString('id-ID')}</p>
-    <p><b>Metode:</b> ${metode}</p>
-    <p><b>Buat Game Pass senilai ${totalGamepass}</b></p>
-    <button onclick="lanjut('${username}', ${jumlah}, '${metode}')">Sudah buat Gamepass</button>
-    <button onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
-    <button onclick="document.getElementById('hasil').style.display='none'">Kembali</button>
-  `;
+  const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${user.id}&width=100&height=100&format=png`;
+  document.getElementById('avatarPreview').innerHTML = `
+    <p>Apakah ini akunmu?</p>
+    <img src="${avatarUrl}" alt="avatar"><p>${user.displayName} (${user.name})</p>`;
 }
 
-function lanjut(username, jumlah, metode) {
-  const wa = `https://wa.me/6287887028120?text=Halo%20Kak%2C%20Saya%20Pembeli%20Dengan%20Username%20${username}%20dan%20Saya%20Topup%20${jumlah}%20Robux%20dengan%20pembayaran%20${metode}`;
-  window.location.href = wa;
+function lanjut() {
+  if (!selectedUser) {
+    alert('Pilih akun Roblox dulu dari daftar!');
+    return;
+  }
+  const jumlah = parseInt(document.getElementById('jumlah').value);
+  if (!jumlah || jumlah <= 0) {
+    alert('Masukkan jumlah Robux.');
+    return;
+  }
+
+  // Disini bisa lanjut ke WA, atau simpan ke database
+  alert(`Akun: ${selectedUser.name} (ID: ${selectedUser.id})\nJumlah: ${jumlah}`);
 }
 </script>
 </body>
