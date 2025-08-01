@@ -3,61 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invoice Pesanan</title>
+<title>Cek Invoice Pesanan</title>
 <style>
 body{
   font-family:'Segoe UI',Arial,sans-serif;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:#fff;min-height:100vh;
-  display:flex;justify-content:center;align-items:center;
+  display:flex;justify-content:center;align-items:center;padding:20px;
 }
 .card{
   background:rgba(255,255,255,0.08);
   padding:25px;border-radius:20px;
   backdrop-filter:blur(12px);text-align:center;
-  max-width:400px;width:90%;
+  max-width:400px;width:100%;
 }
 h1{color:#ffd369;margin-bottom:15px;}
-.info{text-align:left;background:rgba(0,0,0,0.3);padding:15px;border-radius:12px;}
-.status{display:inline-block;padding:8px 12px;margin-top:10px;border-radius:8px;font-weight:bold;}
+input{
+  width:100%;padding:12px;margin:10px 0;
+  border:none;border-radius:12px;font-size:15px;
+}
+button{
+  background:linear-gradient(135deg,#ffd369,#ffb74d);
+  border:none;padding:12px 20px;border-radius:12px;
+  font-weight:bold;cursor:pointer;margin-top:10px;width:100%;
+}
+.info{
+  margin-top:20px;text-align:left;
+  background:rgba(0,0,0,0.3);
+  padding:15px;border-radius:12px;display:none;
+}
+.status{
+  display:inline-block;padding:8px 12px;margin-top:10px;
+  border-radius:8px;font-weight:bold;
+}
 .pending{background:orange;color:#222;}
 .proses{background:#00bcd4;}
 .selesai{background:#4caf50;}
-button{
-  margin-top:15px;
-  background:linear-gradient(135deg,#ffd369,#ffb74d);
-  border:none;padding:12px 20px;border-radius:12px;
-  font-weight:bold;cursor:pointer;
-}
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>Invoice</h1>
-  <div class="info">
+  <h1>Cek Pesanan</h1>
+  <p>Masukkan username Roblox kamu untuk cek status top-up</p>
+  <input type="text" id="searchUser" placeholder="Username Roblox">
+  <button onclick="cari()">Cari</button>
+
+  <div class="info" id="resultBox">
     <p><b>Username:</b> <span id="u"></span></p>
     <p><b>Jumlah Robux:</b> <span id="j"></span></p>
     <p><b>Estimasi masuk:</b> 6–7 hari</p>
     <div id="statusBox"></div>
   </div>
-  <button onclick="window.location.href='index.html'">Kembali</button>
+
+  <button onclick="window.location.href='/'">Kembali</button>
 </div>
 
 <script>
-const u = localStorage.getItem('lastUser') || '';
-const j = localStorage.getItem('lastJumlah') || '';
+function cari(){
+  const input = document.getElementById('searchUser').value.trim();
+  if(!input){alert("Masukkan username!");return;}
 
-document.getElementById('u').textContent = u;
-document.getElementById('j').textContent = j;
+  // Ambil data terakhir dari localStorage
+  const lastUser = localStorage.getItem('lastUser') || '';
+  const lastJumlah = localStorage.getItem('lastJumlah') || '';
 
-const hari = Math.floor(Math.random()*7)+1;
-let statusText='', cls='';
-if(hari===1){statusText='Menunggu dikirim (hari ke-1)';cls='pending';}
-else if(hari<=5){statusText=`Dikirim (hari ke-${hari})`;cls='proses';}
-else{statusText=`Selesai (hari ke-${hari})`;cls='selesai';}
+  if(input.toLowerCase() !== lastUser.toLowerCase()){
+    alert("Pesanan tidak ditemukan untuk username ini (atau belum dimasukkan oleh admin).");
+    return;
+  }
 
-document.getElementById('statusBox').innerHTML =
-  `<div class="status ${cls}">${statusText}</div>`;
+  // Tampilkan hasil
+  document.getElementById('resultBox').style.display = 'block';
+  document.getElementById('u').textContent = lastUser;
+  document.getElementById('j').textContent = lastJumlah;
+
+  // Status acak sesuai hari
+  const hari = Math.floor(Math.random()*7)+1;
+  let statusText='', cls='';
+  if(hari===1){statusText='Menunggu dikirim (hari ke-1)';cls='pending';}
+  else if(hari<=5){statusText=`Dikirim (hari ke-${hari})`;cls='proses';}
+  else{statusText=`Selesai (hari ke-${hari})`;cls='selesai';}
+
+  document.getElementById('statusBox').innerHTML =
+    `<div class="status ${cls}">${statusText}</div>`;
+}
 </script>
 </body>
 </html>
