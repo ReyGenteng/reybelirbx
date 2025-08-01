@@ -3,89 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cek Invoice Pesanan</title>
+<title>Cek Invoice Robux</title>
 <style>
-body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#fff;min-height:100vh;
-  display:flex;justify-content:center;align-items:center;padding:20px;
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: #fff; display: flex;
+  flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 30px; min-height: 100vh; margin: 0;
 }
-.card{
-  background:rgba(255,255,255,0.08);
-  padding:25px;border-radius:20px;
-  backdrop-filter:blur(12px);text-align:center;
-  max-width:400px;width:100%;
+.container {
+  background: rgba(255,255,255,0.1);
+  padding: 20px; border-radius: 15px;
+  max-width: 450px; width: 100%;
+  text-align: center;
 }
-h1{color:#ffd369;margin-bottom:15px;}
-input{
-  width:100%;padding:12px;margin:10px 0;
-  border:none;border-radius:12px;font-size:15px;
+input, button {
+  width: 100%; padding: 10px; margin: 8px 0;
+  border: none; border-radius: 8px;
 }
-button{
-  background:linear-gradient(135deg,#ffd369,#ffb74d);
-  border:none;padding:12px 20px;border-radius:12px;
-  font-weight:bold;cursor:pointer;margin-top:10px;width:100%;
+button {
+  background: #ffd369; color: #222; font-weight: bold;
+  cursor: pointer;
 }
-.info{
-  margin-top:20px;text-align:left;
-  background:rgba(0,0,0,0.3);
-  padding:15px;border-radius:12px;display:none;
+button:hover {background: #ffb347;}
+.status-box {
+  margin-top: 20px; padding: 15px; border-radius: 10px;
+  background: rgba(0,0,0,0.3);
 }
-.status{
-  display:inline-block;padding:8px 12px;margin-top:10px;
-  border-radius:8px;font-weight:bold;
-}
-.pending{background:orange;color:#222;}
-.proses{background:#00bcd4;}
-.selesai{background:#4caf50;}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>Cek Pesanan</h1>
-  <p>Masukkan username Roblox kamu untuk cek status top-up</p>
-  <input type="text" id="searchUser" placeholder="Username Roblox">
-  <button onclick="cari()">Cari</button>
-
-  <div class="info" id="resultBox">
-    <p><b>Username:</b> <span id="u"></span></p>
-    <p><b>Jumlah Robux:</b> <span id="j"></span></p>
-    <p><b>Estimasi masuk:</b> 6–7 hari</p>
-    <div id="statusBox"></div>
-  </div>
-
-  <button onclick="window.location.href='/'">Kembali</button>
+<div class="container">
+  <h2>Cek Status Pesanan</h2>
+  <input id="username" placeholder="Masukkan Username Roblox">
+  <button onclick="cek()">Cek Invoice</button>
+  <div id="hasil" class="status-box" style="display:none;"></div>
 </div>
 
-<script>
-function cari(){
-  const input = document.getElementById('searchUser').value.trim();
-  if(!input){alert("Masukkan username!");return;}
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-  // Ambil data terakhir dari localStorage
-  const lastUser = localStorage.getItem('lastUser') || '';
-  const lastJumlah = localStorage.getItem('lastJumlah') || '';
+const firebaseConfig = {
+  apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
+  authDomain: "reystore-support.firebaseapp.com",
+  databaseURL: "https://reystore-support-default-rtdb.firebaseio.com",
+  projectId: "reystore-support",
+  storageBucket: "reystore-support.firebasestorage.app",
+  messagingSenderId: "446513200960",
+  appId: "1:446513200960:web:cbd40ca4315a8bf47044a5",
+  measurementId: "G-YEBFKLREK5"
+};
 
-  if(input.toLowerCase() !== lastUser.toLowerCase()){
-    alert("Pesanan tidak ditemukan untuk username ini (atau belum dimasukkan oleh admin).");
-    return;
-  }
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-  // Tampilkan hasil
-  document.getElementById('resultBox').style.display = 'block';
-  document.getElementById('u').textContent = lastUser;
-  document.getElementById('j').textContent = lastJumlah;
+window.cek = function() {
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const hasil = document.getElementById("hasil");
+  if (!username) { alert("Isi username!"); return; }
 
-  // Status acak sesuai hari
-  const hari = Math.floor(Math.random()*7)+1;
-  let statusText='', cls='';
-  if(hari===1){statusText='Menunggu dikirim (hari ke-1)';cls='pending';}
-  else if(hari<=5){statusText=`Dikirim (hari ke-${hari})`;cls='proses';}
-  else{statusText=`Selesai (hari ke-${hari})`;cls='selesai';}
+  get(child(ref(db), 'pesanan/' + username)).then(snapshot=>{
+    if (!snapshot.exists()) {
+      hasil.style.display='block';
+      hasil.innerHTML = "Pesanan tidak ditemukan.";
+      return;
+    }
+    const data = snapshot.val();
+    const hariLalu = (Date.now() - data.waktuMulai) / (1000*60*60*24);
+    let status = "Menunggu dikirim";
 
-  document.getElementById('statusBox').innerHTML =
-    `<div class="status ${cls}">${statusText}</div>`;
+    if (hariLalu >= 1 && hariLalu < data.lama-1) status = "Dikirim";
+    if (hariLalu >= data.lama-1) status = "Selesai";
+
+    hasil.style.display='block';
+    hasil.innerHTML = `
+      <h3>Invoice</h3>
+      <p><b>Username:</b> ${data.username}</p>
+      <p><b>Jumlah Robux:</b> ${data.jumlah}</p>
+      <p><b>Status:</b> ${status}</p>
+    `;
+  }).catch(err=>{
+    hasil.style.display='block';
+    hasil.innerHTML = "Error: " + err;
+  });
 }
 </script>
 </body>
