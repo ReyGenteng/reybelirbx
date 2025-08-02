@@ -2,169 +2,195 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beli Robux - ReyStore</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Belirobux.xyz – Beli Robux</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <style>
-* {
-  margin: 0; padding: 0; box-sizing: border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-body {
-  min-height: 100vh;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-}
-.wrapper { width: 100%; max-width: 480px; }
-.card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-  text-align: center;
-  animation: fadeIn 0.7s ease;
-}
-@keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-h1 { font-size: 28px; margin-bottom: 5px; color: #ffd369; }
-.tagline { font-size: 14px; color: #ccc; margin-bottom: 20px; }
-button {
-  width: 100%;
-  background: linear-gradient(135deg,#ffd369,#ffb74d);
-  color: #222; border: none;
-  padding: 12px; margin: 6px 0;
-  font-size: 15px; font-weight: bold;
-  border-radius: 12px; cursor: pointer;
-  transition: transform 0.2s ease;
-}
-button:hover { transform: scale(1.04); }
-input, select {
-  width: 100%; padding: 12px; margin: 8px 0;
-  border-radius: 10px; border: none; outline: none;
-  font-size: 14px;
-}
-.section-title { margin-top: 20px; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-.result {
-  margin-top: 20px; padding: 15px; border-radius: 14px;
-  background: rgba(0,0,0,0.3);
-  display: none; animation: fadeIn 0.6s ease;
-}
-.result p { margin: 6px 0; font-size: 14px; }
-.preview {
-  display: flex; align-items: center; gap: 10px;
-  margin-top: 10px; justify-content: center;
-}
-.preview img {
-  width: 50px; height: 50px;
-  border-radius: 50%; border: 2px solid #ffd369;
-}
+  body { background-color: #121515; }
+  .modal-bg { background-color: rgba(0,0,0,0.7); }
+  .slide-up { animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { transform: translateY(100%);} to { transform: translateY(0);} }
+  .clickable { cursor: pointer; }
 </style>
 </head>
-<body>
-<div class="wrapper">
-  <div class="card">
-    <h1>ReyStore</h1>
-    <div class="tagline">Top-up Robux aman, cepat, terpercaya</div>
+<body class="text-white font-sans">
+<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+  <button type="button" class="text-white text-2xl clickable" onclick="openMenu()">
+    <i class="fas fa-bars"></i>
+  </button>
+  <span class="text-[#f9a825] font-extrabold text-lg">Belirobux.xyz</span>
+</header>
 
-    <!-- Tombol pintasan -->
-    <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'">🔎 Cek Pesanan</button>
-    <button onclick="window.location.href='https://help.reyambon.xyz'">💬 Customer Service</button>
+<main class="px-5 py-4 space-y-5">
+  <div>
+    <label for="username" class="block mb-1 text-base">Username:</label>
+    <input id="username" placeholder="Example. Rey123"
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
+  </div>
 
-    <div class="section-title">Form Pembelian Robux</div>
-    <input type="text" id="username" placeholder="Username Roblox" onblur="cekUsername()">
-    <div id="preview"></div>
-    <input type="number" id="jumlah" placeholder="Jumlah Robux">
-    <select id="metode">
-      <option value="Dana">Dana</option>
-      <option value="QRIS">QRIS</option>
-      <option value="OVO">OVO</option>
-    </select>
-    <input type="text" id="kupon" placeholder="Kode Kupon (opsional)">
-    <button onclick="hitung()">Beli</button>
+  <div>
+    <label for="jumlah" class="block mb-1 text-base">Jumlah:</label>
+    <input id="jumlah" placeholder="R$" type="number"
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none" oninput="updatePrice()">
+  </div>
 
-    <div id="hasil" class="result"></div>
+  <div>
+    <label for="price" class="block mb-1 text-base">Price:</label>
+    <input id="price" placeholder="Rp" disabled
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
+  </div>
+
+  <div class="text-[#f9a825] font-normal text-lg">Payment Method</div>
+
+  <!-- Box metode -->
+  <div id="metodeBox" class="border-t border-b border-[#2f3638] py-3 flex justify-between items-center clickable" role="button" tabindex="0" onclick="openModal()">
+    <div class="flex items-center gap-3">
+      <img id="metodeLogo" src="" alt="" class="w-10 h-5 hidden">
+      <span id="metodeText" class="font-extrabold text-white text-lg">Pilih Metode Pembayaran</span>
+    </div>
+    <i class="fas fa-chevron-right"></i>
+  </div>
+
+  <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">Payment Summary</div>
+
+  <form onsubmit="return false" class="mb-4">
+    <label for="coupon" class="block mb-1 text-base">Discount Coupon:</label>
+    <div class="flex">
+      <input id="coupon" placeholder="Enter Code Here"
+        class="flex-grow bg-[#2f3638] rounded-l-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
+      <button type="button"
+        class="bg-[#7f6a3a] rounded-r-full px-5 font-extrabold text-white text-base hover:bg-[#a3864f]">
+        Submit
+      </button>
+    </div>
+  </form>
+
+  <div class="space-y-3 border-b border-[#2f3638] pb-4">
+    <div class="flex justify-between"><span>Discount</span><span id="disc">Rp 0</span></div>
+    <div class="flex justify-between"><span>Biaya Admin</span><span id="admin">Rp 0</span></div>
+    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold"><span>Total</span><span id="total">Rp 0</span></div>
+  </div>
+
+  <div class="flex gap-4 pb-6">
+    <button type="button" onclick="window.location.href='https://help.reyambon.xyz'"
+      class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]">
+      Customer Service
+    </button>
+    <button type="button" onclick="beliSekarang()"
+      class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f]">
+      Beli Sekarang
+    </button>
+  </div>
+
+  <!-- Hasil -->
+  <div id="hasil" class="hidden bg-[#2f3638] p-4 rounded-xl space-y-4">
+    <h3 class="font-bold text-[#f9a825]">Detail Pesanan</h3>
+    <p id="hasilText"></p>
+    <div class="flex flex-col gap-3">
+      <button id="btnWA" class="bg-[#7f6a3a] py-3 rounded-full hover:bg-[#a3864f]">Sudah Buat Gamepass</button>
+      <button onclick="window.open('https://www.roblox.com/develop','_blank')" class="bg-[#7f6a3a] py-3 rounded-full hover:bg-[#a3864f]">Buat Gamepass</button>
+      <button onclick="document.getElementById('hasil').classList.add('hidden')" class="bg-[#7f6a3a] py-3 rounded-full hover:bg-[#a3864f]">Kembali</button>
+    </div>
+  </div>
+</main>
+
+<!-- Modal metode -->
+<div id="modal" class="fixed inset-0 hidden modal-bg flex justify-center items-end z-50">
+  <div class="bg-[#212b2c] w-full rounded-t-2xl p-5 slide-up max-w-md">
+    <h2 class="text-center font-bold mb-5 text-lg">Pilih Metode Pembayaran</h2>
+    <div class="space-y-4">
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]" role="button" tabindex="0" onclick="pilihMetode('QRIS','qris.png')">
+        <img src="qris.png" class="w-10 h-10"><span class="font-bold">QRIS</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]" role="button" tabindex="0" onclick="pilihMetode('Dana','dana.png')">
+        <img src="dana.png" class="w-10 h-10"><span class="font-bold">Dana</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]" role="button" tabindex="0" onclick="pilihMetode('OVO','ovo.png')">
+        <img src="ovo.png" class="w-10 h-10"><span class="font-bold">OVO</span>
+      </div>
+    </div>
+    <button class="mt-5 w-full py-3 rounded-full bg-[#7f6a3a] hover:bg-[#a3864f]" onclick="closeModal()">Batal</button>
+  </div>
+</div>
+
+<!-- Modal menu garis tiga -->
+<div id="menuModal" class="fixed inset-0 hidden modal-bg flex justify-center items-end z-50">
+  <div class="bg-[#212b2c] w-full rounded-t-2xl p-5 slide-up max-w-md">
+    <h2 class="text-center font-bold mb-5 text-lg">Menu</h2>
+    <div class="space-y-4">
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
+           role="button" tabindex="0"
+           onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'">
+        <span class="font-bold">Cek Pesanan / Invoice</span>
+      </div>
+    </div>
+    <button class="mt-5 w-full py-3 rounded-full bg-[#7f6a3a] hover:bg-[#a3864f]" onclick="closeMenu()">Tutup</button>
   </div>
 </div>
 
 <script>
-async function cekUsername() {
-  const username = document.getElementById('username').value.trim();
-  const previewDiv = document.getElementById('preview');
-  previewDiv.innerHTML = "";
-  if (!username) return;
+let metode = "";
 
-  try {
-    // API Roblox via proxy (agar bebas CORS)
-    let res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ usernames: [username] })
-    });
-    let data = await res.json();
-    if (!data.data || data.data.length === 0 || !data.data[0].id) {
-      previewDiv.innerHTML = `<p style="color:red">Username tidak ditemukan!</p>`;
-      return;
-    }
-    const id = data.data[0].id;
+// buka tutup modal
+function openModal(){ document.getElementById('modal').classList.remove('hidden'); }
+function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
+function openMenu(){ document.getElementById('menuModal').classList.remove('hidden'); }
+function closeMenu(){ document.getElementById('menuModal').classList.add('hidden'); }
 
-    // Ambil avatar via RoProxy
-    const thumbRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
-    const thumbData = await thumbRes.json();
-    const img = thumbData.data[0].imageUrl;
-
-    previewDiv.innerHTML = `
-      <div class="preview">
-        <img src="${img}">
-        <span style="font-weight:bold;color:#ffd369">${data.data[0].name}</span>
-      </div>
-    `;
-  } catch (e) {
-    console.error(e);
-    previewDiv.innerHTML = `<p style="color:red">Gagal cek username!</p>`;
-  }
+function pilihMetode(nama, logo){
+  metode = nama;
+  document.getElementById('metodeText').textContent = nama;
+  const img = document.getElementById('metodeLogo');
+  img.src = logo; img.classList.remove('hidden');
+  updatePrice();
+  closeModal();
 }
 
-function hitung() {
-  const username = document.getElementById('username').value.trim();
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  const metode = document.getElementById('metode').value;
-  const kupon = document.getElementById('kupon').value.trim();
+function hitungHarga(jumlah){
+  let admin = 3000;
+  if(metode === 'QRIS') admin += 49;
+  if(metode === 'Dana') admin += 52;
+  if(metode === 'OVO') admin += 76;
+  let harga = (jumlah * 140) + admin;
+  document.getElementById('admin').textContent = "Rp " + admin.toLocaleString('id-ID');
+  return harga;
+}
 
-  if (!username || isNaN(jumlah) || jumlah <= 0) {
-    alert("Isi username dan jumlah robux!");
+function updatePrice(){
+  const jumlah = parseInt(document.getElementById('jumlah').value);
+  if(!jumlah){
+    document.getElementById('price').value = "";
+    document.getElementById('total').textContent = "Rp 0";
     return;
   }
-
-  let hargaPer20 = 2800;
-  let harga = Math.ceil(jumlah / 20) * hargaPer20 + 3000;
-
-  if (kupon.toLowerCase() === "R8B2KC") {
-    harga = Math.floor(harga * 1000);
-  }
-
-  const target = jumlah;
-  const totalGamepass = Math.ceil(target / 0.7);
-
-  const hasilDiv = document.getElementById('hasil');
-  hasilDiv.style.display = 'block';
-  hasilDiv.innerHTML = `
-    <h3>Detail Pesanan</h3>
-    <p><b>Username:</b> ${username}</p>
-    <p><b>Jumlah Robux:</b> ${jumlah}</p>
-    <p><b>Harga:</b> Rp ${harga.toLocaleString('id-ID')}</p>
-    <p><b>Metode:</b> ${metode}</p>
-    <p><b>Buat Game Pass senilai ${totalGamepass}</b></p>
-    <button onclick="lanjut('${username}', ${jumlah}, '${metode}')">Sudah buat Gamepass</button>
-    <button onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
-    <button onclick="document.getElementById('hasil').style.display='none'">Kembali</button>
-  `;
+  const harga = hitungHarga(jumlah);
+  document.getElementById('price').value = "Rp " + harga.toLocaleString('id-ID');
+  document.getElementById('total').textContent = "Rp " + harga.toLocaleString('id-ID');
 }
 
-function lanjut(username, jumlah, metode) {
-  const wa = `https://wa.me/6287887028120?text=Halo%20Kak%2C%20Saya%20Pembeli%20Dengan%20Username%20${username}%20dan%20Saya%20Topup%20${jumlah}%20Robux%20dengan%20pembayaran%20${metode}`;
-  window.location.href = wa;
+function beliSekarang(){
+  const username = document.getElementById('username').value.trim();
+  const jumlah = parseInt(document.getElementById('jumlah').value);
+  if(!username || !jumlah){
+    alert('Isi username dan jumlah Robux!');
+    return;
+  }
+  const harga = hitungHarga(jumlah);
+  const gamepass = Math.ceil(jumlah / 0.7);
+
+  document.getElementById('hasil').classList.remove('hidden');
+  document.getElementById('hasilText').innerHTML = `
+    Username: <b>${username}</b><br>
+    Jumlah Robux: <b>${jumlah}</b><br>
+    Total Bayar: <b>Rp ${harga.toLocaleString('id-ID')}</b><br>
+    Buat Gamepass senilai <b>${gamepass} Robux</b>
+  `;
+  document.getElementById('btnWA').onclick = () => {
+    const wa = \`https://wa.me/6287887028120?text=Halo%20Kak%2C%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode || 'Transfer'}\`;
+    window.location.href = wa;
+  };
 }
 </script>
 </body>
-</html>
+                                                                        </html>
