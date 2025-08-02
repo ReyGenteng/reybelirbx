@@ -3,156 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Belirobux.xyz</title>
+<title>Beli Robux - belirobux.xyz</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <style>
-body { font-family: 'Segoe UI', Arial, sans-serif; }
-input::-webkit-input-placeholder { color: #555e5e; }
-.custom-dropdown { position: relative; width: 100%; }
-.dropdown-selected {
-  background: #2f3638; padding: 12px 16px; border-radius: 9999px;
-  display: flex; align-items: center; cursor: pointer; justify-content: space-between;
-}
-.dropdown-options {
-  position: absolute; top: 110%; left: 0; right: 0;
-  background: #2f3638; border-radius: 12px; overflow: hidden;
-  display: none; z-index: 50;
-}
-.dropdown-options div {
-  padding: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer;
-}
-.dropdown-options div:hover { background: #3d4649; }
-.dropdown-options img { width: 28px; height: 28px; border-radius: 50%; }
+body { background-color: #121515; color: white; font-family: 'Segoe UI', Arial, sans-serif; }
+.method-item { cursor:pointer; display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px; }
+.method-item:hover { background-color: #2f3638; }
+#method-list { display:none; }
 .result-box button {
-  background: #7f6a3a; color: white; font-weight: bold;
-  padding: 10px; border-radius: 12px; width: 100%;
+  background:#7f6a3a; color:white; font-weight:bold;
+  border-radius:12px; padding:10px; margin-top:6px; width:100%;
 }
-.result-box button:hover { background: #a3864f; }
+.result-box button:hover { background:#a3864f; }
 </style>
 </head>
-<body class="bg-[#121515] text-white">
+<body>
+
 <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
   <button id="menuBtn" class="text-white text-2xl"><i class="fas fa-bars"></i></button>
-  <span class="text-[#f9a825] font-extrabold text-lg select-none">Belirobux.xyz</span>
+  <span class="text-[#f9a825] font-extrabold text-lg select-none">BELIROBUX.XYZ</span>
 </header>
 
 <main class="px-5 py-4 space-y-5">
+
   <div>
-    <label for="username" class="block mb-1">Username:</label>
-    <input id="username" placeholder="Contoh: Rey123" type="text"
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none">
+    <label class="block mb-1 text-white" for="username">Username:</label>
+    <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e]" placeholder="Contoh: Rey123" type="text"/>
     <div id="preview" class="mt-2"></div>
   </div>
 
   <div>
-    <label for="jumlah" class="block mb-1">Jumlah Robux:</label>
-    <input id="jumlah" type="number" placeholder="R$"
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none">
+    <label class="block mb-1 text-white" for="jumlah">Jumlah:</label>
+    <input id="jumlah" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e]" placeholder="R$" type="number"/>
   </div>
 
   <div>
-    <label class="block mb-1">Harga:</label>
-    <input id="price" type="text" readonly placeholder="Rp"
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none">
+    <label class="block mb-1 text-white" for="price">Price:</label>
+    <input id="price" disabled class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e]" placeholder="Rp" type="text"/>
   </div>
 
-  <div class="text-[#f9a825] font-normal text-lg">Pilih Metode Pembayaran</div>
-  <!-- Custom dropdown -->
-  <div class="custom-dropdown" id="dropdown">
-    <div class="dropdown-selected" id="selected">
-      <span>Pilih metode</span>
-      <i class="fas fa-chevron-down"></i>
+  <div>
+    <div class="text-[#f9a825] mb-2">Pilih Metode Pembayaran</div>
+    <div id="method-select" class="bg-[#2f3638] rounded-lg p-3 cursor-pointer">Pilih Metode</div>
+    <div id="method-list" class="mt-2 bg-[#2f3638] rounded-lg">
+      <div class="method-item" data-method="Dana">
+        <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png" width="32" height="32"><span>Dana</span>
+      </div>
+      <div class="method-item" data-method="QRIS">
+        <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png" width="32" height="32"><span>QRIS</span>
+      </div>
+      <div class="method-item" data-method="OVO">
+        <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png" width="32" height="32"><span>OVO</span>
+      </div>
     </div>
-    <div class="dropdown-options" id="options"></div>
   </div>
 
-  <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">
-    Payment Summary
-  </div>
+  <div class="text-[#f9a825] text-lg pt-4 border-b border-[#2f3638] pb-3">Payment Summary</div>
   <form class="mb-4">
-    <label class="block mb-1" for="coupon">Discount Coupon:</label>
+    <label class="block mb-1 text-white" for="coupon">Discount Coupon:</label>
     <div class="flex">
-      <input id="coupon" type="text" placeholder="Enter Code Here"
-        class="flex-grow bg-[#2f3638] rounded-l-full py-3 px-5 text-white focus:outline-none">
-      <button type="submit"
-        class="bg-[#7f6a3a] rounded-r-full px-5 font-extrabold hover:bg-[#a3864f] transition-colors">Submit</button>
+      <input id="coupon" class="flex-grow bg-[#2f3638] rounded-l-full py-3 px-5 placeholder-[#555e5e]" placeholder="Enter Code Here" type="text"/>
+      <button type="submit" class="bg-[#7f6a3a] rounded-r-full px-5 font-extrabold text-white">Submit</button>
     </div>
   </form>
 
-  <div id="hasil" class="result-box"></div>
+  <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
+    <div class="flex justify-between"><span>Discount</span><span>Rp 0</span></div>
+    <div class="flex justify-between"><span>Biaya Admin</span><span>Rp 0</span></div>
+    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold"><span>Total</span><span>Rp 0</span></div>
+  </div>
 
   <div class="flex gap-4 pb-6">
-    <button onclick="window.location.href='https://help.reyambon.xyz'"
-      class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515] transition-colors">
-      Customer Service
-    </button>
-    <button id="buyNow"
-      class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f] transition-colors">
-      Beli Sekarang
-    </button>
+    <button id="cartBtn" class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3">Customer Service</button>
+    <button id="buyNow" class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3">Beli Sekarang</button>
   </div>
+
+  <!-- HASIL TAMPIL DI SINI -->
+  <div id="hasil" class="result-box"></div>
+
 </main>
 
 <script>
-const metodeIcons = {
-  "Dana": "https://reygenteng.github.io/reybelirbx/belirobux/dana.png",
-  "QRIS": "https://reygenteng.github.io/reybelirbx/belirobux/qris.png",
-  "OVO": "https://reygenteng.github.io/reybelirbx/belirobux/ovo.png"
-};
-
+// Variabel global
 let selectedMethod = null;
-const dropdown = document.getElementById('dropdown');
-const selectedDiv = document.getElementById('selected');
-const optionsDiv = document.getElementById('options');
 
-Object.keys(metodeIcons).forEach(method => {
-  const opt = document.createElement('div');
-  opt.innerHTML = `<img src="${metodeIcons[method]}"><span>${method}</span>`;
-  opt.onclick = () => {
-    selectedMethod = method;
-    selectedDiv.innerHTML = `<div class="flex items-center gap-2"><img src="${metodeIcons[method]}" style="width:24px;height:24px;border-radius:50%"><span>${method}</span></div><i class='fas fa-chevron-down'></i>`;
-    optionsDiv.style.display = "none";
-  };
-  optionsDiv.appendChild(opt);
+// Toggle daftar metode
+document.getElementById('method-select').addEventListener('click', () => {
+  const list = document.getElementById('method-list');
+  list.style.display = list.style.display === 'none' || list.style.display === '' ? 'block' : 'none';
 });
 
-selectedDiv.onclick = () => {
-  optionsDiv.style.display = optionsDiv.style.display === "block" ? "none" : "block";
-};
+// Klik metode
+document.querySelectorAll('.method-item').forEach(item => {
+  item.addEventListener('click', () => {
+    selectedMethod = item.dataset.method;
+    document.getElementById('method-select').innerHTML = `<div class="flex items-center gap-2">
+      <img src="${item.querySelector('img').src}" width="28" height="28"><span>${selectedMethod}</span>
+    </div>`;
+    document.getElementById('method-list').style.display = 'none';
+  });
+});
 
-// Hitung harga otomatis
+// Preview username realtime
+document.getElementById('username').addEventListener('input', async () => {
+  const username = document.getElementById('username').value.trim();
+  const previewDiv = document.getElementById('preview');
+  if (!username) { previewDiv.innerHTML = ""; return; }
+
+  try {
+    let res = await fetch("https://users.roproxy.com/v1/usernames/users", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({usernames:[username]})
+    });
+    let data = await res.json();
+    if (!data.data || data.data.length === 0) {
+      previewDiv.innerHTML = `<p style="color:red">Username tidak ditemukan!</p>`;
+      return;
+    }
+    const id = data.data[0].id;
+    const thumb = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
+    const td = await thumb.json();
+    const img = td.data[0].imageUrl;
+    previewDiv.innerHTML = `<div class="flex items-center gap-2"><img src="${img}" width="40" style="border-radius:50%"><span>${data.data[0].name}</span></div>`;
+  } catch(e) { previewDiv.innerHTML = `<p style="color:red">Gagal cek username!</p>`; }
+});
+
+// Update harga realtime
 document.getElementById('jumlah').addEventListener('input', () => {
   const jumlah = parseInt(document.getElementById('jumlah').value);
-  const priceField = document.getElementById('price');
-  if (!jumlah || jumlah < 1) { priceField.value = ""; return; }
-  let harga = jumlah * 140 + 3000;
-  priceField.value = `Rp ${harga.toLocaleString('id-ID')}`;
+  if (isNaN(jumlah)) { document.getElementById('price').value=""; return; }
+  const harga = jumlah * 140 + 3000;
+  document.getElementById('price').value = "Rp " + harga.toLocaleString('id-ID');
 });
 
+// Klik Customer Service
+document.getElementById('cartBtn').addEventListener('click', () => {
+  window.location.href = "https://help.reyambon.xyz";
+});
+
+// Klik Beli Sekarang
 document.getElementById('buyNow').addEventListener('click', () => {
   const username = document.getElementById('username').value.trim();
   const jumlah = parseInt(document.getElementById('jumlah').value);
-  if (!username || !jumlah || !selectedMethod) {
-    alert("Lengkapi username, jumlah robux, dan metode pembayaran!");
-    return;
-  }
-  const harga = jumlah * 140 + 3000;
+  if (!username || !jumlah || !selectedMethod) { alert("Lengkapi semua data!"); return; }
+
   const robuxGamepass = Math.ceil(jumlah / 0.7);
   const hasil = document.getElementById('hasil');
+  hasil.style.display = 'block';
   hasil.innerHTML = `
-    <p style="margin-bottom:10px;">Buat Gamepass senilai ${robuxGamepass} Robux</p>
-    <div class="grid grid-cols-1 gap-2">
-      <button onclick="lanjut('${username}',${jumlah},'${selectedMethod}')">Sudah buat Gamepass</button>
-      <button onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
-      <button onclick="document.getElementById('hasil').innerHTML=''">Kembali</button>
-    </div>
+    <p class="mb-3">Buat Gamepass senilai <b>${robuxGamepass}</b> Robux</p>
+    <button onclick="lanjut('${username}',${jumlah},'${selectedMethod}')">Sudah buat Gamepass</button>
+    <button onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
+    <button onclick="document.getElementById('hasil').style.display='none'">Kembali</button>
   `;
 });
 
-function lanjut(username,jumlah,metode){
-  const wa=`https://wa.me/6287887028120?text=Halo%20Kak%2C%20Saya%20Pembeli%20Dengan%20Username%20${username}%20dan%20Saya%20Topup%20${jumlah}%20Robux%20dengan%20pembayaran%20${metode}`;
-  window.location.href=wa;
+function lanjut(username, jumlah, metode) {
+  const wa = `https://wa.me/6287887028120?text=Halo%20Kak,%20username%20${username}%20topup%20${jumlah}%20Robux%20dengan%20${metode}`;
+  window.location.href = wa;
 }
 </script>
 </body>
