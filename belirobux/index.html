@@ -8,199 +8,176 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <style>
   body { background-color: #121515; }
-  .modal-bg { background-color: rgba(0,0,0,0.7); }
-  .slide-up { animation: slideUp 0.3s ease; }
-  @keyframes slideUp { from { transform: translateY(100%);} to { transform: translateY(0);} }
-  .clickable { cursor: pointer; }
+  .menu-overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none; z-index: 50;
+  }
+  .menu-box {
+    background: #212b2c;
+    position: fixed; top: 0; left: 0;
+    width: 240px; height: 100%;
+    padding: 20px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 60;
+  }
+  .menu-box.show { transform: translateX(0); }
+  .pay-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px; cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .pay-option:hover { background: #2f3638; }
+  .pay-option img { width: 40px; height: 40px; border-radius: 6px; }
 </style>
 </head>
 <body class="text-white font-sans">
 
+<!-- MENU -->
+<div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
+<div id="menuBox" class="menu-box">
+  <h2 class="text-lg font-bold text-[#f9a825] mb-4">Menu</h2>
+  <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'"
+    class="block w-full text-left mb-3 text-white">📜 Cek Pesanan</button>
+  <button onclick="window.location.href='https://help.reyambon.xyz'"
+    class="block w-full text-left text-white">💬 Customer Service</button>
+</div>
+
 <!-- HEADER -->
-<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3 relative z-10">
-  <button type="button" class="text-white text-2xl clickable" onclick="openMenu()">
+<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3 relative">
+  <button type="button" class="text-white text-2xl" onclick="openMenu()">
     <i class="fas fa-bars"></i>
   </button>
   <span class="text-[#f9a825] font-extrabold text-lg">Belirobux.xyz</span>
 </header>
 
-<!-- MAIN -->
-<main class="px-5 py-4 space-y-5 relative z-10">
+<main class="px-5 py-4 space-y-5">
   <!-- Username -->
   <div>
-    <label for="username" class="block mb-1 text-base">Username:</label>
+    <label class="block mb-1 text-base">Username:</label>
     <input id="username" placeholder="Example. Rey123"
       class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
   </div>
 
   <!-- Jumlah -->
   <div>
-    <label for="jumlah" class="block mb-1 text-base">Jumlah:</label>
-    <input id="jumlah" placeholder="R$" type="number"
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none" oninput="updatePrice()">
+    <label class="block mb-1 text-base">Jumlah:</label>
+    <input id="jumlah" type="number" placeholder="R$"
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+      oninput="updatePrice()">
   </div>
 
-  <!-- Harga -->
+  <!-- Price -->
   <div>
-    <label for="price" class="block mb-1 text-base">Price:</label>
-    <input id="price" placeholder="Rp" disabled
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
+    <label class="block mb-1 text-base">Price:</label>
+    <input id="price" readonly
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none">
   </div>
 
-  <div class="text-[#f9a825] font-normal text-lg">Payment Method</div>
-
-  <!-- Kotak pilih metode -->
-  <div id="metodeBox"
-    class="border-t border-b border-[#2f3638] py-3 flex justify-between items-center clickable"
-    onclick="openModal()">
-    <div class="flex items-center gap-3">
-      <img id="metodeLogo" src="" alt="" class="w-10 h-5 hidden">
-      <span id="metodeText" class="font-extrabold text-white text-lg">Pilih Metode Pembayaran</span>
+  <!-- Payment Method -->
+  <div class="text-[#f9a825] font-normal text-lg select-none">
+    Pilih Metode Pembayaran
+  </div>
+  <div id="paymentList" class="space-y-3">
+    <div class="pay-option" onclick="selectPay('QRIS','qris.png')">
+      <img src="qris.png" alt="QRIS">
+      <span>QRIS</span>
     </div>
-    <i class="fas fa-chevron-right"></i>
-  </div>
-
-  <!-- Ringkasan -->
-  <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">Payment Summary</div>
-  <form onsubmit="return false" class="mb-4">
-    <label for="coupon" class="block mb-1 text-base">Discount Coupon:</label>
-    <div class="flex">
-      <input id="coupon" placeholder="Enter Code Here"
-        class="flex-grow bg-[#2f3638] rounded-l-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
-      <button type="button"
-        class="bg-[#7f6a3a] rounded-r-full px-5 font-extrabold text-white text-base hover:bg-[#a3864f]">
-        Submit
-      </button>
+    <div class="pay-option" onclick="selectPay('Dana','dana.png')">
+      <img src="dana.png" alt="Dana">
+      <span>Dana</span>
     </div>
-  </form>
-
-  <div class="space-y-3 border-b border-[#2f3638] pb-4">
-    <div class="flex justify-between"><span>Discount</span><span id="disc">Rp 0</span></div>
-    <div class="flex justify-between"><span>Biaya Admin</span><span id="admin">Rp 0</span></div>
-    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold"><span>Total</span><span id="total">Rp 0</span></div>
+    <div class="pay-option" onclick="selectPay('OVO','ovo.png')">
+      <img src="ovo.png" alt="OVO">
+      <span>OVO</span>
+    </div>
   </div>
 
-  <!-- Tombol -->
+  <!-- Summary -->
+  <div class="text-[#f9a825] font-normal text-lg select-none pt-4 border-b border-[#2f3638] pb-3">
+    Payment Summary
+  </div>
+  <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summaryBox">
+    <div class="flex justify-between text-white text-base font-normal">
+      <span>Metode</span>
+      <span id="summaryMethod">-</span>
+    </div>
+    <div class="flex justify-between text-white text-base font-normal">
+      <span>Total</span>
+      <span id="summaryTotal">Rp 0</span>
+    </div>
+    <div class="flex justify-between text-white text-base font-normal">
+      <span>Buat Gamepass</span>
+      <span id="summaryPass">-</span>
+    </div>
+  </div>
+
+  <!-- Buttons -->
   <div class="flex gap-4 pb-6">
     <button type="button" onclick="window.location.href='https://help.reyambon.xyz'"
-      class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]">
+      class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515] transition-colors">
       Customer Service
     </button>
-    <button type="button" onclick="beliSekarang()"
-      class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f]">
+    <button type="button" onclick="showConfirm()"
+      class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f] transition-colors">
       Beli Sekarang
     </button>
   </div>
 
-  <!-- Hasil -->
-  <div id="hasil" class="hidden bg-[#2f3638] p-4 rounded-xl space-y-4">
-    <h3 class="font-bold text-[#f9a825]">Detail Pesanan</h3>
-    <p id="hasilText"></p>
-    <div class="flex flex-col gap-3">
-      <button id="btnWA" class="bg-[#7f6a3a] py-3 rounded-full hover:bg-[#a3864f]">Sudah Buat Gamepass</button>
-      <button onclick="window.open('https://www.roblox.com/develop','_blank')" class="bg-[#7f6a3a] py-3 rounded-full hover:bg-[#a3864f]">Buat Gamepass</button>
-      <button onclick="document.getElementById('hasil').classList.add('hidden')" class="bg-[#7f6a3a] py-3 rounded-full hover:bg-[#a3864f]">Kembali</button>
-    </div>
+  <!-- Area hasil konfirmasi -->
+  <div id="confirmBox" class="space-y-4 hidden">
+    <button class="w-full bg-[#7f6a3a] text-white font-extrabold rounded-full py-3"
+      onclick="sendWA()">Sudah Buat Gamepass</button>
+    <button class="w-full bg-[#7f6a3a] text-white font-extrabold rounded-full py-3"
+      onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
+    <button class="w-full bg-[#7f6a3a] text-white font-extrabold rounded-full py-3"
+      onclick="document.getElementById('confirmBox').classList.add('hidden')">Kembali</button>
   </div>
 </main>
 
-<!-- Modal Metode -->
-<div id="modal" class="fixed inset-0 hidden z-50 modal-bg">
-  <div class="bg-[#212b2c] absolute bottom-0 w-full rounded-t-2xl p-5 slide-up max-w-md mx-auto left-0 right-0">
-    <h2 class="text-center font-bold mb-5 text-lg">Pilih Metode Pembayaran</h2>
-    <div class="space-y-4">
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
-           onclick="pilihMetode('QRIS','qris.png')">
-        <img src="qris.png" class="w-10 h-10"><span class="font-bold">QRIS</span>
-      </div>
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
-           onclick="pilihMetode('Dana','dana.png')">
-        <img src="dana.png" class="w-10 h-10"><span class="font-bold">Dana</span>
-      </div>
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
-           onclick="pilihMetode('OVO','ovo.png')">
-        <img src="ovo.png" class="w-10 h-10"><span class="font-bold">OVO</span>
-      </div>
-    </div>
-    <button class="mt-5 w-full py-3 rounded-full bg-[#7f6a3a] hover:bg-[#a3864f]" onclick="closeModal()">Batal</button>
-  </div>
-</div>
-
-<!-- Modal Menu -->
-<div id="menuModal" class="fixed inset-0 hidden z-50 modal-bg">
-  <div class="bg-[#212b2c] absolute bottom-0 w-full rounded-t-2xl p-5 slide-up max-w-md mx-auto left-0 right-0">
-    <h2 class="text-center font-bold mb-5 text-lg">Menu</h2>
-    <div class="space-y-4">
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
-           onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'">
-        <span class="font-bold">Cek Pesanan / Invoice</span>
-      </div>
-    </div>
-    <button class="mt-5 w-full py-3 rounded-full bg-[#7f6a3a] hover:bg-[#a3864f]" onclick="closeMenu()">Tutup</button>
-  </div>
-</div>
-
 <script>
-let metode = "";
-
-function openModal(){ document.getElementById('modal').classList.remove('hidden'); }
-function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
-function openMenu(){ document.getElementById('menuModal').classList.remove('hidden'); }
-function closeMenu(){ document.getElementById('menuModal').classList.add('hidden'); }
-
-function pilihMetode(nama, logo){
-  metode = nama;
-  document.getElementById('metodeText').textContent = nama;
-  const img = document.getElementById('metodeLogo');
-  img.src = logo; img.classList.remove('hidden');
+let selectedMethod = "";
+function openMenu(){
+  document.getElementById('menuOverlay').style.display = 'block';
+  document.getElementById('menuBox').classList.add('show');
+}
+function closeMenu(){
+  document.getElementById('menuOverlay').style.display = 'none';
+  document.getElementById('menuBox').classList.remove('show');
+}
+function selectPay(method,img){
+  selectedMethod = method;
+  document.getElementById('summaryMethod').innerText = method;
   updatePrice();
-  closeModal();
 }
-
-function hitungHarga(jumlah){
-  let admin = 3000;
-  if(metode === 'QRIS') admin += 49;
-  if(metode === 'Dana') admin += 52;
-  if(metode === 'OVO') admin += 76;
-  let harga = (jumlah * 140) + admin;
-  document.getElementById('admin').textContent = "Rp " + admin.toLocaleString('id-ID');
-  return harga;
-}
-
 function updatePrice(){
   const jumlah = parseInt(document.getElementById('jumlah').value);
-  if(!jumlah){
+  if(isNaN(jumlah) || jumlah<=0){ 
     document.getElementById('price').value = "";
-    document.getElementById('total').textContent = "Rp 0";
+    document.getElementById('summaryTotal').innerText = "Rp 0";
+    document.getElementById('summaryPass').innerText = "-";
     return;
   }
-  const harga = hitungHarga(jumlah);
-  document.getElementById('price').value = "Rp " + harga.toLocaleString('id-ID');
-  document.getElementById('total').textContent = "Rp " + harga.toLocaleString('id-ID');
+  let hargaRobux = Math.ceil(jumlah/20)*2800;
+  let biayaAdmin = 3000 + Math.floor(Math.random()*80);
+  let total = hargaRobux + biayaAdmin;
+  document.getElementById('price').value = "Rp " + total.toLocaleString('id-ID');
+  document.getElementById('summaryTotal').innerText = "Rp " + total.toLocaleString('id-ID');
+  const pass = Math.ceil(jumlah / 0.7);
+  document.getElementById('summaryPass').innerText = pass + " R$";
 }
-
-function beliSekarang(){
+function showConfirm(){
+  document.getElementById('confirmBox').classList.remove('hidden');
+}
+function sendWA(){
   const username = document.getElementById('username').value.trim();
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if(!username || !jumlah){
-    alert('Isi username dan jumlah Robux!');
-    return;
-  }
-  const harga = hitungHarga(jumlah);
-  const gamepass = Math.ceil(jumlah / 0.7);
-
-  document.getElementById('hasil').classList.remove('hidden');
-  document.getElementById('hasilText').innerHTML = `
-    Username: <b>${username}</b><br>
-    Jumlah Robux: <b>${jumlah}</b><br>
-    Total Bayar: <b>Rp ${harga.toLocaleString('id-ID')}</b><br>
-    Buat Gamepass senilai <b>${gamepass} Robux</b>
-  `;
-  document.getElementById('btnWA').onclick = () => {
-    const wa = \`https://wa.me/6287887028120?text=Halo%20Kak%2C%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode || 'Transfer'}\`;
-    window.location.href = wa;
-  };
+  const jumlah = document.getElementById('jumlah').value.trim();
+  const wa = `https://wa.me/6287887028120?text=Halo%20Kak,%20saya%20${username}%20topup%20${jumlah}%20Robux%20(${selectedMethod})`;
+  window.location.href = wa;
 }
 </script>
 </body>
-          </html>
+</html>
