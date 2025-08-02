@@ -25,6 +25,18 @@ body { background:#121515; color:white; font-family:sans-serif; }
 }
 .custom-dropdown-list div:hover { background-color: #3a4345; }
 .custom-dropdown img { width: 30px; height: 20px; object-fit: contain; }
+.big-button {
+  width: 100%;
+  background-color: #7f6a3a;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 9999px;
+  margin-top: 10px;
+}
+.big-button:hover {
+  background-color: #a3864f;
+}
 </style>
 </head>
 <body>
@@ -86,10 +98,12 @@ body { background:#121515; color:white; font-family:sans-serif; }
       Beli Sekarang
     </button>
   </div>
+
   <div id="afterBuy" class="hidden flex-col gap-3">
-    <button id="doneBtn" class="bg-[#7f6a3a] py-3 rounded-full">Sudah buat Gamepass</button>
-    <button onclick="window.open('https://www.roblox.com/develop','_blank')" class="bg-[#7f6a3a] py-3 rounded-full">Buat Gamepass</button>
-    <button onclick="document.getElementById('afterBuy').classList.add('hidden')" class="bg-[#7f6a3a] py-3 rounded-full">Kembali</button>
+    <div id="gamepassInfo" class="text-lg font-bold text-[#f9a825] text-center mb-2"></div>
+    <button id="doneBtn" class="big-button">Sudah buat Gamepass</button>
+    <button onclick="window.open('https://www.roblox.com/develop','_blank')" class="big-button">Buat Gamepass</button>
+    <button onclick="document.getElementById('afterBuy').classList.add('hidden')" class="big-button">Kembali</button>
   </div>
 </main>
 
@@ -119,6 +133,9 @@ document.getElementById('jumlah').addEventListener('input', ()=>{
 
 document.getElementById('buyBtn').onclick = ()=>{
   if(!selectedMethod){alert('Pilih metode pembayaran');return;}
+  const jumlah = parseInt(document.getElementById('jumlah').value)||0;
+  const gamepass = Math.ceil(jumlah/0.7);
+  document.getElementById('gamepassInfo').innerText = `Buat Gamepass senilai ${gamepass} Robux`;
   document.getElementById('afterBuy').classList.remove('hidden');
 };
 
