@@ -2,201 +2,132 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Belirobux.xyz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beli Robux - belirobux.xyz</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <style>
-body { font-family: 'Poppins', sans-serif; }
-.dropdown {
-  position: relative;
-  width: 100%;
-}
-.dropdown-btn {
-  background-color: #2f3638;
-  padding: 12px 16px;
-  border-radius: 9999px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-.dropdown-btn img {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-}
-.dropdown-menu {
-  position: absolute;
-  background-color: #2f3638;
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 8px;
-  display: none;
-  flex-direction: column;
-  z-index: 10;
-}
-.dropdown-item {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-.dropdown-item:hover { background-color: #3d4547; }
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; }
+    .hidden { display: none; }
 </style>
 </head>
 <body class="bg-[#121515] text-white">
-<header class="bg-[#212b2c] flex items-center justify-between px-4 py-3">
-  <button id="menuBtn" aria-label="Menu" class="text-white text-2xl">
-    <i class="fas fa-bars"></i>
-  </button>
-  <span class="text-[#f9a825] font-extrabold text-lg select-none">BELIROBUX.XYZ</span>
+<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+    <button id="menuBtn" aria-label="Menu" class="text-white text-2xl">
+        <i class="fas fa-bars"></i>
+    </button>
+    <span class="text-[#f9a825] font-extrabold text-lg select-none">
+        belirobux.xyz
+    </span>
 </header>
 
-<!-- Menu Popup -->
-<div id="menuPopup" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 flex items-center justify-center z-20">
-  <div class="bg-[#212b2c] rounded-xl p-5 w-64">
-    <h2 class="text-lg font-bold mb-4">Menu</h2>
-    <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'" class="w-full bg-[#7f6a3a] rounded-lg py-2 mb-3">Cek Pesanan</button>
-    <button onclick="document.getElementById('menuPopup').classList.add('hidden')" class="w-full border border-gray-400 rounded-lg py-2">Tutup</button>
-  </div>
+<div id="menuPanel" class="hidden bg-[#212b2c] p-4">
+    <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'" class="block w-full text-left py-2">Cek Pesanan</button>
 </div>
 
-<main class="px-5 py-4 space-y-5 max-w-lg mx-auto">
-  <div>
-    <label class="block mb-1" for="username">Username:</label>
-    <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] text-white focus:outline-none" id="username" placeholder="Contoh: Rey123" type="text"/>
-  </div>
-  <div>
-    <label class="block mb-1" for="jumlah">Jumlah Robux:</label>
-    <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] text-white focus:outline-none" id="jumlah" placeholder="R$" type="number" min="1"/>
-  </div>
-  <div>
-    <label class="block mb-1" for="price">Price:</label>
-    <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none" id="price" type="text" readonly/>
-  </div>
-
-  <div class="text-[#f9a825] text-lg">Metode Pembayaran</div>
-  <div class="dropdown">
-    <div id="dropdownBtn" class="dropdown-btn">
-      <span>Pilih Metode</span>
-      <i class="fas fa-chevron-down"></i>
+<main class="px-5 py-4 space-y-5">
+    <div>
+        <label for="username" class="block mb-1">Username:</label>
+        <input id="username" placeholder="Contoh: Rey123" type="text"
+               class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none"/>
     </div>
-    <div id="dropdownMenu" class="dropdown-menu">
-      <div class="dropdown-item" data-method="Dana">
-        <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png"> Dana
-      </div>
-      <div class="dropdown-item" data-method="OVO">
-        <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png"> OVO
-      </div>
-      <div class="dropdown-item" data-method="QRIS">
-        <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png"> QRIS
-      </div>
+    <div>
+        <label for="jumlah" class="block mb-1">Jumlah Robux:</label>
+        <input id="jumlah" placeholder="R$" type="number"
+               class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none"/>
     </div>
-  </div>
-
-  <div class="space-y-3 border-b border-[#2f3638] pb-4 pt-4">
-    <div class="flex justify-between">
-      <span>Biaya Admin</span>
-      <span id="biayaAdmin">Rp 0</span>
+    <div>
+        <label for="price" class="block mb-1">Price:</label>
+        <input id="price" type="text" readonly
+               class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none"/>
     </div>
-    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
-      <span>Total</span>
-      <span id="totalHarga">Rp 0</span>
+
+    <div class="text-[#f9a825] font-normal text-lg">Metode Pembayaran</div>
+    <select id="metode" class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none">
+        <option value="Dana">Dana</option>
+        <option value="QRIS">QRIS</option>
+        <option value="OVO">OVO</option>
+    </select>
+
+    <div class="flex gap-4 pb-6">
+        <button id="csBtn"
+            onclick="window.location.href='https://help.reyambon.xyz'"
+            class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]">
+            Customer Service
+        </button>
+        <button id="buyBtn"
+            class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f]">
+            Beli Sekarang
+        </button>
     </div>
-  </div>
 
-  <div class="flex gap-4 pb-6">
-    <button onclick="window.location.href='https://help.reyambon.xyz'" class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515] transition-colors">
-      Customer Service
-    </button>
-    <button id="beliBtn" class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f] transition-colors">
-      Beli Sekarang
-    </button>
-  </div>
-
-  <div id="hasil" class="hidden space-y-3"></div>
+    <div id="hasil" class="hidden border-t border-[#2f3638] pt-4">
+        <p id="detail" class="mb-4"></p>
+        <p id="gamepass" class="mb-4 font-bold text-[#f9a825]"></p>
+        <div class="flex gap-4">
+            <button id="btnSudah" class="flex-grow bg-[#7f6a3a] rounded-full py-3 font-bold hover:bg-[#a3864f]">Sudah buat Gamepass</button>
+            <button id="btnBuat" class="flex-grow bg-[#7f6a3a] rounded-full py-3 font-bold hover:bg-[#a3864f]">Buat Gamepass</button>
+            <button id="btnKembali" class="flex-grow bg-[#7f6a3a] rounded-full py-3 font-bold hover:bg-[#a3864f]">Kembali</button>
+        </div>
+    </div>
 </main>
 
 <script>
-let selectedMethod = "";
-const jumlahInput = document.getElementById('jumlah');
-const priceInput = document.getElementById('price');
-const biayaAdminSpan = document.getElementById('biayaAdmin');
-const totalHargaSpan = document.getElementById('totalHarga');
-const beliBtn = document.getElementById('beliBtn');
-const hasilDiv = document.getElementById('hasil');
-
-// Dropdown toggle
-document.getElementById('dropdownBtn').onclick = () => {
-  document.getElementById('dropdownMenu').style.display =
-    document.getElementById('dropdownMenu').style.display === 'flex' ? 'none' : 'flex';
-};
-
-document.querySelectorAll('.dropdown-item').forEach(item => {
-  item.addEventListener('click', () => {
-    selectedMethod = item.getAttribute('data-method');
-    document.getElementById('dropdownBtn').innerHTML =
-      `<div class="flex items-center"><img src="${item.querySelector('img').src}"><span>${selectedMethod}</span></div><i class='fas fa-chevron-down'></i>`;
-    document.getElementById('dropdownMenu').style.display = 'none';
-    updateHarga();
-  });
+document.getElementById('menuBtn').addEventListener('click',()=>{
+    document.getElementById('menuPanel').classList.toggle('hidden');
 });
 
-jumlahInput.addEventListener('input', updateHarga);
-
-function updateHarga() {
-  const jumlah = parseInt(jumlahInput.value) || 0;
-  if (jumlah < 1) {
-    priceInput.value = "";
-    totalHargaSpan.innerText = "Rp 0";
-    return;
-  }
-  const hargaPer20 = 2800;
-  let harga = Math.ceil(jumlah / 20) * hargaPer20;
-  const admin = 3000 + (selectedMethod ? 50 : 0);
-  const total = harga + admin;
-  priceInput.value = `Rp ${harga.toLocaleString('id-ID')}`;
-  biayaAdminSpan.innerText = `Rp ${admin.toLocaleString('id-ID')}`;
-  totalHargaSpan.innerText = `Rp ${total.toLocaleString('id-ID')}`;
-}
-
-beliBtn.addEventListener('click', () => {
-  const username = document.getElementById('username').value.trim();
-  const jumlah = parseInt(jumlahInput.value) || 0;
-  if (!username || !jumlah || !selectedMethod) {
-    alert("Lengkapi semua data terlebih dahulu!");
-    return;
-  }
-
-  const totalGamepass = Math.ceil(jumlah / 0.7);
-
-  hasilDiv.classList.remove('hidden');
-  hasilDiv.innerHTML = `
-    <p class="text-lg font-bold text-[#f9a825]">Buat Gamepass senilai ${totalGamepass} Robux</p>
-    <div class="flex flex-col gap-3">
-      <button onclick="lanjut('${username}', ${jumlah}, '${selectedMethod}')" class="bg-[#7f6a3a] rounded-full py-3 font-bold hover:bg-[#a3864f]">Sudah buat Gamepass</button>
-      <button onclick="window.open('https://www.roblox.com/develop','_blank')" class="bg-[#7f6a3a] rounded-full py-3 font-bold hover:bg-[#a3864f]">Buat Gamepass</button>
-      <button onclick="hasilDiv.classList.add('hidden')" class="bg-[#7f6a3a] rounded-full py-3 font-bold hover:bg-[#a3864f]">Kembali</button>
-    </div>
-  `;
-});
-
-function lanjut(username, jumlah, metode) {
-  const wa = `https://wa.me/6287887028120?text=Halo%20Kak,%20Username:%20${username},%20Topup:%20${jumlah}%20Robux,%20Metode:%20${metode}`;
-  window.location.href = wa;
-}
-
-// menu popup
-document.getElementById('menuBtn').onclick = () => {
-  document.getElementById('menuPopup').classList.remove('hidden');
+const biayaTambahan = {
+    "Dana": 49,
+    "QRIS": 52,
+    "OVO": 76
 };
+
+document.getElementById('jumlah').addEventListener('input', updateHarga);
+document.getElementById('metode').addEventListener('change', updateHarga);
+
+function updateHarga(){
+    const jumlah = parseInt(document.getElementById('jumlah').value);
+    const metode = document.getElementById('metode').value;
+    if(isNaN(jumlah) || jumlah<=0){
+        document.getElementById('price').value = "";
+        return;
+    }
+    const harga = (jumlah * 140) + 3000 + (biayaTambahan[metode] || 0);
+    document.getElementById('price').value = "Rp " + harga.toLocaleString('id-ID');
+}
+
+document.getElementById('buyBtn').addEventListener('click',()=>{
+    const username = document.getElementById('username').value.trim();
+    const jumlah = parseInt(document.getElementById('jumlah').value);
+    const metode = document.getElementById('metode').value;
+    if(!username || isNaN(jumlah) || jumlah<25){
+        alert('Minimal 25 Robux dan username harus diisi');
+        return;
+    }
+
+    const harga = (jumlah * 140) + 3000 + (biayaTambahan[metode] || 0);
+    const target = Math.ceil(jumlah / 0.7);
+
+    document.getElementById('hasil').classList.remove('hidden');
+    document.getElementById('detail').innerHTML = `
+        <b>Username:</b> ${username}<br>
+        <b>Jumlah:</b> ${jumlah} Robux<br>
+        <b>Harga:</b> Rp ${harga.toLocaleString('id-ID')}<br>
+        <b>Metode:</b> ${metode}
+    `;
+    document.getElementById('gamepass').textContent = "Buat Gamepass senilai " + target + " Robux";
+
+    document.getElementById('btnSudah').onclick = ()=>{
+        window.location.href = `https://wa.me/6287887028120?text=Halo%20Kak,%20Saya%20${username}%20mau%20topup%20${jumlah}%20Robux%20(${metode})`;
+    };
+    document.getElementById('btnBuat').onclick = ()=>{
+        window.open('https://www.roblox.com/develop','_blank');
+    };
+    document.getElementById('btnKembali').onclick = ()=>{
+        document.getElementById('hasil').classList.add('hidden');
+    };
+});
 </script>
 </body>
-  </html>
+                </html>
