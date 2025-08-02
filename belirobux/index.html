@@ -15,26 +15,32 @@
 </style>
 </head>
 <body class="text-white font-sans">
-<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+
+<!-- HEADER -->
+<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3 relative z-10">
   <button type="button" class="text-white text-2xl clickable" onclick="openMenu()">
     <i class="fas fa-bars"></i>
   </button>
   <span class="text-[#f9a825] font-extrabold text-lg">Belirobux.xyz</span>
 </header>
 
-<main class="px-5 py-4 space-y-5">
+<!-- MAIN -->
+<main class="px-5 py-4 space-y-5 relative z-10">
+  <!-- Username -->
   <div>
     <label for="username" class="block mb-1 text-base">Username:</label>
     <input id="username" placeholder="Example. Rey123"
       class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
   </div>
 
+  <!-- Jumlah -->
   <div>
     <label for="jumlah" class="block mb-1 text-base">Jumlah:</label>
     <input id="jumlah" placeholder="R$" type="number"
       class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none" oninput="updatePrice()">
   </div>
 
+  <!-- Harga -->
   <div>
     <label for="price" class="block mb-1 text-base">Price:</label>
     <input id="price" placeholder="Rp" disabled
@@ -43,8 +49,10 @@
 
   <div class="text-[#f9a825] font-normal text-lg">Payment Method</div>
 
-  <!-- Box metode -->
-  <div id="metodeBox" class="border-t border-b border-[#2f3638] py-3 flex justify-between items-center clickable" role="button" tabindex="0" onclick="openModal()">
+  <!-- Kotak pilih metode -->
+  <div id="metodeBox"
+    class="border-t border-b border-[#2f3638] py-3 flex justify-between items-center clickable"
+    onclick="openModal()">
     <div class="flex items-center gap-3">
       <img id="metodeLogo" src="" alt="" class="w-10 h-5 hidden">
       <span id="metodeText" class="font-extrabold text-white text-lg">Pilih Metode Pembayaran</span>
@@ -52,8 +60,8 @@
     <i class="fas fa-chevron-right"></i>
   </div>
 
+  <!-- Ringkasan -->
   <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">Payment Summary</div>
-
   <form onsubmit="return false" class="mb-4">
     <label for="coupon" class="block mb-1 text-base">Discount Coupon:</label>
     <div class="flex">
@@ -72,6 +80,7 @@
     <div class="flex justify-between text-[#f9a825] text-lg font-extrabold"><span>Total</span><span id="total">Rp 0</span></div>
   </div>
 
+  <!-- Tombol -->
   <div class="flex gap-4 pb-6">
     <button type="button" onclick="window.location.href='https://help.reyambon.xyz'"
       class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]">
@@ -95,18 +104,21 @@
   </div>
 </main>
 
-<!-- Modal metode -->
-<div id="modal" class="fixed inset-0 hidden modal-bg flex justify-center items-end z-50">
-  <div class="bg-[#212b2c] w-full rounded-t-2xl p-5 slide-up max-w-md">
+<!-- Modal Metode -->
+<div id="modal" class="fixed inset-0 hidden z-50 modal-bg">
+  <div class="bg-[#212b2c] absolute bottom-0 w-full rounded-t-2xl p-5 slide-up max-w-md mx-auto left-0 right-0">
     <h2 class="text-center font-bold mb-5 text-lg">Pilih Metode Pembayaran</h2>
     <div class="space-y-4">
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]" role="button" tabindex="0" onclick="pilihMetode('QRIS','qris.png')">
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
+           onclick="pilihMetode('QRIS','qris.png')">
         <img src="qris.png" class="w-10 h-10"><span class="font-bold">QRIS</span>
       </div>
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]" role="button" tabindex="0" onclick="pilihMetode('Dana','dana.png')">
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
+           onclick="pilihMetode('Dana','dana.png')">
         <img src="dana.png" class="w-10 h-10"><span class="font-bold">Dana</span>
       </div>
-      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]" role="button" tabindex="0" onclick="pilihMetode('OVO','ovo.png')">
+      <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
+           onclick="pilihMetode('OVO','ovo.png')">
         <img src="ovo.png" class="w-10 h-10"><span class="font-bold">OVO</span>
       </div>
     </div>
@@ -114,13 +126,12 @@
   </div>
 </div>
 
-<!-- Modal menu garis tiga -->
-<div id="menuModal" class="fixed inset-0 hidden modal-bg flex justify-center items-end z-50">
-  <div class="bg-[#212b2c] w-full rounded-t-2xl p-5 slide-up max-w-md">
+<!-- Modal Menu -->
+<div id="menuModal" class="fixed inset-0 hidden z-50 modal-bg">
+  <div class="bg-[#212b2c] absolute bottom-0 w-full rounded-t-2xl p-5 slide-up max-w-md mx-auto left-0 right-0">
     <h2 class="text-center font-bold mb-5 text-lg">Menu</h2>
     <div class="space-y-4">
       <div class="flex items-center gap-3 p-3 bg-[#2f3638] rounded-xl clickable hover:bg-[#3d4648]"
-           role="button" tabindex="0"
            onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'">
         <span class="font-bold">Cek Pesanan / Invoice</span>
       </div>
@@ -132,7 +143,6 @@
 <script>
 let metode = "";
 
-// buka tutup modal
 function openModal(){ document.getElementById('modal').classList.remove('hidden'); }
 function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
 function openMenu(){ document.getElementById('menuModal').classList.remove('hidden'); }
@@ -193,4 +203,4 @@ function beliSekarang(){
 }
 </script>
 </body>
-                                                                        </html>
+          </html>
