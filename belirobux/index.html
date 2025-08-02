@@ -2,182 +2,132 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Belirobux.xyz – Beli Robux</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belirobux.xyz</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <style>
-  body { background-color: #121515; }
-  .menu-overlay {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: none; z-index: 50;
-  }
-  .menu-box {
-    background: #212b2c;
-    position: fixed; top: 0; left: 0;
-    width: 240px; height: 100%;
-    padding: 20px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 60;
-  }
-  .menu-box.show { transform: translateX(0); }
-  .pay-option {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px; cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.2s;
-  }
-  .pay-option:hover { background: #2f3638; }
-  .pay-option img { width: 40px; height: 40px; border-radius: 6px; }
+body { background:#121515; color:white; font-family:sans-serif; }
+.custom-dropdown { position: relative; }
+.custom-dropdown-btn {
+  background-color: #2f3638; padding: 12px 16px; border-radius: 9999px;
+  width: 100%; text-align: left; display: flex; align-items: center;
+  justify-content: space-between; cursor: pointer;
+}
+.custom-dropdown-list {
+  position: absolute; top: 110%; left: 0; right: 0;
+  background-color: #2f3638; border-radius: 12px;
+  display: none; flex-direction: column; z-index: 20;
+}
+.custom-dropdown-list div {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; cursor: pointer;
+}
+.custom-dropdown-list div:hover { background-color: #3a4345; }
+.custom-dropdown img { width: 30px; height: 20px; object-fit: contain; }
 </style>
 </head>
-<body class="text-white font-sans">
-
-<!-- MENU -->
-<div id="menuOverlay" class="menu-overlay" onclick="closeMenu()"></div>
-<div id="menuBox" class="menu-box">
-  <h2 class="text-lg font-bold text-[#f9a825] mb-4">Menu</h2>
-  <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'"
-    class="block w-full text-left mb-3 text-white">📜 Cek Pesanan</button>
-  <button onclick="window.location.href='https://help.reyambon.xyz'"
-    class="block w-full text-left text-white">💬 Customer Service</button>
-</div>
-
-<!-- HEADER -->
-<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3 relative">
-  <button type="button" class="text-white text-2xl" onclick="openMenu()">
-    <i class="fas fa-bars"></i>
-  </button>
-  <span class="text-[#f9a825] font-extrabold text-lg">Belirobux.xyz</span>
+<body>
+<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+  <button id="menuBtn" class="text-white text-2xl"><i class="fas fa-bars"></i></button>
+  <span class="text-[#f9a825] font-extrabold text-lg select-none">BELIROBUX.XYZ</span>
 </header>
 
+<div id="menuPanel" class="hidden bg-[#212b2c] p-4">
+  <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'" class="block w-full text-left py-2">Cek Pesanan</button>
+</div>
+
 <main class="px-5 py-4 space-y-5">
-  <!-- Username -->
   <div>
-    <label class="block mb-1 text-base">Username:</label>
-    <input id="username" placeholder="Example. Rey123"
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none">
+    <label for="username" class="block mb-1">Username:</label>
+    <input id="username" type="text" placeholder="Contoh: Rey123"
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" />
   </div>
-
-  <!-- Jumlah -->
   <div>
-    <label class="block mb-1 text-base">Jumlah:</label>
+    <label for="jumlah" class="block mb-1">Jumlah Robux:</label>
     <input id="jumlah" type="number" placeholder="R$"
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
-      oninput="updatePrice()">
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" />
   </div>
-
-  <!-- Price -->
   <div>
-    <label class="block mb-1 text-base">Price:</label>
-    <input id="price" readonly
-      class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white focus:outline-none">
+    <label for="price" class="block mb-1">Price:</label>
+    <input id="price" type="text" placeholder="Rp"
+      class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" readonly />
   </div>
 
-  <!-- Payment Method -->
-  <div class="text-[#f9a825] font-normal text-lg select-none">
-    Pilih Metode Pembayaran
-  </div>
-  <div id="paymentList" class="space-y-3">
-    <div class="pay-option" onclick="selectPay('QRIS','qris.png')">
-      <img src="qris.png" alt="QRIS">
-      <span>QRIS</span>
+  <div class="text-[#f9a825] font-normal text-lg select-none">Payment Method</div>
+  <div class="custom-dropdown" id="dropdown">
+    <div class="custom-dropdown-btn" id="dropdownBtn">
+      <span id="selectedMethod"><img src="https://raw.githubusercontent.com/github/explore/main/topics/qrcode/qrcode.png" style="display:none">Pilih Metode</span>
+      <i class="fas fa-chevron-down"></i>
     </div>
-    <div class="pay-option" onclick="selectPay('Dana','dana.png')">
-      <img src="dana.png" alt="Dana">
-      <span>Dana</span>
-    </div>
-    <div class="pay-option" onclick="selectPay('OVO','ovo.png')">
-      <img src="ovo.png" alt="OVO">
-      <span>OVO</span>
+    <div class="custom-dropdown-list" id="dropdownList">
+      <div data-method="QRIS"><img src="qris.png"> QRIS</div>
+      <div data-method="Dana"><img src="dana.png"> Dana</div>
+      <div data-method="OVO"><img src="ovo.png"> OVO</div>
     </div>
   </div>
 
-  <!-- Summary -->
-  <div class="text-[#f9a825] font-normal text-lg select-none pt-4 border-b border-[#2f3638] pb-3">
-    Payment Summary
-  </div>
-  <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summaryBox">
-    <div class="flex justify-between text-white text-base font-normal">
-      <span>Metode</span>
-      <span id="summaryMethod">-</span>
-    </div>
-    <div class="flex justify-between text-white text-base font-normal">
-      <span>Total</span>
-      <span id="summaryTotal">Rp 0</span>
-    </div>
-    <div class="flex justify-between text-white text-base font-normal">
-      <span>Buat Gamepass</span>
-      <span id="summaryPass">-</span>
+  <div class="text-[#f9a825] font-normal text-lg select-none pt-4 border-b border-[#2f3638] pb-3">Payment Summary</div>
+  <div class="space-y-3 border-b border-[#2f3638] pb-4">
+    <div class="flex justify-between"><span>Discount</span><span>Rp 0</span></div>
+    <div class="flex justify-between"><span>Biaya Admin</span><span id="admin">Rp 3.000</span></div>
+    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
+      <span>Total</span><span id="total">Rp 0</span>
     </div>
   </div>
 
-  <!-- Buttons -->
   <div class="flex gap-4 pb-6">
-    <button type="button" onclick="window.location.href='https://help.reyambon.xyz'"
-      class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515] transition-colors">
+    <button onclick="window.location.href='https://help.reyambon.xyz'"
+      class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]">
       Customer Service
     </button>
-    <button type="button" onclick="showConfirm()"
-      class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f] transition-colors">
+    <button id="buyBtn"
+      class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f]">
       Beli Sekarang
     </button>
   </div>
-
-  <!-- Area hasil konfirmasi -->
-  <div id="confirmBox" class="space-y-4 hidden">
-    <button class="w-full bg-[#7f6a3a] text-white font-extrabold rounded-full py-3"
-      onclick="sendWA()">Sudah Buat Gamepass</button>
-    <button class="w-full bg-[#7f6a3a] text-white font-extrabold rounded-full py-3"
-      onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
-    <button class="w-full bg-[#7f6a3a] text-white font-extrabold rounded-full py-3"
-      onclick="document.getElementById('confirmBox').classList.add('hidden')">Kembali</button>
+  <div id="afterBuy" class="hidden flex-col gap-3">
+    <button id="doneBtn" class="bg-[#7f6a3a] py-3 rounded-full">Sudah buat Gamepass</button>
+    <button onclick="window.open('https://www.roblox.com/develop','_blank')" class="bg-[#7f6a3a] py-3 rounded-full">Buat Gamepass</button>
+    <button onclick="document.getElementById('afterBuy').classList.add('hidden')" class="bg-[#7f6a3a] py-3 rounded-full">Kembali</button>
   </div>
 </main>
 
 <script>
 let selectedMethod = "";
-function openMenu(){
-  document.getElementById('menuOverlay').style.display = 'block';
-  document.getElementById('menuBox').classList.add('show');
-}
-function closeMenu(){
-  document.getElementById('menuOverlay').style.display = 'none';
-  document.getElementById('menuBox').classList.remove('show');
-}
-function selectPay(method,img){
-  selectedMethod = method;
-  document.getElementById('summaryMethod').innerText = method;
-  updatePrice();
-}
-function updatePrice(){
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if(isNaN(jumlah) || jumlah<=0){ 
-    document.getElementById('price').value = "";
-    document.getElementById('summaryTotal').innerText = "Rp 0";
-    document.getElementById('summaryPass').innerText = "-";
-    return;
-  }
-  let hargaRobux = Math.ceil(jumlah/20)*2800;
-  let biayaAdmin = 3000 + Math.floor(Math.random()*80);
-  let total = hargaRobux + biayaAdmin;
-  document.getElementById('price').value = "Rp " + total.toLocaleString('id-ID');
-  document.getElementById('summaryTotal').innerText = "Rp " + total.toLocaleString('id-ID');
-  const pass = Math.ceil(jumlah / 0.7);
-  document.getElementById('summaryPass').innerText = pass + " R$";
-}
-function showConfirm(){
-  document.getElementById('confirmBox').classList.remove('hidden');
-}
-function sendWA(){
-  const username = document.getElementById('username').value.trim();
-  const jumlah = document.getElementById('jumlah').value.trim();
-  const wa = `https://wa.me/6287887028120?text=Halo%20Kak,%20saya%20${username}%20topup%20${jumlah}%20Robux%20(${selectedMethod})`;
-  window.location.href = wa;
-}
+const dropdownBtn = document.getElementById('dropdownBtn');
+const dropdownList = document.getElementById('dropdownList');
+dropdownBtn.onclick = () => dropdownList.style.display = dropdownList.style.display === "flex" ? "none" : "flex";
+dropdownList.querySelectorAll('div').forEach(item=>{
+  item.onclick = ()=>{
+    selectedMethod = item.dataset.method;
+    document.getElementById('selectedMethod').innerHTML = item.innerHTML;
+    dropdownList.style.display = "none";
+  };
+});
+
+document.getElementById('menuBtn').onclick = () => {
+  document.getElementById('menuPanel').classList.toggle('hidden');
+};
+
+document.getElementById('jumlah').addEventListener('input', ()=>{
+  const jumlah = parseInt(document.getElementById('jumlah').value)||0;
+  let harga = Math.ceil(jumlah/20)*2800 + 3000;
+  document.getElementById('price').value = "Rp " + harga.toLocaleString('id-ID');
+  document.getElementById('total').textContent = "Rp " + harga.toLocaleString('id-ID');
+});
+
+document.getElementById('buyBtn').onclick = ()=>{
+  if(!selectedMethod){alert('Pilih metode pembayaran');return;}
+  document.getElementById('afterBuy').classList.remove('hidden');
+};
+
+document.getElementById('doneBtn').onclick = ()=>{
+  const username=document.getElementById('username').value;
+  const jumlah=document.getElementById('jumlah').value;
+  const wa=`https://wa.me/6287887028120?text=Halo%20Kak,%20Saya%20${username}%20beli%20${jumlah}%20Robux%20pakai%20${selectedMethod}`;
+  window.location.href=wa;
+};
 </script>
 </body>
 </html>
