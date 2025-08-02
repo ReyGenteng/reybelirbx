@@ -36,10 +36,9 @@
 
     <!-- Kotak hasil username -->
     <div id="userResult" 
-         class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all mt-2 bg-transparent">
-      <img id="avatarImg" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" 
-           alt="avatar" class="w-6 h-6 rounded-full">
-      <span id="resultName" class="text-white">Klik di sini setelah ketemu username</span>
+         class="hidden items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all mt-2 bg-[#2f3638]">
+      <img id="avatarImg" src="" alt="avatar" class="w-6 h-6 rounded-full">
+      <span id="resultName" class="text-white"></span>
     </div>
   </div>
 
@@ -128,12 +127,60 @@
   const usernameInput = document.getElementById("username");
   const userResult = document.getElementById("userResult");
   const resultName = document.getElementById("resultName");
+  const avatarImg = document.getElementById("avatarImg");
+  let locked = false;
+  let timeout = null;
 
-  // Saat klik kotak hasil username
+  usernameInput.addEventListener("input", () => {
+    if (locked) return; // kalau udah dikunci ga fetch lagi
+    clearTimeout(timeout);
+    const uname = usernameInput.value.trim();
+    if (!uname) {
+      userResult.classList.add("hidden");
+      return;
+    }
+
+    // delay sedikit supaya tidak spam API
+    timeout = setTimeout(async () => {
+      try {
+        const res = await fetch("https://users.roproxy.com/v1/usernames/users", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ usernames: [uname] })
+        });
+        const data = await res.json();
+        if (!data.data || !data.data[0] || !data.data[0].id) {
+          userResult.classList.add("hidden");
+          return;
+        }
+        const id = data.data[0].id;
+
+        // ambil gambar avatar
+        const thumb = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
+        const tdata = await thumb.json();
+        const img = tdata.data[0].imageUrl;
+
+        resultName.textContent = data.data[0].name;
+        avatarImg.src = img;
+        userResult.classList.remove("hidden");
+      } catch (err) {
+        userResult.classList.add("hidden");
+      }
+    }, 500);
+  });
+
+  // Klik kotak hasil username
   userResult.addEventListener("click", () => {
-    usernameInput.value = resultName.textContent;
-    usernameInput.disabled = true;
-    userResult.classList.add("border-2", "border-[#f9a825]");
+    if (!locked) {
+      usernameInput.value = resultName.textContent;
+      usernameInput.disabled = true;
+      userResult.classList.add("border-2", "border-[#f9a825]");
+      locked = true;
+    } else {
+      usernameInput.disabled = false;
+      userResult.classList.remove("border-2", "border-[#f9a825]");
+      locked = false;
+    }
   });
 </script>
 
