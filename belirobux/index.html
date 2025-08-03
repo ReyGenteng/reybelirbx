@@ -1,237 +1,161 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>belirobux.xyz</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belirobux.xyz</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <style>
-input::-webkit-input-placeholder {
-  color: #555e5e;
-}
-.locked {
-  border: 2px solid #f9a825;
-}
+  input::-webkit-input-placeholder { color: #555e5e; }
 </style>
 </head>
 <body class="bg-[#121515] text-white font-sans">
+  <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+    <button aria-label="Menu" id="menuBtn" class="text-white text-2xl">
+      <i class="fas fa-bars"></i>
+    </button>
+    <span class="text-[#f9a825] font-extrabold text-lg select-none">
+      BELIROBUX.XYZ
+    </span>
+  </header>
 
-<!-- HEADER -->
-<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3 relative">
-  <button id="menuButton" aria-label="Menu" class="text-white text-2xl">
-    <i class="fas fa-bars"></i>
-  </button>
-  <span class="text-[#f9a825] font-extrabold text-lg select-none">
-    belirobux.xyz
-  </span>
-</header>
-
-<!-- Menu dropdown -->
-<div id="menuDropdown" class="hidden absolute bg-[#2f3638] text-white p-3 rounded-lg shadow-lg top-16 left-4 w-48">
-  <button onclick="window.location.href='https://belirobux.reyambon.xyz/invoice'" 
-    class="block text-left w-full py-2 hover:bg-[#3f4749] rounded">Cek Pesanan</button>
-</div>
-
-<main class="px-5 py-4 space-y-5">
-  <div>
-    <label class="block mb-1 text-white text-base font-normal" for="username">
-      Username:
-    </label>
-    <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] 
-      text-white text-base focus:outline-none" 
-      id="username" placeholder="Example. Rey123" type="text"/>
-    <div id="preview" class="mt-2"></div>
-  </div>
-  <div>
-    <label class="block mb-1 text-white text-base font-normal" for="jumlah">
-      Jumlah:
-    </label>
-    <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] 
-      text-white text-base focus:outline-none" 
-      id="jumlah" placeholder="R$" type="number"/>
-  </div>
-  <div>
-    <label class="block mb-1 text-white text-base font-normal" for="price">
-      Price:
-    </label>
-    <input readonly class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white text-base" 
-      id="price" placeholder="Rp" type="text"/>
-  </div>
-  <div class="text-[#f9a825] font-normal text-lg select-none">
-    Payment Method
-  </div>
-  <section class="border-t border-b border-[#2f3638] py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <img id="methodLogo" alt="logo" class="w-10 h-5 object-contain" />
-      <select id="metode" class="bg-[#2f3638] rounded px-3 py-2">
-        <option value="" disabled selected>Pilih Metode</option>
-        <option value="QRIS">QRIS</option>
-        <option value="Dana">Dana</option>
-        <option value="OVO">OVO</option>
-      </select>
+  <main class="px-5 py-4 space-y-5">
+    <div>
+      <label class="block mb-1 text-white text-base font-normal" for="username">
+        Username:
+      </label>
+      <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] text-white text-base focus:outline-none" 
+             id="username" placeholder="Contoh: Rey123" type="text"/>
     </div>
-  </section>
 
-  <div class="text-[#f9a825] font-normal text-lg select-none pt-4 border-b border-[#2f3638] pb-3">
-    Payment Summary
-  </div>
+    <div>
+      <label class="block mb-1 text-white text-base font-normal" for="jumlah">
+        Jumlah:
+      </label>
+      <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] text-white text-base focus:outline-none" 
+             id="jumlah" placeholder="R$" type="number"/>
+    </div>
 
-  <form class="mb-4">
-    <label class="block mb-1 text-white text-base font-normal" for="coupon">
-      Discount Coupon:
-    </label>
-    <div class="flex">
-      <input class="flex-grow bg-[#2f3638] rounded-l-full py-3 px-5 
-        placeholder-[#555e5e] text-white text-base focus:outline-none" 
-        id="coupon" placeholder="Enter Code Here" type="text"/>
-      <button class="bg-[#7f6a3a] rounded-r-full px-5 font-extrabold text-white 
-        text-base hover:bg-[#a3864f] transition-colors" type="submit">
-        Submit
+    <div>
+      <label class="block mb-1 text-white text-base font-normal" for="price">
+        Price:
+      </label>
+      <input class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] text-white text-base focus:outline-none" 
+             id="price" placeholder="Rp" type="text" readonly/>
+    </div>
+
+    <div class="text-[#f9a825] font-normal text-lg select-none">
+      Payment Method
+    </div>
+    <select id="metode" class="w-full bg-[#2f3638] rounded-full py-3 px-5 text-white text-base focus:outline-none">
+      <option value="" disabled selected>Pilih metode pembayaran</option>
+      <option value="Dana">Dana</option>
+      <option value="QRIS">QRIS</option>
+      <option value="OVO">OVO</option>
+    </select>
+
+    <div class="text-[#f9a825] font-normal text-lg select-none pt-4 border-b border-[#2f3638] pb-3">
+      Payment Summary
+    </div>
+
+    <form class="mb-4">
+      <label class="block mb-1 text-white text-base font-normal" for="coupon">
+        Discount Coupon:
+      </label>
+      <div class="flex">
+        <input class="flex-grow bg-[#2f3638] rounded-l-full py-3 px-5 placeholder-[#555e5e] text-white text-base focus:outline-none" 
+               id="coupon" placeholder="Enter Code Here" type="text"/>
+        <button class="bg-[#7f6a3a] rounded-r-full px-5 font-extrabold text-white text-base hover:bg-[#a3864f] transition-colors" 
+                type="submit">
+          Submit
+        </button>
+      </div>
+    </form>
+
+    <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
+      <div class="flex justify-between text-white text-base font-normal">
+        <span>Discount</span>
+        <span>Rp 0</span>
+      </div>
+      <div class="flex justify-between text-white text-base font-normal">
+        <span>Biaya Admin</span>
+        <span>Rp 0</span>
+      </div>
+      <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
+        <span>Total</span>
+        <span id="total">Rp 0</span>
+      </div>
+    </div>
+
+    <div class="flex gap-4 pb-6">
+      <button onclick="window.location.href='https://help.reyambon.xyz'" 
+              class="flex-grow border border-[#f9a825] text-[#f9a825] font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515] transition-colors" type="button">
+        Customer Service
+      </button>
+      <button id="beliBtn" class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3 hover:bg-[#a3864f] transition-colors" type="button">
+        Beli Sekarang
       </button>
     </div>
-  </form>
 
-  <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
-    <div class="flex justify-between text-white text-base font-normal">
-      <span>Discount</span><span>Rp 0</span>
-    </div>
-    <div class="flex justify-between text-white text-base font-normal">
-      <span>Biaya Admin</span><span id="adminFee">Rp 0</span>
-    </div>
-    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
-      <span>Total</span><span id="totalPrice">Rp 0</span>
-    </div>
-  </div>
+    <div id="opsi" class="space-y-3"></div>
+  </main>
 
-  <div class="flex gap-4 pb-6">
-    <button id="csButton" class="flex-grow border border-[#f9a825] text-[#f9a825] 
-      font-extrabold rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515] transition-colors" 
-      type="button">
-      Customer Service
-    </button>
-    <button id="buyButton" class="flex-grow bg-[#7f6a3a] text-white font-extrabold 
-      rounded-full py-3 hover:bg-[#a3864f] transition-colors" type="button">
-      Beli Sekarang
-    </button>
-  </div>
+  <script>
+    const jumlahField = document.getElementById('jumlah');
+    const priceField = document.getElementById('price');
+    const totalSpan = document.getElementById('total');
+    const beliBtn = document.getElementById('beliBtn');
+    const opsiDiv = document.getElementById('opsi');
+    const metodeSelect = document.getElementById('metode');
+    const usernameField = document.getElementById('username');
 
-  <div id="afterBuy" class="hidden">
-    <p class="text-[#f9a825] mb-3 text-center font-bold" id="gamepassText"></p>
-    <div class="flex flex-wrap gap-3 justify-center">
-      <button id="doneGamepass" class="bg-[#7f6a3a] px-4 py-3 rounded-lg font-bold">Sudah buat Gamepass</button>
-      <button id="buatGamepass" class="bg-[#7f6a3a] px-4 py-3 rounded-lg font-bold">Buat Gamepass</button>
-      <button id="backButton" class="bg-[#7f6a3a] px-4 py-3 rounded-lg font-bold">Kembali</button>
-    </div>
-  </div>
-</main>
+    let locked = false;
 
-<script>
-const menuBtn = document.getElementById('menuButton');
-const menuDropdown = document.getElementById('menuDropdown');
-menuBtn.addEventListener('click', () => {
-  menuDropdown.classList.toggle('hidden');
-});
-
-let locked = false;
-const usernameField = document.getElementById('username');
-
-usernameField.addEventListener('click', () => {
-  if (usernameField.value.trim() !== "") {
-    locked = !locked;
-    usernameField.readOnly = locked;
-    usernameField.classList.toggle('locked', locked);
-  }
-});
-
-// update preview username saat mengetik
-usernameField.addEventListener('input', async () => {
-  if (locked) return;
-  const username = usernameField.value.trim();
-  const previewDiv = document.getElementById('preview');
-  previewDiv.innerHTML = "";
-  if (!username) return;
-  try {
-    const res = await fetch("https://users.roproxy.com/v1/usernames/users", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({usernames:[username]})
+    usernameField.addEventListener('click', () => {
+      if (usernameField.value.trim() !== "") {
+        locked = !locked;
+        usernameField.readOnly = locked;
+        if (locked) {
+          usernameField.classList.add('border-2','border-yellow-500');
+        } else {
+          usernameField.classList.remove('border-2','border-yellow-500');
+        }
+      }
     });
-    const data = await res.json();
-    if (!data.data || !data.data.length) {
-      previewDiv.innerHTML = "<p style='color:red'>Username tidak ditemukan!</p>";
-      return;
-    }
-    const id = data.data[0].id;
-    const thumbRes = await fetch(
-      `https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`
-    );
-    const thumbData = await thumbRes.json();
-    const img = thumbData.data[0].imageUrl;
-    previewDiv.innerHTML = `<div class='flex items-center gap-2'><img src="${img}" class="w-10 h-10 rounded-full"><span>${data.data[0].name}</span></div>`;
-  } catch (e) {
-    previewDiv.innerHTML = "<p style='color:red'>Gagal cek username!</p>";
-  }
-});
 
-// hitung harga saat jumlah diisi
-document.getElementById('jumlah').addEventListener('input', () => {
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if (isNaN(jumlah) || jumlah <= 0) return;
+    jumlahField.addEventListener('input', () => {
+      const jumlah = parseInt(jumlahField.value);
+      if (isNaN(jumlah)) return;
+      let harga = (jumlah * 140) + 3000;
+      priceField.value = `Rp ${harga.toLocaleString('id-ID')}`;
+      totalSpan.textContent = `Rp ${harga.toLocaleString('id-ID')}`;
+    });
 
-  const priceField = document.getElementById('price');
-  let harga = jumlah * 140;
-  let admin = 3000;
-  const metode = document.getElementById('metode').value;
-  if (metode === "QRIS") admin += 49;
-  if (metode === "Dana") admin += 52;
-  if (metode === "OVO") admin += 76;
+    beliBtn.addEventListener('click', () => {
+      const username = usernameField.value.trim();
+      const jumlah = parseInt(jumlahField.value);
+      const metode = metodeSelect.value;
 
-  const total = harga + admin;
-  priceField.value = total.toLocaleString('id-ID');
-  document.getElementById('adminFee').textContent = "Rp " + admin.toLocaleString('id-ID');
-  document.getElementById('totalPrice').textContent = "Rp " + total.toLocaleString('id-ID');
-});
+      if (!username || !jumlah || !metode) {
+        alert('Lengkapi semua data!');
+        return;
+      }
 
-document.getElementById('metode').addEventListener('change', () => {
-  const logo = document.getElementById('methodLogo');
-  const metode = document.getElementById('metode').value;
-  if (metode) {
-    logo.src = `https://reygenteng.github.io/reybelirbx/belirobux/${metode.toLowerCase()}.png`;
-  }
-});
+      const gamepass = Math.ceil(jumlah / 0.7);
 
-// tombol customer service
-document.getElementById('csButton').addEventListener('click', () => {
-  window.location.href = "https://help.reyambon.xyz";
-});
-
-// beli sekarang
-document.getElementById('buyButton').addEventListener('click', () => {
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if (isNaN(jumlah) || jumlah < 25) {
-    alert("Minimal 25 Robux");
-    return;
-  }
-  const target = Math.ceil(jumlah / 0.7);
-  document.getElementById('gamepassText').textContent = `Buat Gamepass senilai ${target} Robux`;
-  document.getElementById('afterBuy').classList.remove('hidden');
-});
-
-// tombol setelah beli
-document.getElementById('doneGamepass').addEventListener('click', () => {
-  const username = document.getElementById('username').value;
-  const jumlah = document.getElementById('jumlah').value;
-  const metode = document.getElementById('metode').value;
-  const wa = `https://wa.me/6287887028120?text=Halo%20Kak,%20Saya%20${username}%20topup%20${jumlah}%20Robux%20via%20${metode}`;
-  window.location.href = wa;
-});
-document.getElementById('buatGamepass').addEventListener('click', () => {
-  window.open('https://www.roblox.com/develop','_blank');
-});
-document.getElementById('backButton').addEventListener('click', () => {
-  document.getElementById('afterBuy').classList.add('hidden');
-});
-</script>
+      opsiDiv.innerHTML = `
+        <div class="text-[#f9a825] font-bold text-lg">Buat Gamepass senilai ${gamepass} Robux</div>
+        <div class="flex gap-4">
+          <button class="flex-1 bg-[#7f6a3a] rounded-full py-3 font-extrabold hover:bg-[#a3864f]" 
+            onclick="window.location.href='https://wa.me/6287887028120?text=Halo%20Kak%2C%20Saya%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}'">Sudah Buat Gamepass</button>
+          <button class="flex-1 bg-[#7f6a3a] rounded-full py-3 font-extrabold hover:bg-[#a3864f]" 
+            onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
+          <button class="flex-1 bg-[#7f6a3a] rounded-full py-3 font-extrabold hover:bg-[#a3864f]" 
+            onclick="document.getElementById('opsi').innerHTML=''">Kembali</button>
+        </div>
+      `;
+    });
+  </script>
 </body>
-  </html>
+</html>
