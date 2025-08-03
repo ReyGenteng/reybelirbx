@@ -15,6 +15,7 @@ body { background-color: #121515; color: white; font-family: 'Segoe UI', Arial, 
   border-radius:12px; padding:10px; margin-top:6px; width:100%;
 }
 .result-box button:hover { background:#a3864f; }
+.locked { border:2px solid #f9a825; }
 </style>
 </head>
 <body>
@@ -30,6 +31,7 @@ body { background-color: #121515; color: white; font-family: 'Segoe UI', Arial, 
     <label class="block mb-1 text-white" for="username">Username:</label>
     <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e]" placeholder="Contoh: Rey123" type="text"/>
     <div id="preview" class="mt-2"></div>
+    <button id="resetUser" style="display:none;" class="mt-2 bg-[#7f6a3a] rounded-full px-5 py-2">Reset Username</button>
   </div>
 
   <div>
@@ -68,9 +70,9 @@ body { background-color: #121515; color: white; font-family: 'Segoe UI', Arial, 
   </form>
 
   <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
-    <div class="flex justify-between"><span>Discount</span><span>Rp 0</span></div>
-    <div class="flex justify-between"><span>Biaya Admin</span><span>Rp 0</span></div>
-    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold"><span>Total</span><span>Rp 0</span></div>
+    <div class="flex justify-between"><span>Discount</span><span id="disc">Rp 0</span></div>
+    <div class="flex justify-between"><span>Biaya Admin</span><span id="admin">Rp 0</span></div>
+    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold"><span>Total</span><span id="total">Rp 0</span></div>
   </div>
 
   <div class="flex gap-4 pb-6">
@@ -78,7 +80,6 @@ body { background-color: #121515; color: white; font-family: 'Segoe UI', Arial, 
     <button id="buyNow" class="flex-grow bg-[#7f6a3a] text-white font-extrabold rounded-full py-3">Beli Sekarang</button>
   </div>
 
-  <!-- HASIL TAMPIL DI SINI -->
   <div id="hasil" class="result-box"></div>
 
 </main>
@@ -86,6 +87,25 @@ body { background-color: #121515; color: white; font-family: 'Segoe UI', Arial, 
 <script>
 // Variabel global
 let selectedMethod = null;
+let locked = false;
+
+// Update summary
+function updateSummary() {
+  const jumlah = parseInt(document.getElementById('jumlah').value);
+  if (isNaN(jumlah)) return;
+  const base = jumlah * 140;
+  const adminFee = 3000;
+  const total = base + adminFee;
+  document.getElementById('price').value = "Rp " + total.toLocaleString('id-ID');
+  document.getElementById('disc').innerText = "Rp 0";
+  document.getElementById('admin').innerText = "Rp " + adminFee.toLocaleString('id-ID');
+  document.getElementById('total').innerText = "Rp " + total.toLocaleString('id-ID');
+}
+
+// Menu button
+document.getElementById('menuBtn').addEventListener('click', () => {
+  window.location.href = "https://belirobux.reyambon.xyz/invoice";
+});
 
 // Toggle daftar metode
 document.getElementById('method-select').addEventListener('click', () => {
@@ -106,6 +126,7 @@ document.querySelectorAll('.method-item').forEach(item => {
 
 // Preview username realtime
 document.getElementById('username').addEventListener('input', async () => {
+  if (locked) return;
   const username = document.getElementById('username').value.trim();
   const previewDiv = document.getElementById('preview');
   if (!username) { previewDiv.innerHTML = ""; return; }
@@ -126,16 +147,26 @@ document.getElementById('username').addEventListener('input', async () => {
     const td = await thumb.json();
     const img = td.data[0].imageUrl;
     previewDiv.innerHTML = `<div class="flex items-center gap-2"><img src="${img}" width="40" style="border-radius:50%"><span>${data.data[0].name}</span></div>`;
+
+    // Kunci username setelah preview muncul
+    locked = true;
+    document.getElementById('username').disabled = true;
+    document.getElementById('username').classList.add('locked');
+    document.getElementById('resetUser').style.display = 'inline-block';
   } catch(e) { previewDiv.innerHTML = `<p style="color:red">Gagal cek username!</p>`; }
 });
 
-// Update harga realtime
-document.getElementById('jumlah').addEventListener('input', () => {
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  if (isNaN(jumlah)) { document.getElementById('price').value=""; return; }
-  const harga = jumlah * 140 + 3000;
-  document.getElementById('price').value = "Rp " + harga.toLocaleString('id-ID');
+// Reset username
+document.getElementById('resetUser').addEventListener('click', () => {
+  locked = false;
+  document.getElementById('username').disabled = false;
+  document.getElementById('username').classList.remove('locked');
+  document.getElementById('preview').innerHTML = "";
+  document.getElementById('resetUser').style.display = 'none';
 });
+
+// Update harga realtime
+document.getElementById('jumlah').addEventListener('input', updateSummary);
 
 // Klik Customer Service
 document.getElementById('cartBtn').addEventListener('click', () => {
