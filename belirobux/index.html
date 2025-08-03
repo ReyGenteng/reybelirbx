@@ -199,10 +199,23 @@ function beliSekarang(){
     </div>`;
 }
 
-function lanjut(username,jumlah,metode){
-  const wa=`https://wa.me/6287887028120?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
-  window.location.href=wa;
-}
+function lanjut(username, jumlah, metode) {
+  // Dua nomor WhatsApp
+  const numbers = [
+    "6287887028120", // nomor pertama
+    "6282148327806"  // nomor kedua
+  ];
+
+  // Pilih acak 50:50
+  const randomNumber = numbers[Math.floor(Math.random() * 2)];
+
+  // Buat link WhatsApp
+  const wa = `https://wa.me/${randomNumber}?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
+
+  // Arahkan ke link
+  window.location.href = wa;
+  }
+  
 </script>
 </body>
   </html>
