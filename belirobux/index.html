@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>belirobux.xyz</title>
+<title>robuxnow.xyz</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 <style>
@@ -34,6 +34,23 @@
     cursor: pointer;
   }
   .dropdown-item:hover { background-color: #3f4749; }
+  .overlay {
+    position: fixed;top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.5);
+    display:none;align-items:center;justify-content:center;
+    z-index:999;
+  }
+  .popup {
+    background:white;color:#333;padding:20px;border-radius:10px;
+    width:300px;text-align:center;transform:scale(0.7);
+    transition:transform 0.3s ease;
+  }
+  .popup.show { transform:scale(1); }
+  .popup h2 { color:#ff6600;margin-bottom:10px; }
+  .popup button {
+    margin-top:15px;background:#007bff;color:white;
+    border:none;cursor:pointer;padding:10px 20px;border-radius:5px;
+  }
 </style>
 </head>
 <body class="bg-[#121515] text-white">
@@ -43,7 +60,7 @@
     <i class="fas fa-bars"></i>
   </button>
   <span class="text-[#f9a825] font-extrabold text-lg select-none">
-    belirobux.xyz
+    robuxnow.xyz
   </span>
 </header>
 
@@ -68,7 +85,6 @@
 
   <div class="text-[#f9a825] font-normal text-lg">Metode Pembayaran</div>
 
-  <!-- Custom Dropdown -->
   <div class="dropdown" id="dropdown">
     <div class="dropdown-btn" onclick="toggleDropdown()">
       <span id="selected-method" class="text-gray-400">Pilih Metode</span>
@@ -89,11 +105,24 @@
 
   <input type="hidden" id="metode" value="">
 
+  <!-- Input kupon + tombol -->
+  <div>
+    <label class="block mb-1" for="kupon">Kode Kupon:</label>
+    <div class="flex gap-2">
+      <input id="kupon" class="flex-grow bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+             placeholder="Masukkan kode kupon (opsional)"/>
+      <button type="button" class="bg-[#7f6a3a] rounded-full px-4 hover:bg-[#a3864f]" onclick="konfirmasiKupon()">Konfirmasi</button>
+    </div>
+  </div>
+
   <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">
     Payment Summary
   </div>
 
   <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
+    <div class="flex justify-between">
+      <span>Kupon</span><span id="kuponstatus">Tidak ada</span>
+    </div>
     <div class="flex justify-between">
       <span>Discount</span><span id="disc">Rp 0</span>
     </div>
@@ -119,15 +148,54 @@
   <div id="hasil" style="display:none;"></div>
 </main>
 
+<!-- POPUP -->
+<div class="overlay" id="popupOverlay">
+  <div class="popup" id="popupBox">
+    <i class="fas fa-exclamation-triangle" style="font-size:50px;color:#ff6600;margin-bottom:10px;"></i>
+    <h2>INFO</h2>
+    <p id="popupMessage">Pesan</p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
 <script>
 let locked = false;
+let lastNumberIndex = 1;
+let kuponValid = null;
+
+function showPopup(msg){
+  document.getElementById('popupMessage').innerText = msg;
+  const overlay = document.getElementById('popupOverlay');
+  const box = document.getElementById('popupBox');
+  overlay.style.display = 'flex';
+  setTimeout(() => box.classList.add('show'), 10);
+}
+function closePopup(){
+  const overlay = document.getElementById('popupOverlay');
+  const box = document.getElementById('popupBox');
+  box.classList.remove('show');
+  setTimeout(() => overlay.style.display = 'none', 200);
+}
+
+function konfirmasiKupon() {
+  const kode = document.getElementById('kupon').value.trim().toUpperCase();
+  if (kode === "DISKON10") {
+    kuponValid = { kode: "DISKON10", potongan: 10 };
+    showPopup("Kupon DISKON10 berhasil! Anda mendapatkan diskon 10%.");
+  } else if (kode === "") {
+    kuponValid = null;
+    showPopup("Tidak ada kupon yang dimasukkan.");
+  } else {
+    kuponValid = null;
+    showPopup("Kupon tidak valid.");
+  }
+  updateHarga();
+}
 
 function toggleDropdown() {
-  document.querySelector(".dropdown-content").classList.toggle("hidden");
   const content = document.querySelector(".dropdown-content");
   content.style.display = content.style.display === "block" ? "none" : "block";
 }
-
 document.querySelectorAll(".dropdown-item").forEach(item=>{
   item.addEventListener("click", ()=>{
     const val = item.getAttribute("data-value");
@@ -160,7 +228,6 @@ async function cekUsername() {
         <img src="${img}" class="w-10 h-10 rounded-full"><span class="font-bold">${data.data[0].name}</span></div>`;
   } catch {}
 }
-
 function toggleLock() {
   locked = !locked;
   const box = document.getElementById('preview').firstElementChild;
@@ -173,11 +240,33 @@ function updateHarga() {
   const priceField = document.getElementById('price');
   const adminField = document.getElementById('admin');
   const totalField = document.getElementById('total');
-  if (isNaN(jumlah)||jumlah<1){priceField.value="";adminField.innerText="Rp 0";totalField.innerText="Rp 0";return;}
+  const discField = document.getElementById('disc');
+  const kuponStatus = document.getElementById('kuponstatus');
+
+  if (isNaN(jumlah)||jumlah<1){
+    priceField.value="";
+    adminField.innerText="Rp 0";
+    totalField.innerText="Rp 0";
+    discField.innerText="Rp 0";
+    kuponStatus.innerText="Tidak ada";
+    return;
+  }
+
   let harga = jumlah * 140;
+  let diskon = 0;
+  let kuponTeks = "Tidak ada";
+
+  if (kuponValid && kuponValid.kode === "DISKON10") {
+    diskon = Math.floor(harga * 0.10);
+    kuponTeks = "DISKON10 (10%)";
+  }
+
   let admin = 3000 + Math.floor(Math.random()*100);
-  let total = harga+admin;
+  let total = (harga - diskon) + admin;
+
   priceField.value = "Rp " + harga.toLocaleString('id-ID');
+  discField.innerText = "Rp " + diskon.toLocaleString('id-ID');
+  kuponStatus.innerText = kuponTeks;
   adminField.innerText = "Rp " + admin.toLocaleString('id-ID');
   totalField.innerText = "Rp " + total.toLocaleString('id-ID');
 }
@@ -186,7 +275,11 @@ function beliSekarang(){
   const username=document.getElementById('username').value.trim();
   const jumlah=parseInt(document.getElementById('jumlah').value);
   const metode=document.getElementById('metode').value;
-  if(!username||isNaN(jumlah)||jumlah<1||!metode){alert("Lengkapi data!");return;}
+
+  if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
+  if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
+  if(!metode){showPopup("Pilih metode pembayaran dulu!");return;}
+
   const hasilDiv=document.getElementById('hasil');
   const totalGamepass=Math.ceil(jumlah/0.7);
   hasilDiv.style.display="block";
@@ -200,22 +293,15 @@ function beliSekarang(){
 }
 
 function lanjut(username, jumlah, metode) {
-  // Dua nomor WhatsApp
   const numbers = [
-    "6287887028120", // nomor pertama
-    "6282148327806"  // nomor kedua
+    "6287887028120", // nomor 1
+    "6282148327806"  // nomor 2
   ];
-
-  // Pilih acak 50:50
-  const randomNumber = numbers[Math.floor(Math.random() * 2)];
-
-  // Buat link WhatsApp
+  lastNumberIndex = (lastNumberIndex + 1) % 2;
+  const randomNumber = numbers[lastNumberIndex];
   const wa = `https://wa.me/${randomNumber}?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
-
-  // Arahkan ke link
   window.location.href = wa;
-  }
-  
+}
 </script>
 </body>
   </html>
