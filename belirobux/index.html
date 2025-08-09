@@ -256,9 +256,9 @@ function updateHarga() {
   let diskon = 0;
   let kuponTeks = "Tidak ada";
 
-  if (kuponValid && kuponValid.kode === "DISKON10") {
+  if (kuponValid && kuponValid.kode === "PVNT14HJ9") {
     diskon = Math.floor(harga * 0.10);
-    kuponTeks = "DISKON10 (10%)";
+    kuponTeks = "DISKON10% (10%)";
   }
 
   let admin = 3000 + Math.floor(Math.random()*100);
