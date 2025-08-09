@@ -1,307 +1,390 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RobuxNow.xyz - Buy</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
-  body { font-family: 'Rubik', sans-serif; }
-  .dropdown { position: relative; user-select: none; }
-  .dropdown-btn {
-    background-color: #2f3638;
-    padding: 12px 16px;
-    border-radius: 9999px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 110%;
-    left: 0;
-    right: 0;
-    background-color: #2f3638;
-    border-radius: 16px;
-    z-index: 10;
-    overflow: hidden;
-  }
-  .dropdown-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 16px;
-    cursor: pointer;
-  }
-  .dropdown-item:hover { background-color: #3f4749; }
-  .overlay {
-    position: fixed;top:0;left:0;right:0;bottom:0;
-    background:rgba(0,0,0,0.5);
-    display:none;align-items:center;justify-content:center;
-    z-index:999;
-  }
-  .popup {
-    background:white;color:#333;padding:20px;border-radius:10px;
-    width:300px;text-align:center;transform:scale(0.7);
-    transition:transform 0.3s ease;
-  }
-  .popup.show { transform:scale(1); }
-  .popup h2 { color:#ff6600;margin-bottom:10px; }
-  .popup button {
-    margin-top:15px;background:#007bff;color:white;
-    border:none;cursor:pointer;padding:10px 20px;border-radius:5px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RobuxNow.xyz - Buy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+        body { font-family: 'Rubik', sans-serif; }
+        .dropdown { position: relative; user-select: none; }
+        .dropdown-btn {
+            background-color: #2f3638;
+            padding: 12px 16px;
+            border-radius: 9999px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background-color: #2f3638;
+            border-radius: 16px;
+            z-index: 10;
+            overflow: hidden;
+        }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+        }
+        .dropdown-item:hover { background-color: #3f4749; }
+        .overlay {
+            position: fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,0.7);
+            display:none;align-items:center;justify-content:center;
+            z-index:999;
+        }
+        .popup {
+            background:#212b2c;color:white;padding:25px;border-radius:10px;
+            width:90%;max-width:400px;text-align:center;transform:scale(0.7);
+            transition:transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .popup.show { transform:scale(1); opacity: 1; }
+        .popup h2 { color:#f9a825;margin-bottom:10px; }
+        .popup button {
+            margin-top:10px;border:none;cursor:pointer;padding:12px 20px;border-radius:9999px;
+            width: 100%;
+        }
+        .popup .info-message {
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        /* Style untuk video YouTube */
+        .youtube-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Rasio 16:9 */
+            height: 0;
+            margin: 20px 0;
+        }
+        .youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body class="bg-[#121515] text-white">
 
 <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
-  <button aria-label="Menu" id="menuBtn" class="text-white text-2xl">
-    <i class="fas fa-bars"></i>
-  </button>
-  <span class="text-[#f9a825] font-extrabold text-lg select-none">
-    robuxnow.xyz
-  </span>
+    <button aria-label="Menu" id="menuBtn" class="text-white text-2xl">
+        <i class="fas fa-bars"></i>
+    </button>
+    <span class="text-[#f9a825] font-extrabold text-lg select-none">
+        robuxnow.xyz
+    </span>
 </header>
 
 <main class="px-5 py-4 space-y-5">
-  <div>
-    <label class="block mb-1" for="username">Username:</label>
-    <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none" 
-           placeholder="Contoh: Rey123" type="text" oninput="cekUsername()"/>
-    <div id="preview" class="mt-3"></div>
-  </div>
-
-  <div>
-    <label class="block mb-1" for="jumlah">Jumlah:</label>
-    <input id="jumlah" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
-           placeholder="R$" type="number" oninput="updateHarga()"/>
-  </div>
-
-  <div>
-    <label class="block mb-1" for="price">Price:</label>
-    <input id="price" class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" readonly/>
-  </div>
-
-  <div class="text-[#f9a825] font-normal text-lg">Metode Pembayaran</div>
-
-  <div class="dropdown" id="dropdown">
-    <div class="dropdown-btn" onclick="toggleDropdown()">
-      <span id="selected-method" class="text-gray-400">Pilih Metode</span>
-      <i class="fas fa-chevron-down text-gray-400"></i>
+    <div>
+        <label class="block mb-1" for="username">Username:</label>
+        <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none" 
+               placeholder="Contoh: Rey123" type="text" oninput="cekUsername()"/>
+        <div id="preview" class="mt-3"></div>
     </div>
-    <div class="dropdown-content">
-      <div class="dropdown-item" data-value="qris" data-img="https://reygenteng.github.io/reybelirbx/belirobux/qris.png">
-        <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png" class="w-8 h-8"><span>QRIS</span>
-      </div>
-      <div class="dropdown-item" data-value="dana" data-img="https://reygenteng.github.io/reybelirbx/belirobux/dana.png">
-        <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png" class="w-8 h-8"><span>Dana</span>
-      </div>
-      <div class="dropdown-item" data-value="ovo" data-img="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png">
-        <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png" class="w-8 h-8"><span>OVO</span>
-      </div>
-    </div>
-  </div>
 
-  <input type="hidden" id="metode" value="">
-
-  <!-- Input kupon + tombol -->
-  <div>
-    <label class="block mb-1" for="kupon">Kode Kupon:</label>
-    <div class="flex gap-2">
-      <input id="kupon" class="flex-grow bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
-             placeholder="Masukkan kode kupon (opsional)"/>
-      <button type="button" class="bg-[#7f6a3a] rounded-full px-4 hover:bg-[#a3864f]" onclick="konfirmasiKupon()">Konfirmasi</button>
+    <div>
+        <label class="block mb-1" for="jumlah">Jumlah:</label>
+        <input id="jumlah" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+               placeholder="R$" type="number" oninput="updateHarga()"/>
     </div>
-  </div>
 
-  <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">
-    Payment Summary
-  </div>
+    <div>
+        <label class="block mb-1" for="price">Price:</label>
+        <input id="price" class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" readonly/>
+    </div>
 
-  <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
-    <div class="flex justify-between">
-      <span>Kupon</span><span id="kuponstatus">Tidak ada</span>
-    </div>
-    <div class="flex justify-between">
-      <span>Discount</span><span id="disc">Rp 0</span>
-    </div>
-    <div class="flex justify-between">
-      <span>Biaya Admin</span><span id="admin">Rp 0</span>
-    </div>
-    <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
-      <span>Total</span><span id="total">Rp 0</span>
-    </div>
-  </div>
+    <div class="text-[#f9a825] font-normal text-lg">Metode Pembayaran</div>
 
-  <div class="flex gap-4 pb-6">
-    <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]" 
-            type="button" onclick="window.location.href='https://support.robuxnow.xyz'">
-      Customer Service
-    </button>
-    <button class="flex-grow bg-[#7f6a3a] rounded-full py-3 hover:bg-[#a3864f]" 
-            type="button" onclick="beliSekarang()">
-      Beli Sekarang
-    </button>
-  </div>
+    <div class="dropdown" id="dropdown">
+        <div class="dropdown-btn" onclick="toggleDropdown()">
+            <span id="selected-method" class="text-gray-400">Pilih Metode</span>
+            <i class="fas fa-chevron-down text-gray-400"></i>
+        </div>
+        <div class="dropdown-content">
+            <div class="dropdown-item" data-value="qris" data-img="https://reygenteng.github.io/reybelirbx/belirobux/qris.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png" class="w-8 h-8"><span>QRIS</span>
+            </div>
+            <div class="dropdown-item" data-value="ovo" data-img="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png" class="w-8 h-8"><span>OVO</span>
+            </div>
+            <div class="dropdown-item" data-value="gopay" data-img="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png" class="w-8 h-8"><span>Gopay</span>
+            </div>
+            <div class="dropdown-item" data-value="dana" data-img="https://reygenteng.github.io/reybelirbx/belirobux/dana.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png" class="w-8 h-8"><span>Dana</span>
+            </div>
+            <div class="dropdown-item" data-value="linkaja" data-img="https://reygenteng.github.io/reybelirbx/belirobux/linkaja.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/linkaja.png" class="w-8 h-8"><span>LinkAja</span>
+            </div>
+            <div class="dropdown-item" data-value="alfamart" data-img="https://reygenteng.github.io/reybelirbx/belirobux/alfamart.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/alfamart.png" class="w-8 h-8"><span>Alfamart</span>
+            </div>
+            <div class="dropdown-item" data-value="indomaret" data-img="https://reygenteng.github.io/reybelirbx/belirobux/indomaret.png">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/indomaret.png" class="w-8 h-8"><span>Indomaret</span>
+            </div>
+        </div>
+    </div>
 
-  <div id="hasil" style="display:none;"></div>
+    <input type="hidden" id="metode" value="">
+
+    <div>
+        <label class="block mb-1" for="kupon">Kode Kupon:</label>
+        <div class="flex gap-2">
+            <input id="kupon" class="flex-grow bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+                   placeholder="Masukkan kode kupon (opsional)"/>
+            <button type="button" class="bg-[#7f6a3a] rounded-full px-4 hover:bg-[#a3864f]" onclick="konfirmasiKupon()">Konfirmasi</button>
+        </div>
+    </div>
+
+    <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">
+        Payment Summary
+    </div>
+
+    <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
+        <div class="flex justify-between">
+            <span>Kupon</span><span id="kuponstatus">Tidak ada</span>
+        </div>
+        <div class="flex justify-between">
+            <span>Discount</span><span id="disc">Rp 0</span>
+        </div>
+        <div class="flex justify-between">
+            <span>Biaya Admin</span><span id="admin">Rp 0</span>
+        </div>
+        <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
+            <span>Total</span><span id="total">Rp 0</span>
+        </div>
+    </div>
+
+    <div class="flex gap-4 pb-6">
+        <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]" 
+                type="button" onclick="window.location.href='https://support.robuxnow.xyz'">
+            Customer Service
+        </button>
+        <button class="flex-grow bg-[#7f6a3a] rounded-full py-3 hover:bg-[#a3864f]" 
+                type="button" onclick="beliSekarang()">
+            Beli Sekarang
+        </button>
+    </div>
 </main>
 
-<!-- POPUP -->
 <div class="overlay" id="popupOverlay">
-  <div class="popup" id="popupBox">
-    <i class="fas fa-exclamation-triangle" style="font-size:50px;color:#ff6600;margin-bottom:10px;"></i>
-    <h2>INFO</h2>
-    <p id="popupMessage">Pesan</p>
-    <button onclick="closePopup()">OK</button>
-  </div>
+    <div class="popup" id="popupBox">
+        <i class="fas fa-exclamation-triangle" style="font-size:50px;color:#ff6600;margin-bottom:10px;"></i>
+        <h2>INFO</h2>
+        <p class="info-message" id="popupMessage">Pesan</p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>
+
+<div class="overlay" id="beliSekarangOverlay">
+    <div class="popup" id="beliSekarangBox">
+        <h2 class="text-xl font-bold">Buat Game Pass Senilai <span id="gamepassValue"></span></h2>
+        <button class="bg-[#f9a825] text-black rounded-full py-3 hover:bg-[#a3864f]" 
+                onclick="window.open('https://www.roblox.com/develop','_blank')">
+            Buat GamePass
+        </button>
+        <div class="youtube-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-gray-400 mb-4 text-sm">Klik Pass yang baru saja dibuat</p>
+        <div class="flex gap-4">
+            <button class="flex-grow bg-[#7f6a3a] rounded-full py-3" onclick="lanjutBeli()">Sudah Buat Gamepass</button>
+            <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]" onclick="closeBeliSekarangPopup()">Kembali</button>
+        </div>
+    </div>
 </div>
 
 <script>
-let locked = false;
-let lastNumberIndex = 1;
-let kuponValid = null;
+    let locked = false;
+    // Ini adalah kode yang aku tambahkan
+    const numbers = [
+        "6287887028120", // nomor 1
+        "6282148327806"  // nomor 2
+    ];
+    let kuponValid = null;
 
-function showPopup(msg){
-  document.getElementById('popupMessage').innerText = msg;
-  const overlay = document.getElementById('popupOverlay');
-  const box = document.getElementById('popupBox');
-  overlay.style.display = 'flex';
-  setTimeout(() => box.classList.add('show'), 10);
-}
-function closePopup(){
-  const overlay = document.getElementById('popupOverlay');
-  const box = document.getElementById('popupBox');
-  box.classList.remove('show');
-  setTimeout(() => overlay.style.display = 'none', 200);
-}
+    // Fungsi pop-up umum
+    function showPopup(msg){
+        document.getElementById('popupMessage').innerText = msg;
+        const overlay = document.getElementById('popupOverlay');
+        const box = document.getElementById('popupBox');
+        overlay.style.display = 'flex';
+        setTimeout(() => box.classList.add('show'), 10);
+    }
+    function closePopup(){
+        const overlay = document.getElementById('popupOverlay');
+        const box = document.getElementById('popupBox');
+        box.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 200);
+    }
 
-function konfirmasiKupon() {
-  const kode = document.getElementById('kupon').value.trim().toUpperCase();
-  if (kode === "PVNT14HJ9") {
-    kuponValid = { kode: "PVNT14HJ9", potongan: 10 };
-    showPopup("Kupon DISKON10 berhasil! Anda mendapatkan diskon 10%.");
-  } else if (kode === "") {
-    kuponValid = null;
-    showPopup("Tidak ada kupon yang dimasukkan.");
-  } else {
-    kuponValid = null;
-    showPopup("Kupon tidak valid.");
-  }
-  updateHarga();
-}
+    // Fungsi pop-up Beli Sekarang
+    function showBeliSekarangPopup(){
+        const overlay = document.getElementById('beliSekarangOverlay');
+        const box = document.getElementById('beliSekarangBox');
+        overlay.style.display = 'flex';
+        setTimeout(() => box.classList.add('show'), 10);
+    }
+    function closeBeliSekarangPopup(){
+        const overlay = document.getElementById('beliSekarangOverlay');
+        const box = document.getElementById('beliSekarangBox');
+        box.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 200);
+    }
 
-function toggleDropdown() {
-  const content = document.querySelector(".dropdown-content");
-  content.style.display = content.style.display === "block" ? "none" : "block";
-}
-document.querySelectorAll(".dropdown-item").forEach(item=>{
-  item.addEventListener("click", ()=>{
-    const val = item.getAttribute("data-value");
-    const img = item.getAttribute("data-img");
-    const text = item.innerText;
-    document.getElementById("selected-method").innerHTML = `<div class='flex items-center gap-2'><img src="${img}" class="w-6 h-6">${text}</div>`;
-    document.getElementById("metode").value = val;
-    document.querySelector(".dropdown-content").style.display = "none";
-  });
-});
+    // Fungsionalitas lainnya...
+    function konfirmasiKupon() {
+        const kode = document.getElementById('kupon').value.trim().toUpperCase();
+        if (kode === "DISKON1K") {
+            kuponValid = { kode: "DISKON1K", potongan: 1000 };
+            showPopup("Kupon DISKON1K berhasil! Anda mendapatkan diskon Rp1.000.");
+        } else if (kode === "") {
+            kuponValid = null;
+            showPopup("Tidak ada kupon yang dimasukkan.");
+        } else {
+            kuponValid = null;
+            showPopup("Kupon tidak valid.");
+        }
+        updateHarga();
+    }
 
-async function cekUsername() {
-  if (locked) return;
-  const username = document.getElementById('username').value.trim();
-  const previewDiv = document.getElementById('preview');
-  previewDiv.innerHTML = "";
-  if (!username) return;
-  try {
-    const res = await fetch("https://users.roproxy.com/v1/usernames/users", {
-      method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ usernames: [username] })
+    function toggleDropdown() {
+        const content = document.querySelector(".dropdown-content");
+        content.style.display = content.style.display === "block" ? "none" : "block";
+    }
+    document.querySelectorAll(".dropdown-item").forEach(item=>{
+        item.addEventListener("click", ()=>{
+            const val = item.getAttribute("data-value");
+            const img = item.getAttribute("data-img");
+            const text = item.innerText;
+            document.getElementById("selected-method").innerHTML = `<div class='flex items-center gap-2'><img src="${img}" class="w-6 h-6">${text}</div>`;
+            document.getElementById("metode").value = val;
+            document.querySelector(".dropdown-content").style.display = "none";
+            updateHarga();
+        });
     });
-    const data = await res.json();
-    if (!data.data || !data.data[0]) return;
-    const id = data.data[0].id;
-    const thumbRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
-    const thumbData = await thumbRes.json();
-    const img = thumbData.data[0].imageUrl;
-    previewDiv.innerHTML = `<div class="flex items-center gap-3 border border-[#f9a825] rounded-full px-4 py-2 cursor-pointer" onclick="toggleLock()">
-        <img src="${img}" class="w-10 h-10 rounded-full"><span class="font-bold">${data.data[0].name}</span></div>`;
-  } catch {}
-}
-function toggleLock() {
-  locked = !locked;
-  const box = document.getElementById('preview').firstElementChild;
-  if (locked) box.classList.add("ring-2","ring-yellow-500");
-  else box.classList.remove("ring-2","ring-yellow-500");
-}
 
-function updateHarga() {
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-  const priceField = document.getElementById('price');
-  const adminField = document.getElementById('admin');
-  const totalField = document.getElementById('total');
-  const discField = document.getElementById('disc');
-  const kuponStatus = document.getElementById('kuponstatus');
+    async function cekUsername() {
+        if (locked) return;
+        const username = document.getElementById('username').value.trim();
+        const previewDiv = document.getElementById('preview');
+        previewDiv.innerHTML = "";
+        if (!username) return;
+        try {
+            const res = await fetch("https://users.roproxy.com/v1/usernames/users", {
+                method: "POST", headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ usernames: [username] })
+            });
+            const data = await res.json();
+            if (!data.data || !data.data[0]) return;
+            const id = data.data[0].id;
+            const thumbRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
+            const thumbData = await thumbRes.json();
+            const img = thumbData.data[0].imageUrl;
+            previewDiv.innerHTML = `<div class="flex items-center gap-3 border border-[#f9a825] rounded-full px-4 py-2 cursor-pointer" onclick="toggleLock()">
+                <img src="${img}" class="w-10 h-10 rounded-full"><span class="font-bold">${data.data[0].name}</span></div>`;
+        } catch {}
+    }
+    function toggleLock() {
+        locked = !locked;
+        const box = document.getElementById('preview').firstElementChild;
+        if (locked) box.classList.add("ring-2","ring-yellow-500");
+        else box.classList.remove("ring-2","ring-yellow-500");
+    }
 
-  if (isNaN(jumlah)||jumlah<1){
-    priceField.value="";
-    adminField.innerText="Rp 0";
-    totalField.innerText="Rp 0";
-    discField.innerText="Rp 0";
-    kuponStatus.innerText="Tidak ada";
-    return;
-  }
+    function updateHarga() {
+        const jumlah = parseInt(document.getElementById('jumlah').value);
+        const metode = document.getElementById('metode').value;
+        const priceField = document.getElementById('price');
+        const adminField = document.getElementById('admin');
+        const totalField = document.getElementById('total');
+        const discField = document.getElementById('disc');
+        const kuponStatus = document.getElementById('kuponstatus');
 
-  let harga = jumlah * 140;
-  let diskon = 0;
-  let kuponTeks = "Tidak ada";
+        if (isNaN(jumlah)||jumlah<1){
+            priceField.value="";
+            adminField.innerText="Rp 0";
+            totalField.innerText="Rp 0";
+            discField.innerText="Rp 0";
+            kuponStatus.innerText="Tidak ada";
+            return;
+        }
 
-  if (kuponValid && kuponValid.kode === "PVNT14HJ9") {
-    diskon = Math.floor(harga * 0.10);
-    kuponTeks = "DISKON10% (10%)";
-  }
+        let harga = jumlah * 140;
+        let diskon = 0;
+        let kuponTeks = "Tidak ada";
 
-  let admin = 3000 + Math.floor(Math.random()*100);
-  let total = (harga - diskon) + admin;
+        if (kuponValid && kuponValid.kode === "DISKON1K") {
+            diskon = kuponValid.potongan;
+            kuponTeks = "DISKON1K (Rp1.000)";
+        }
 
-  priceField.value = "Rp " + harga.toLocaleString('id-ID');
-  discField.innerText = "Rp " + diskon.toLocaleString('id-ID');
-  kuponStatus.innerText = kuponTeks;
-  adminField.innerText = "Rp " + admin.toLocaleString('id-ID');
-  totalField.innerText = "Rp " + total.toLocaleString('id-ID');
-}
+        let admin = 0;
+        if (metode === "qris") {
+            admin = 44;
+        } else if (metode === "ovo") {
+            admin = 23;
+        } else if (metode === "gopay") {
+            admin = 64;
+        } else if (metode === "dana") {
+            admin = 87;
+        } else if (metode === "alfamart" || metode === "indomaret" || metode === "linkaja") {
+            admin = 10000;
+        }
 
-function beliSekarang(){
-  const username=document.getElementById('username').value.trim();
-  const jumlah=parseInt(document.getElementById('jumlah').value);
-  const metode=document.getElementById('metode').value;
+        let total = (harga - diskon) + admin;
 
-  if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
-  if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
-  if(!metode){showPopup("Pilih metode pembayaran dulu!");return;}
+        priceField.value = "Rp " + harga.toLocaleString('id-ID');
+        discField.innerText = "Rp " + diskon.toLocaleString('id-ID');
+        kuponStatus.innerText = kuponTeks;
+        adminField.innerText = "Rp " + admin.toLocaleString('id-ID');
+        totalField.innerText = "Rp " + total.toLocaleString('id-ID');
+    }
 
-  const hasilDiv=document.getElementById('hasil');
-  const totalGamepass=Math.ceil(jumlah/0.7);
-  hasilDiv.style.display="block";
-  hasilDiv.innerHTML=`
-    <p class="text-lg font-bold">Buat Gamepass senilai ${totalGamepass} Robux</p>
-    <div class="flex gap-2">
-      <button class="flex-grow bg-[#7f6a3a] rounded-full py-3" onclick="lanjut('${username}',${jumlah},'${metode}')">Sudah buat Gamepass</button>
-      <button class="flex-grow bg-[#7f6a3a] rounded-full py-3" onclick="window.open('https://www.roblox.com/develop','_blank')">Buat Gamepass</button>
-      <button class="flex-grow bg-[#7f6a3a] rounded-full py-3" onclick="document.getElementById('hasil').style.display='none'">Kembali</button>
-    </div>`;
-}
+    function beliSekarang(){
+        const username=document.getElementById('username').value.trim();
+        const jumlah=parseInt(document.getElementById('jumlah').value);
+        const metode=document.getElementById('metode').value;
 
-function lanjut(username, jumlah, metode) {
-  const numbers = [
-    "6287887028120", // nomor 1
-    "6282148327806"  // nomor 2
-  ];
-  lastNumberIndex = (lastNumberIndex + 1) % 2;
-  const randomNumber = numbers[lastNumberIndex];
-  const wa = `https://wa.me/${randomNumber}?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
-  window.location.href = wa;
-}
+        if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
+        if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
+        if(!metode){showPopup("Pilih metode pembayaran dulu!");return;}
+
+        const totalGamepass=Math.ceil(jumlah/0.7);
+        document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
+        showBeliSekarangPopup();
+    }
+    
+    function lanjutBeli() {
+        const username=document.getElementById('username').value.trim();
+        const jumlah=parseInt(document.getElementById('jumlah').value);
+        const metode=document.getElementById('metode').value;
+        
+        // Kode baru untuk memilih nomor secara acak
+        const numbers = [
+            "6287887028120", // nomor 1
+            "6282148327806"  // nomor 2
+        ];
+        
+        const randomNumberIndex = Math.random() < 0.5 ? 0 : 1; // 50% ke nomor 1, 50% ke nomor 2
+        const selectedNumber = numbers[randomNumberIndex];
+        
+        const wa = `https://wa.me/${selectedNumber}?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
+        window.location.href = wa;
+    }
 </script>
 </body>
-  </html>
+</html>
