@@ -8,32 +8,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
-        body { font-family: 'Rubik', sans-serif; }
-        .dropdown { position: relative; user-select: none; }
-        .dropdown-btn {
-            background-color: #2f3638;
-            padding: 12px 16px;
-            border-radius: 9999px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: space-between;
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #121515; /* Kembali ke warna latar belakang semula */
+            color: white;
         }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 110%;
-            left: 0;
-            right: 0;
-            background-color: #2f3638;
-            border-radius: 16px;
-            z-index: 10;
-            overflow: hidden;
-        }
-        .dropdown-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 16px;
-            cursor: pointer;
-        }
-        .dropdown-item:hover { background-color: #3f4749; }
         .overlay {
             position: fixed;top:0;left:0;right:0;bottom:0;
             background:rgba(0,0,0,0.7);
@@ -57,11 +36,10 @@
             font-size: 1rem;
             line-height: 1.4;
         }
-        /* Style untuk video YouTube */
         .youtube-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* Rasio 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             margin: 20px 0;
         }
@@ -74,112 +52,192 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
+        .payment-method-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .payment-method-item {
+            background-color: #2f3638;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .payment-method-item:hover {
+            background-color: #3f4749;
+            transform: scale(1.03);
+        }
+        .payment-method-item.selected {
+            background-color: #4f5a5c; /* Warna saat dipilih */
+            border: 2px solid #f9a825; /* Border kuning saat dipilih */
+            transform: scale(1.05);
+        }
+        .payment-method-item img {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 5px;
+        }
+        .payment-method-item p {
+            font-size: 0.8rem;
+            line-height: 1.2;
+            color: #ccc;
+        }
+        #payment-page {
+            display: none;
+        }
     </style>
 </head>
-<body class="bg-[#121515] text-white">
+<body>
 
-<header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
-    <button aria-label="Menu" id="menuBtn" class="text-white text-2xl">
-        <i class="fas fa-bars"></i>
-    </button>
-    <span class="text-[#f9a825] font-extrabold text-lg select-none">
-        robuxnow.xyz
-    </span>
-</header>
-
-<main class="px-5 py-4 space-y-5">
-    <div>
-        <label class="block mb-1" for="username">Username:</label>
-        <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none" 
-               placeholder="Contoh: Rey123" type="text" oninput="cekUsername()"/>
-        <div id="preview" class="mt-3"></div>
-    </div>
-
-    <div>
-        <label class="block mb-1" for="jumlah">Jumlah:</label>
-        <input id="jumlah" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
-               placeholder="R$" type="number" oninput="updateHarga()"/>
-    </div>
-
-    <div>
-        <label class="block mb-1" for="price">Price:</label>
-        <input id="price" class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" readonly/>
-    </div>
-
-    <div class="text-[#f9a825] font-normal text-lg">Metode Pembayaran</div>
-
-    <div class="dropdown" id="dropdown">
-        <div class="dropdown-btn" onclick="toggleDropdown()">
-            <span id="selected-method" class="text-gray-400">Pilih Metode</span>
-            <i class="fas fa-chevron-down text-gray-400"></i>
-        </div>
-        <div class="dropdown-content">
-            <div class="dropdown-item" data-value="qris" data-img="https://reygenteng.github.io/reybelirbx/belirobux/qris.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png" class="w-8 h-8"><span>QRIS</span>
-            </div>
-            <div class="dropdown-item" data-value="ovo" data-img="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png" class="w-8 h-8"><span>OVO</span>
-            </div>
-            <div class="dropdown-item" data-value="gopay" data-img="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png" class="w-8 h-8"><span>Gopay</span>
-            </div>
-            <div class="dropdown-item" data-value="dana" data-img="https://reygenteng.github.io/reybelirbx/belirobux/dana.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png" class="w-8 h-8"><span>Dana</span>
-            </div>
-            <div class="dropdown-item" data-value="linkaja" data-img="https://reygenteng.github.io/reybelirbx/belirobux/linkaja.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/linkaja.png" class="w-8 h-8"><span>LinkAja</span>
-            </div>
-            <div class="dropdown-item" data-value="alfamart" data-img="https://reygenteng.github.io/reybelirbx/belirobux/alfamart.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/alfamart.png" class="w-8 h-8"><span>Alfamart</span>
-            </div>
-            <div class="dropdown-item" data-value="indomaret" data-img="https://reygenteng.github.io/reybelirbx/belirobux/indomaret.png">
-                <img src="https://reygenteng.github.io/reybelirbx/belirobux/indomaret.png" class="w-8 h-8"><span>Indomaret</span>
-            </div>
-        </div>
-    </div>
-
-    <input type="hidden" id="metode" value="">
-
-    <div>
-        <label class="block mb-1" for="kupon">Kode Kupon:</label>
-        <div class="flex gap-2">
-            <input id="kupon" class="flex-grow bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
-                   placeholder="Masukkan kode kupon (opsional)"/>
-            <button type="button" class="bg-[#7f6a3a] rounded-full px-4 hover:bg-[#a3864f]" onclick="konfirmasiKupon()">Konfirmasi</button>
-        </div>
-    </div>
-
-    <div class="text-[#f9a825] font-normal text-lg pt-4 border-b border-[#2f3638] pb-3">
-        Payment Summary
-    </div>
-
-    <div class="space-y-3 border-b border-[#2f3638] pb-4" id="summary">
-        <div class="flex justify-between">
-            <span>Kupon</span><span id="kuponstatus">Tidak ada</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Discount</span><span id="disc">Rp 0</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Biaya Admin</span><span id="admin">Rp 0</span>
-        </div>
-        <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
-            <span>Total</span><span id="total">Rp 0</span>
-        </div>
-    </div>
-
-    <div class="flex gap-4 pb-6">
-        <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]" 
-                type="button" onclick="window.location.href='https://support.robuxnow.xyz'">
-            Customer Service
+<div id="main-page">
+    <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+        <button aria-label="Menu" id="menuBtn" class="text-white text-2xl">
+            <i class="fas fa-bars"></i>
         </button>
-        <button class="flex-grow bg-[#7f6a3a] rounded-full py-3 hover:bg-[#a3864f]" 
-                type="button" onclick="beliSekarang()">
-            Beli Sekarang
-        </button>
-    </div>
-</main>
+        <span class="text-[#f9a825] font-extrabold text-lg select-none">
+            robuxnow.xyz
+        </span>
+    </header>
 
+    <main class="px-5 py-4 space-y-5">
+        <div>
+            <label class="block mb-1" for="username">Username:</label>
+            <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+                   placeholder="Contoh: Rey123" type="text" oninput="cekUsername()"/>
+            <div id="preview" class="mt-3"></div>
+        </div>
+
+        <div>
+            <label class="block mb-1" for="jumlah">Jumlah:</label>
+            <input id="jumlah" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+                   placeholder="R$" type="number" oninput="updateHarga()"/>
+        </div>
+
+        <div>
+            <label class="block mb-1" for="price">Price:</label>
+            <input id="price" class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" readonly/>
+        </div>
+
+        <div class="text-[#f9a825] font-normal text-lg">Pilih Metode Pembayaran</div>
+
+        <h3 class="font-bold text-lg mt-4">E-Wallet</h3>
+        <div class="payment-method-grid">
+            <div class="payment-method-item" data-metode="gopay" onclick="selectPaymentMethod(this, 'gopay')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png" alt="Gopay">
+                <p>Gopay<br>Biaya: IDR 64</p>
+            </div>
+            <div class="payment-method-item" data-metode="dana" onclick="selectPaymentMethod(this, 'dana')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/dana.png" alt="Dana">
+                <p>Dana E-wallet<br>Biaya: IDR 87</p>
+            </div>
+            <div class="payment-method-item" data-metode="ovo" onclick="selectPaymentMethod(this, 'ovo')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/ovo.png" alt="OVO">
+                <p>OVO<br>Biaya: IDR 23</p>
+            </div>
+            <div class="payment-method-item" data-metode="linkaja" onclick="selectPaymentMethod(this, 'linkaja')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/linkaja.png" alt="LinkAja">
+                <p>LinkAja<br>Biaya: IDR 10000</p>
+            </div>
+            <div class="payment-method-item" data-metode="shopeepay" onclick="selectPaymentMethod(this, 'shopeepay')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/shopeepay.png" alt="ShopeePay">
+                <p>ShopeePay<br>Biaya: IDR 50</p>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-lg mt-4">QR Code</h3>
+        <div class="payment-method-grid">
+            <div class="payment-method-item" data-metode="qris" onclick="selectPaymentMethod(this, 'qris')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png" alt="QRIS">
+                <p>QRIS<br>Biaya: IDR 44</p>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-lg mt-4">Lain-lain</h3>
+        <div class="payment-method-grid">
+            <div class="payment-method-item" data-metode="alfamart" onclick="selectPaymentMethod(this, 'alfamart')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/alfamart.png" alt="Alfamart">
+                <p>Alfamart<br>Biaya: IDR 10000</p>
+            </div>
+            <div class="payment-method-item" data-metode="indomaret" onclick="selectPaymentMethod(this, 'indomaret')">
+                <img src="https://reygenteng.github.io/reybelirbx/belirobux/indomaret.png" alt="Indomaret">
+                <p>Indomaret<br>Biaya: IDR 10000</p>
+            </div>
+        </div>
+
+        <input type="hidden" id="metode" value="">
+        <input type="hidden" id="selected-image" value="">
+
+        <div class="space-y-3 pt-4 border-t border-[#2f3638]">
+            <div class="text-[#f9a825] font-normal text-lg">Payment Summary</div>
+            <div class="flex justify-between">
+                <span>Jumlah</span><span id="summary-jumlah">0</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Harga</span><span id="summary-harga">Rp 0</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Biaya Admin</span><span id="summary-admin-final">Rp 0</span>
+            </div>
+            <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
+                <span>Total</span><span id="summary-total-final">Rp 0</span>
+            </div>
+        </div>
+
+        <div class="flex gap-4 pb-6">
+            <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]"
+                    type="button" onclick="window.location.href='https://support.robuxnow.xyz'">
+                Customer Service
+            </button>
+            <button class="flex-grow bg-[#7f6a3a] rounded-full py-3 hover:bg-[#a3864f]"
+                    type="button" onclick="beliSekarang()">
+                Beli Sekarang
+            </button>
+        </div>
+    </main>
+</div>
+<div id="payment-page">
+    <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
+        <button onclick="hidePaymentPage()" class="text-white text-2xl">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <span class="text-[#f9a825] font-extrabold text-lg select-none">
+            robuxnow.xyz
+        </span>
+    </header>
+    <main class="px-5 py-4 space-y-5">
+        <div class="bg-[#2f3638] rounded-xl p-4 space-y-3 text-center">
+            <div id="payment-method-img" class="w-16 h-16 mx-auto mb-2 rounded-md"></div>
+            <h2 class="text-xl font-bold" id="payment-method-name"></h2>
+            <p>Biaya: <span id="payment-method-admin"></span></p>
+        </div>
+        <div class="bg-[#2f3638] rounded-xl p-4 space-y-3">
+            <div class="flex justify-between">
+                <span>Jumlah Robux:</span>
+                <span id="summary-robux-page2"></span>
+            </div>
+            <div class="flex justify-between">
+                <span>Harga:</span>
+                <span id="summary-harga-page2"></span>
+            </div>
+            <div class="flex justify-between">
+                <span>Biaya Admin:</span>
+                <span id="summary-admin-page2"></span>
+            </div>
+            <div class="flex justify-between text-lg font-bold text-[#f9a825]">
+                <span>Total Pembayaran:</span>
+                <span id="summary-total-page2"></span>
+            </div>
+        </div>
+        <div class="bg-[#2f3638] rounded-xl p-4 space-y-3 text-center">
+            <p>Silakan lakukan pembayaran sesuai jumlah di atas.</p>
+            <button class="w-full bg-[#f9a825] text-black rounded-full py-3 font-bold hover:bg-[#a3864f]" onclick="lanjutBayar()">
+                Bayar Sekarang
+            </button>
+        </div>
+    </main>
+</div>
 <div class="overlay" id="popupOverlay">
     <div class="popup" id="popupBox">
         <i class="fas fa-exclamation-triangle" style="font-size:50px;color:#ff6600;margin-bottom:10px;"></i>
@@ -192,7 +250,7 @@
 <div class="overlay" id="beliSekarangOverlay">
     <div class="popup" id="beliSekarangBox">
         <h2 class="text-xl font-bold">Buat Game Pass Senilai <span id="gamepassValue"></span></h2>
-        <button class="bg-[#f9a825] text-black rounded-full py-3 hover:bg-[#a3864f]" 
+        <button class="bg-[#f9a825] text-black rounded-full py-3 hover:bg-[#a3864f]"
                 onclick="window.open('https://www.roblox.com/develop','_blank')">
             Buat GamePass
         </button>
@@ -207,75 +265,99 @@
     </div>
 </div>
 
+<footer class="text-center mt-8 py-4 text-gray-500 text-sm">
+    <p>&copy; 2024 robuxnow.xyz. All Rights Reserved.</p>
+</footer>
+
 <script>
     let locked = false;
-    // Ini adalah kode yang aku tambahkan
-    const numbers = [
-        "6287887028120", // nomor 1
-        "6282148327806"  // nomor 2
-    ];
-    let kuponValid = null;
+    let selectedMethod = null; // Variabel untuk menyimpan metode pembayaran yang dipilih
 
-    // Fungsi pop-up umum
-    function showPopup(msg){
+    function showPopup(msg) {
         document.getElementById('popupMessage').innerText = msg;
         const overlay = document.getElementById('popupOverlay');
         const box = document.getElementById('popupBox');
         overlay.style.display = 'flex';
         setTimeout(() => box.classList.add('show'), 10);
     }
-    function closePopup(){
+    function closePopup() {
         const overlay = document.getElementById('popupOverlay');
         const box = document.getElementById('popupBox');
         box.classList.remove('show');
         setTimeout(() => overlay.style.display = 'none', 200);
     }
-
-    // Fungsi pop-up Beli Sekarang
-    function showBeliSekarangPopup(){
+    function showBeliSekarangPopup() {
         const overlay = document.getElementById('beliSekarangOverlay');
         const box = document.getElementById('beliSekarangBox');
         overlay.style.display = 'flex';
         setTimeout(() => box.classList.add('show'), 10);
     }
-    function closeBeliSekarangPopup(){
+    function closeBeliSekarangPopup() {
         const overlay = document.getElementById('beliSekarangOverlay');
         const box = document.getElementById('beliSekarangBox');
         box.classList.remove('show');
         setTimeout(() => overlay.style.display = 'none', 200);
     }
 
-    // Fungsionalitas lainnya...
-    function konfirmasiKupon() {
-        const kode = document.getElementById('kupon').value.trim().toUpperCase();
-        if (kode === "DISKON1K") {
-            kuponValid = { kode: "DISKON1K", potongan: 1000 };
-            showPopup("Kupon DISKON1K berhasil! Anda mendapatkan diskon Rp1.000.");
-        } else if (kode === "") {
-            kuponValid = null;
-            showPopup("Tidak ada kupon yang dimasukkan.");
-        } else {
-            kuponValid = null;
-            showPopup("Kupon tidak valid.");
-        }
+    const biayaAdmin = {
+        'qris': 44, 'ovo': 23, 'gopay': 64, 'dana': 87,
+        'linkaja': 10000, 'alfamart': 10000, 'indomaret': 10000,
+        'shopeepay': 50
+    };
+
+    // Fungsi untuk memilih metode pembayaran
+    function selectPaymentMethod(element, metode) {
+        // Hapus kelas 'selected' dari semua item
+        const allItems = document.querySelectorAll('.payment-method-item');
+        allItems.forEach(item => item.classList.remove('selected'));
+
+        // Tambahkan kelas 'selected' ke item yang diklik
+        element.classList.add('selected');
+
+        // Simpan metode yang dipilih ke variabel global
+        selectedMethod = metode;
+
+        // Perbarui ringkasan harga
         updateHarga();
     }
 
-    function toggleDropdown() {
-        const content = document.querySelector(".dropdown-content");
-        content.style.display = content.style.display === "block" ? "none" : "block";
+    function updateHarga() {
+        const jumlah = parseInt(document.getElementById('jumlah').value);
+        const priceField = document.getElementById('price');
+        const summaryJumlah = document.getElementById('summary-jumlah');
+        const summaryHarga = document.getElementById('summary-harga');
+        const summaryAdminFinal = document.getElementById('summary-admin-final');
+        const summaryTotalFinal = document.getElementById('summary-total-final');
+
+        if (isNaN(jumlah)||jumlah<1){
+            priceField.value="";
+            summaryJumlah.innerText="0";
+            summaryHarga.innerText="Rp 0";
+            summaryAdminFinal.innerText="Rp 0";
+            summaryTotalFinal.innerText="Rp 0";
+            return;
+        }
+
+        let harga = jumlah * 140;
+        let admin = 0;
+        let total = harga;
+
+        // Cek apakah ada metode pembayaran yang dipilih
+        if (selectedMethod) {
+            admin = biayaAdmin[selectedMethod];
+            total = harga + admin;
+        }
+
+        priceField.value = "Rp " + harga.toLocaleString('id-ID');
+        summaryJumlah.innerText = jumlah;
+        summaryHarga.innerText = "Rp " + harga.toLocaleString('id-ID');
+        summaryAdminFinal.innerText = "Rp " + admin.toLocaleString('id-ID');
+        summaryTotalFinal.innerText = "Rp " + total.toLocaleString('id-ID');
     }
-    document.querySelectorAll(".dropdown-item").forEach(item=>{
-        item.addEventListener("click", ()=>{
-            const val = item.getAttribute("data-value");
-            const img = item.getAttribute("data-img");
-            const text = item.innerText;
-            document.getElementById("selected-method").innerHTML = `<div class='flex items-center gap-2'><img src="${img}" class="w-6 h-6">${text}</div>`;
-            document.getElementById("metode").value = val;
-            document.querySelector(".dropdown-content").style.display = "none";
-            updateHarga();
-        });
-    });
+
+    function konfirmasiKupon() {
+        showPopup("Fitur ini sedang dalam pengembangan, ya! Maaf atas ketidaknyamanannya. 😅");
+    }
 
     async function cekUsername() {
         if (locked) return;
@@ -305,86 +387,43 @@
         else box.classList.remove("ring-2","ring-yellow-500");
     }
 
-    function updateHarga() {
-        const jumlah = parseInt(document.getElementById('jumlah').value);
-        const metode = document.getElementById('metode').value;
-        const priceField = document.getElementById('price');
-        const adminField = document.getElementById('admin');
-        const totalField = document.getElementById('total');
-        const discField = document.getElementById('disc');
-        const kuponStatus = document.getElementById('kuponstatus');
-
-        if (isNaN(jumlah)||jumlah<1){
-            priceField.value="";
-            adminField.innerText="Rp 0";
-            totalField.innerText="Rp 0";
-            discField.innerText="Rp 0";
-            kuponStatus.innerText="Tidak ada";
-            return;
-        }
-
-        let harga = jumlah * 140;
-        let diskon = 0;
-        let kuponTeks = "Tidak ada";
-
-        if (kuponValid && kuponValid.kode === "DISKON1K") {
-            diskon = kuponValid.potongan;
-            kuponTeks = "DISKON1K (Rp1.000)";
-        }
-
-        let admin = 0;
-        if (metode === "qris") {
-            admin = 44;
-        } else if (metode === "ovo") {
-            admin = 23;
-        } else if (metode === "gopay") {
-            admin = 64;
-        } else if (metode === "dana") {
-            admin = 87;
-        } else if (metode === "alfamart" || metode === "indomaret" || metode === "linkaja") {
-            admin = 10000;
-        }
-
-        let total = (harga - diskon) + admin;
-
-        priceField.value = "Rp " + harga.toLocaleString('id-ID');
-        discField.innerText = "Rp " + diskon.toLocaleString('id-ID');
-        kuponStatus.innerText = kuponTeks;
-        adminField.innerText = "Rp " + admin.toLocaleString('id-ID');
-        totalField.innerText = "Rp " + total.toLocaleString('id-ID');
-    }
-
     function beliSekarang(){
         const username=document.getElementById('username').value.trim();
         const jumlah=parseInt(document.getElementById('jumlah').value);
-        const metode=document.getElementById('metode').value;
+
+        if(!selectedMethod) {
+             showPopup("Pilih metode pembayaran terlebih dahulu ya! 💳");
+             return;
+        }
 
         if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
         if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
-        if(!metode){showPopup("Pilih metode pembayaran dulu!");return;}
 
         const totalGamepass=Math.ceil(jumlah/0.7);
         document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
         showBeliSekarangPopup();
     }
-    
+
     function lanjutBeli() {
         const username=document.getElementById('username').value.trim();
         const jumlah=parseInt(document.getElementById('jumlah').value);
-        const metode=document.getElementById('metode').value;
-        
-        // Kode baru untuk memilih nomor secara acak
+
+        const metode=selectedMethod;
+
         const numbers = [
-            "6287887028120", // nomor 1
-            "6282148327806"  // nomor 2
+            "6287887028120",
+            "6282148327806"
         ];
-        
-        const randomNumberIndex = Math.random() < 0.5 ? 0 : 1; // 50% ke nomor 1, 50% ke nomor 2
+
+        const randomNumberIndex = Math.random() < 0.5 ? 0 : 1;
         const selectedNumber = numbers[randomNumberIndex];
-        
+
         const wa = `https://wa.me/${selectedNumber}?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
         window.location.href = wa;
     }
+
+    document.addEventListener('DOMContentLoaded', updateHarga);
+
 </script>
 </body>
 </html>
