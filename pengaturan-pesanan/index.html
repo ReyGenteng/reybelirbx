@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manajemen Pesanan Robux</title>
+<style>
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+h2 {
+  color: #ffd369;
+  margin-bottom: 25px;
+}
+.form-section {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  text-align: left;
+}
+.form-section h3 {
+  margin-top: 0;
+  color: #87ceeb;
+}
+input, select, button {
+  width: calc(100% - 24px);
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #4a69bd;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 16px;
+}
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+select {
+  width: 100%;
+}
+button {
+  background: #ffd369;
+  color: #1e3c72;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+button.delete-btn {
+  background: #ff6b6b;
+  color: #fff;
+}
+button.delete-btn:hover {
+  background: #e55039;
+}
+button:hover {
+  background: #ffb347;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+#status {
+  margin-top: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+.success {
+  color: #4CAF50;
+}
+.error {
+  color: #FF5722;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Manajemen Pesanan Robux ⚙️</h2>
+
+  <div class="form-section">
+    <h3>Hapus Semua Pesanan</h3>
+    <p style="color: #ccc; font-size: 14px;">Hati-hati! Ini akan menghapus SEMUA pesanan di bawah username ini.</p>
+    <input id="delete-all-username" placeholder="Username Roblox">
+    <button class="delete-btn" onclick="hapusSemuaPesanan()">Hapus Semua</button>
+  </div>
+  
+  <div class="form-section">
+    <h3>Hapus Pesanan</h3>
+    <p style="color: #ccc; font-size: 14px;">Masukkan username dan ID pesanan untuk dihapus.</p>
+    <input id="delete-username" placeholder="Username Roblox">
+    <input id="delete-orderid" placeholder="ID Pesanan">
+    <button class="delete-btn" onclick="hapusPesanan()">Hapus Pesanan</button>
+  </div>
+  
+  <div class="form-section">
+    <h3>Ganti Status Pesanan</h3>
+    <p style="color: #ccc; font-size: 14px;">Ubah status pesanan ke status yang baru.</p>
+    <input id="update-username" placeholder="Username Roblox">
+    <input id="update-orderid" placeholder="ID Pesanan">
+    <select id="update-status">
+      <option value="Menunggu">Menunggu dikirim</option>
+      <option value="Dikirim">Dikirim</option>
+      <option value="Selesai">Selesai</option>
+    </select>
+    <button onclick="updateStatus()">Ganti Status</button>
+  </div>
+
+  <p id="status"></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, remove, update, get, child } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
+  authDomain: "reystore-support.firebaseapp.com",
+  databaseURL: "https://reystore-support-default-rtdb.firebaseio.com",
+  projectId: "reystore-support",
+  storageBucket: "reystore-support.firebasestorage.app",
+  messagingSenderId: "446513200960",
+  appId: "1:446513200960:web:cbd40ca4315a8bf47044a5",
+  measurementId: "G-YEBFKLREK5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const statusEl = document.getElementById("status");
+
+function showStatus(message, isSuccess) {
+  statusEl.innerText = message;
+  statusEl.className = isSuccess ? "success" : "error";
+}
+
+window.hapusPesanan = function() {
+  const username = document.getElementById("delete-username").value.trim().toLowerCase();
+  const orderId = document.getElementById("delete-orderid").value.trim();
+
+  if (!username || !orderId) {
+    showStatus("⚠️ Harap lengkapi username dan ID pesanan!", false);
+    return;
+  }
+  
+  const orderRef = ref(db, `pesanan/${username}/${orderId}`);
+  
+  get(orderRef).then(snapshot => {
+    if (!snapshot.exists()) {
+      showStatus("❌ Pesanan tidak ditemukan!", false);
+      return;
+    }
+    
+    remove(orderRef).then(() => {
+      showStatus(`✅ Pesanan dengan ID ${orderId} berhasil dihapus!`, true);
+      document.getElementById("delete-username").value = '';
+      document.getElementById("delete-orderid").value = '';
+    }).catch(error => {
+      showStatus(`❌ Gagal menghapus pesanan: ${error.message}`, false);
+    });
+  });
+}
+
+// Fungsi BARU untuk menghapus semua pesanan
+window.hapusSemuaPesanan = function() {
+  const username = document.getElementById("delete-all-username").value.trim().toLowerCase();
+  
+  if (!username) {
+    showStatus("⚠️ Harap lengkapi username!", false);
+    return;
+  }
+
+  // Konfirmasi sebelum menghapus semua
+  if (!confirm(`Apa kamu yakin ingin menghapus SEMUA pesanan untuk username '${username}'?`)) {
+    showStatus("Aksi dibatalkan.", false);
+    return;
+  }
+  
+  const userRef = ref(db, `pesanan/${username}`);
+  
+  get(userRef).then(snapshot => {
+    if (!snapshot.exists()) {
+      showStatus("❌ Tidak ada pesanan untuk username ini.", false);
+      return;
+    }
+    
+    remove(userRef).then(() => {
+      showStatus(`✅ SEMUA pesanan untuk username '${username}' berhasil dihapus!`, true);
+      document.getElementById("delete-all-username").value = '';
+    }).catch(error => {
+      showStatus(`❌ Gagal menghapus semua pesanan: ${error.message}`, false);
+    });
+  });
+}
+
+window.updateStatus = function() {
+  const username = document.getElementById("update-username").value.trim().toLowerCase();
+  const orderId = document.getElementById("update-orderid").value.trim();
+  const newStatusText = document.getElementById("update-status").value;
+
+  if (!username || !orderId) {
+    showStatus("⚠️ Harap lengkapi username dan ID pesanan!", false);
+    return;
+  }
+  
+  const orderRef = ref(db, `pesanan/${username}/${orderId}`);
+
+  get(orderRef).then(snapshot => {
+    if (!snapshot.exists()) {
+      showStatus("❌ Pesanan tidak ditemukan!", false);
+      return;
+    }
+    
+    update(orderRef, {
+      status: newStatusText
+    }).then(() => {
+      showStatus(`✅ Status pesanan ${orderId} berhasil diubah menjadi ${newStatusText}!`, true);
+      document.getElementById("update-username").value = '';
+      document.getElementById("update-orderid").value = '';
+    }).catch(error => {
+      showStatus(`❌ Gagal mengubah status: ${error.message}`, false);
+    });
+  });
+}
+</script>
+</body>
+</html>
