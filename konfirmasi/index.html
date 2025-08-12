@@ -3,44 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Konfirmasi Top-up Robux</title>
+<title>Konfirmasi Pesanan Robux</title>
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color: #fff; display: flex;
-  align-items: center; justify-content: center;
-  height: 100vh; margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
 }
 .container {
-  background: rgba(255,255,255,0.1);
-  padding: 20px; border-radius: 15px;
-  max-width: 400px; width: 90%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 450px;
+  width: 90%;
   text-align: center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+h2 {
+  color: #ffd369;
+  margin-bottom: 25px;
 }
 input, button {
-  width: 100%; padding: 10px; margin: 8px 0;
-  border: none; border-radius: 8px;
+  width: calc(100% - 24px);
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #4a69bd;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 16px;
+}
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 button {
-  background: #ffd369; color: #222; font-weight: bold;
+  width: 100%;
+  background: #ffd369;
+  color: #1e3c72;
+  font-weight: bold;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
 }
-button:hover {background: #ffb347;}
+button:hover {
+  background: #ffb347;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+#status {
+  margin-top: 20px;
+  font-weight: bold;
+}
+.success {
+  color: #4CAF50;
+}
+.error {
+  color: #FF5722;
+}
 </style>
 </head>
 <body>
 <div class="container">
-  <h2>Konfirmasi Pesanan</h2>
-  <input id="username" placeholder="Username Roblox">
+  <h2>Konfirmasi Pesanan Robux Baru 📝</h2>
+  <input id="username" placeholder="Masukkan Username Roblox">
   <input id="jumlah" type="number" placeholder="Jumlah Robux">
-  <button onclick="simpan()">Simpan</button>
+  <button onclick="simpan()">Simpan Pesanan</button>
   <p id="status"></p>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
@@ -64,17 +104,32 @@ window.simpan = function() {
   const username = document.getElementById("username").value.trim();
   const jumlah = parseInt(document.getElementById("jumlah").value);
   const statusEl = document.getElementById("status");
-  if (!username || !jumlah) { alert("Lengkapi data!"); return; }
+  statusEl.innerText = '';
 
-  const waktuMulai = Date.now();
-  const lama = randomHari();
+  if (!username || !jumlah || jumlah <= 0) {
+    statusEl.innerText = "Lengkapi data dengan benar!";
+    statusEl.className = "error";
+    return;
+  }
+  
+  const userOrdersRef = ref(db, 'pesanan/' + username.toLowerCase());
+  const newOrderRef = push(userOrdersRef);
 
-  set(ref(db, 'pesanan/' + username.toLowerCase()), {
-    username, jumlah, waktuMulai, lama
+  set(newOrderRef, {
+    orderId: newOrderRef.key,
+    username,
+    jumlah,
+    waktuMulai: Date.now(),
+    lama: randomHari(),
+    status: "Menunggu"
   }).then(()=>{
-    statusEl.innerText = "Pesanan berhasil disimpan!";
+    statusEl.innerText = `Pesanan ${newOrderRef.key} berhasil disimpan! 🎉`;
+    statusEl.className = "success";
+    document.getElementById("username").value = '';
+    document.getElementById("jumlah").value = '';
   }).catch(err=>{
-    statusEl.innerText = "Gagal: " + err;
+    statusEl.innerText = "Gagal menyimpan: " + err.message;
+    statusEl.className = "error";
   });
 }
 </script>
