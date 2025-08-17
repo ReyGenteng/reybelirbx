@@ -1,82 +1,234 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="keywords" content="robux, robux now, robuxnow, robux sekarang, topup robux, robux murah, robux aman, robux cepat">
-<meta name="description" content="RobuxNow Adalah tempat topup robux via gamepass teraman & tercepat serta termurah sejak 2025. Garansi 100% aman, cepat, dipercaya ribuan gamer dan youtuber © 2025 RobuxNow.">
-<title>RobuxNow - Home</title>
-<style>
-* {margin:0;padding:0;box-sizing:border-box;}
-body {
-  height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  font-family:'Segoe UI',Arial,sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  color:#fff;
-}
-.container {
-  position:relative;
-  width:100%;
-  max-width:420px;
-  text-align:center;
-  animation:fadeIn 1s ease;
-  z-index:2;
-}
-h1 {
-  font-size:34px;
-  color:#ffd369;
-  margin-bottom:20px;
-  text-shadow:0 0 10px rgba(255,211,105,0.6);
-}
-button {
-  width:100%;
-  background:linear-gradient(135deg,#ffd369,#ffb74d);
-  color:#222;
-  border:none;
-  padding:14px;
-  margin:10px 0;
-  font-size:17px;
-  font-weight:bold;
-  border-radius:14px;
-  cursor:pointer;
-  transition:transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow:0 0 10px rgba(255,183,77,0.4);
-}
-button:hover {
-  transform:scale(1.06);
-  box-shadow:0 0 20px rgba(255,183,77,0.8);
-}
-.roblox-img {
-  position:absolute;
-  top:50%;
-  width:180px;
-  transform:translateY(-50%);
-  mix-blend-mode:screen; /* efek blend hijau jadi samar */
-  object-fit:contain;
-  z-index:1;
-}
-.roblox-left {left:-60px;animation:float 3s ease-in-out infinite;}
-.roblox-right {right:-60px;animation:float 3s ease-in-out infinite;animation-delay:1.5s;}
-@keyframes float {
-  0%,100%{transform:translateY(-50%) translateX(0);}
-  50%{transform:translateY(-55%) translateX(5px);}
-}
-@keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="beli robux, robux murah, jual robux, robux terpercaya, roblox, top up robux, robux aman, robux instant, robux preorder, robuxnow, robux now, robux ku, robux sekarang">
+    <meta name="description" content="RobuxNow.xyz adalah situs terpercaya untuk membeli Robux dengan harga termurah dan proses tercepat. Kami menyediakan berbagai metode top up Robux yang aman dan resmi, termasuk Robux Instant, Preorder, Via Login, dan Gift Gamecard. Kunjungi kami untuk pengalaman jual beli Robux yang terjamin asli dan aman.">
+    
+    <title>RobuxNow.xyz - Jual Robux Terpercaya</title>
+    <link rel="icon" type="image/x-icon" href="https://reygenteng.github.io/reybelirbx/favicon.ico">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #ffffff; /* Putih bersih */
+            color: #333; /* Abu-abu gelap */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            text-align: center;
+            /* Gaya untuk background gambar */
+            background-image: url('https://reygenteng.github.io/reybelirbx/char1.png'), url('https://reygenteng.github.io/reybelirbx/char2.png');
+            background-repeat: no-repeat;
+            background-position: left bottom, right top;
+            background-size: 300px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            padding: 4rem 1rem 2rem;
+            background-color: #f8f8f8; /* Abu-abu sangat muda */
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .header img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .header h1 {
+            color: #222;
+            font-size: 2.8em;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #777;
+            font-size: 1.1em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* New header style with logo */
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #444;
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95em;
+        }
+
+        .btn {
+            background-color: #444; /* Abu-abu tua */
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #222; /* Hitam */
+        }
+
+        .status {
+            font-weight: 600;
+            color: #999;
+            display: block;
+            margin-top: 1rem;
+        }
+
+        .chat-cs-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #444;
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+        }
+        
+        /* Gaya untuk Footer Premium */
+        .footer {
+            background-color: #f0f0f0; /* Abu-abu sangat muda */
+            color: #666; /* Abu-abu tua */
+            padding: 3rem 1rem;
+        }
+
+        .footer h3 {
+            color: #222; /* Hitam */
+            font-size: 1.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer p, .footer a {
+            color: #777; /* Abu-abu */
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .footer a:hover {
+            color: #222;
+            text-decoration: none;
+        }
+
+        .footer .email {
+            margin: 1rem 0;
+            display: inline-block;
+        }
+        .copyright {
+            margin-top: 2rem;
+            border-top: 1px solid #ccc;
+            padding-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
-  <img src="char1.png" alt="Roblox kiri" class="roblox-img roblox-left">
-  <img src="char2.png" alt="Roblox kanan" class="roblox-img roblox-right">
 
-  <div class="container">
-    <h1>RobuxNow</h1>
-    <button onclick="window.location.href='belirobux/'">Beli Robux</button>
-    <button onclick="window.location.href='invoice'">Cek Pesanan</button>
-    <button onclick="window.location.href='https://support.robuxnow.xyz'">Customer Service</button>
-  </div>
+    <div class="header">
+        <div class="header-logo-container">
+            <img src="https://reygenteng.github.io/reybelirbx/favicon.ico" alt="Logo RobuxNow.xyz">
+            <h1>RobuxNow.xyz</h1>
+        </div>
+        <p>Pilih tipe Robux yang kamu mau, sesuaikan dengan isi dompetmu, stok sabarmu, atau sekadar ikut kata hati—bebas, kamu pilih sendiri!</p>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="card-grid">
+                <div class="card">
+                    <h2>Robux Instant Pending</h2>
+                    <p>Dapatkan Robux lebih cepat dengan metode Gamepass! Proses pengiriman estimasi 6-7 hari. Cocok untuk Kamu yang ingin Robux segera masuk ke akun.</p>
+                    <a href="/belirobux" class="btn">Beli Sekarang</a>
+                </div>
+
+                <div class="card">
+                    <h2>Robux Preorder</h2>
+                    <p>Pesan Robux dengan harga termurah! Proses pengiriman estimasi 8-10 hari. Ideal untuk Kamu yang tidak terburu-buru dan mencari harga paling ekonomis.</p>
+                    <a href="/belirobux" class="btn">Beli Sekarang</a>
+                </div>
+
+                <div class="card">
+                    <h2>Robux Via Login</h2>
+                    <p>Beli Robux jadi makin gampang, cukup pakai username dan password. Gak pakai ribet, gak pakai lama!</p>
+                    <a href="#" class="btn" style="pointer-events: none; opacity: 0.6;">Coming Soon!</a>
+                </div>
+
+                <div class="card">
+                    <h2>Robux Gift Gamecard</h2>
+                    <p>Dapatkan kode Robux Gift Gamecard yang bisa Anda redeem sendiri. Fleksibel untuk digunakan kapan saja atau diberikan sebagai hadiah.</p>
+                    <a href="#" class="btn" style="pointer-events: none; opacity: 0.6;">Coming Soon!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="https://support.robuxnow.xyz/" class="chat-cs-btn">💬</a>
+    
+    <footer class="footer">
+        <div class="container">
+            <h3>RobuxNow.xyz</h3>
+            <p>Situs ini menyajikan berbagai artikel dan tutorial menarik seputar game online. Dapatkan tips, trik, dan informasi terbaru langsung dari sumbernya!</p>
+            <p class="email"> <a href="mailto:info@robuxnow.xyz">Info@Robuxnow.xyz</a></p>
+            <div class="copyright">
+                <p>Copyright © 2025 RobuxNow.xyz</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
