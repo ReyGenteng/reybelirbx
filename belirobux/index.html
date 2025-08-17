@@ -3,16 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="beli robux, robux murah, jual robux, top up robux, roblox, robuxnow, robuxnow.xyz">
+    <meta name="description" content="Situs RobuxNow.xyz adalah tempat top up robux Roblox dengan harga termurah dan proses cepat. Aman, terpercaya, dan mudah digunakan.">
     <title>RobuxNow.xyz - Buy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link rel="icon" type="image/x-icon" href="https://reygenteng.github.io/reybelirbx/favicon.ico">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
         body {
-            font-family: 'Rubik', sans-serif;
-            background-color: #121515; /* Kembali ke warna latar belakang semula */
-            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
         }
+
+        .header {
+            padding: 2rem 1rem;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        .header-logo-container img {
+            max-width: 80px;
+            height: auto;
+        }
+
+        .header h1 {
+            color: #222;
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .header p {
+            color: #777;
+            font-size: 1.1em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         .overlay {
             position: fixed;top:0;left:0;right:0;bottom:0;
             background:rgba(0,0,0,0.7);
@@ -20,21 +63,27 @@
             z-index:999;
         }
         .popup {
-            background:#212b2c;color:white;padding:25px;border-radius:10px;
+            background:#ffffff;color:#333;padding:25px;border-radius:10px;
             width:90%;max-width:400px;text-align:center;transform:scale(0.7);
             transition:transform 0.3s ease, opacity 0.3s ease;
             opacity: 0;
         }
         .popup.show { transform:scale(1); opacity: 1; }
-        .popup h2 { color:#f9a825;margin-bottom:10px; }
+        .popup h2 { color:#222;margin-bottom:10px; }
         .popup button {
             margin-top:10px;border:none;cursor:pointer;padding:12px 20px;border-radius:9999px;
             width: 100%;
+            background-color: #444; color: white;
+            transition: background-color 0.3s;
+        }
+        .popup button:hover {
+            background-color: #222;
         }
         .popup .info-message {
             margin-bottom: 20px;
             font-size: 1rem;
             line-height: 1.4;
+            color: #666;
         }
         .youtube-container {
             position: relative;
@@ -56,22 +105,24 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            margin-top: 1rem;
         }
         .payment-method-item {
-            background-color: #2f3638;
+            background-color: #f0f0f0;
             border-radius: 8px;
             padding: 10px;
             cursor: pointer;
             text-align: center;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            border: 2px solid transparent;
         }
         .payment-method-item:hover {
-            background-color: #3f4749;
+            background-color: #e5e5e5;
             transform: scale(1.03);
         }
         .payment-method-item.selected {
-            background-color: #4f5a5c; /* Warna saat dipilih */
-            border: 2px solid #f9a825; /* Border kuning saat dipilih */
+            background-color: #e5e5e5;
+            border: 2px solid #444;
             transform: scale(1.05);
         }
         .payment-method-item img {
@@ -82,47 +133,106 @@
         .payment-method-item p {
             font-size: 0.8rem;
             line-height: 1.2;
-            color: #ccc;
+            color: #666;
         }
         #payment-page {
             display: none;
+        }
+
+        .input-form-card {
+            background-color: #f8f8f8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .input-field {
+            width: calc(100% - 40px);
+            background-color: #ffffff;
+            border-radius: 9999px;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            color: #333;
+            margin-top: 5px;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #444;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            padding-bottom: 1.5rem;
+        }
+        .btn {
+            flex-grow: 1;
+            background-color: #444;
+            color: white;
+            border-radius: 9999px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #222;
+        }
+        .btn-outline {
+            flex-grow: 1;
+            background-color: transparent;
+            color: #444;
+            border: 2px solid #444;
+            border-radius: 9999px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-outline:hover {
+            background-color: #444;
+            color: white;
+        }
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #444;
+            text-align: center;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
 
 <div id="main-page">
-    <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
-        <button aria-label="Menu" id="menuBtn" class="text-white text-2xl">
-            <i class="fas fa-bars"></i>
-        </button>
-        <span class="text-[#f9a825] font-extrabold text-lg select-none">
-            robuxnow.xyz
-        </span>
+    <header class="header">
+        <div class="header-logo-container">
+            <img src="https://reygenteng.github.io/reybelirbx/favicon.ico" alt="Logo RobuxNow.xyz">
+            <h1>RobuxNow.xyz</h1>
+        </div>
     </header>
 
-    <main class="px-5 py-4 space-y-5">
-        <div>
+    <main class="container py-4 space-y-5">
+        <div class="input-form-card">
             <label class="block mb-1" for="username">Username:</label>
-            <input id="username" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+            <input id="username" class="input-field"
                    placeholder="Contoh: Rey123" type="text" oninput="cekUsername()"/>
             <div id="preview" class="mt-3"></div>
         </div>
 
-        <div>
+        <div class="input-form-card">
             <label class="block mb-1" for="jumlah">Jumlah:</label>
-            <input id="jumlah" class="w-full bg-[#2f3638] rounded-full py-3 px-5 placeholder-[#555e5e] focus:outline-none"
+            <input id="jumlah" class="input-field"
                    placeholder="R$" type="number" oninput="updateHarga()"/>
         </div>
 
-        <div>
+        <div class="input-form-card">
             <label class="block mb-1" for="price">Price:</label>
-            <input id="price" class="w-full bg-[#2f3638] rounded-full py-3 px-5 focus:outline-none" readonly/>
+            <input id="price" class="input-field" readonly/>
         </div>
 
-        <div class="text-[#f9a825] font-normal text-lg">Pilih Metode Pembayaran</div>
-
-        <h3 class="font-bold text-lg mt-4">E-Wallet</h3>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: #444; text-align: center;">Pilih Metode Pembayaran</h3>
         <div class="payment-method-grid">
             <div class="payment-method-item" data-metode="gopay" onclick="selectPaymentMethod(this, 'gopay')">
                 <img src="https://reygenteng.github.io/reybelirbx/belirobux/gopay.png" alt="Gopay">
@@ -146,7 +256,7 @@
             </div>
         </div>
 
-        <h3 class="font-bold text-lg mt-4">QR Code</h3>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: #444; text-align: center; margin-top: 2rem;">QR Code</h3>
         <div class="payment-method-grid">
             <div class="payment-method-item" data-metode="qris" onclick="selectPaymentMethod(this, 'qris')">
                 <img src="https://reygenteng.github.io/reybelirbx/belirobux/qris.png" alt="QRIS">
@@ -154,7 +264,7 @@
             </div>
         </div>
 
-        <h3 class="font-bold text-lg mt-4">Lain-lain</h3>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: #444; text-align: center; margin-top: 2rem;">Lain-lain</h3>
         <div class="payment-method-grid">
             <div class="payment-method-item" data-metode="alfamart" onclick="selectPaymentMethod(this, 'alfamart')">
                 <img src="https://reygenteng.github.io/reybelirbx/belirobux/alfamart.png" alt="Alfamart">
@@ -169,70 +279,68 @@
         <input type="hidden" id="metode" value="">
         <input type="hidden" id="selected-image" value="">
 
-        <div class="space-y-3 pt-4 border-t border-[#2f3638]">
-            <div class="text-[#f9a825] font-normal text-lg">Payment Summary</div>
-            <div class="flex justify-between">
-                <span>Jumlah</span><span id="summary-jumlah">0</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Harga</span><span id="summary-harga">Rp 0</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Biaya Admin</span><span id="summary-admin-final">Rp 0</span>
-            </div>
-            <div class="flex justify-between text-[#f9a825] text-lg font-extrabold">
-                <span>Total</span><span id="summary-total-final">Rp 0</span>
+        <div class="input-form-card" style="margin-top: 2rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: #444; text-align: center;">Payment Summary</h3>
+            <div style="font-size: 1rem; line-height: 1.5; color: #333;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Jumlah</span><span id="summary-jumlah">0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Harga</span><span id="summary-harga">Rp 0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Biaya Admin</span><span id="summary-admin-final">Rp 0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 1.125rem; font-weight: bold; color: #222;">
+                    <span>Total</span><span id="summary-total-final">Rp 0</span>
+                </div>
             </div>
         </div>
 
-        <div class="flex gap-4 pb-6">
-            <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]"
-                    type="button" onclick="window.location.href='https://support.robuxnow.xyz'">
+        <div class="button-group">
+            <button class="btn-outline" type="button" onclick="window.location.href='https://support.robuxnow.xyz'">
                 Customer Service
             </button>
-            <button class="flex-grow bg-[#7f6a3a] rounded-full py-3 hover:bg-[#a3864f]"
-                    type="button" onclick="beliSekarang()">
+            <button class="btn" type="button" onclick="beliSekarang()">
                 Beli Sekarang
             </button>
         </div>
     </main>
 </div>
 <div id="payment-page">
-    <header class="bg-[#212b2c] flex items-center gap-3 px-4 py-3">
-        <button onclick="hidePaymentPage()" class="text-white text-2xl">
+    <header class="header">
+        <button onclick="hidePaymentPage()" style="margin-right: auto; padding-left: 1rem; color: #444;">
             <i class="fas fa-arrow-left"></i>
         </button>
-        <span class="text-[#f9a825] font-extrabold text-lg select-none">
-            robuxnow.xyz
-        </span>
+        <span style="font-weight: bold; font-size: 1.25rem;">robuxnow.xyz</span>
     </header>
-    <main class="px-5 py-4 space-y-5">
-        <div class="bg-[#2f3638] rounded-xl p-4 space-y-3 text-center">
-            <div id="payment-method-img" class="w-16 h-16 mx-auto mb-2 rounded-md"></div>
-            <h2 class="text-xl font-bold" id="payment-method-name"></h2>
-            <p>Biaya: <span id="payment-method-admin"></span></p>
+    <main class="container py-4 space-y-5">
+        <div class="input-form-card" style="text-align: center;">
+            <div id="payment-method-img" style="width: 4rem; height: 4rem; margin: 0 auto 0.5rem; border-radius: 0.5rem; background-color: #e5e5e5;"></div>
+            <h2 style="font-size: 1.25rem; font-weight: bold;" id="payment-method-name"></h2>
+            <p style="color: #666;">Biaya: <span id="payment-method-admin"></span></p>
         </div>
-        <div class="bg-[#2f3638] rounded-xl p-4 space-y-3">
-            <div class="flex justify-between">
+        <div class="input-form-card">
+            <div style="display: flex; justify-content: space-between;">
                 <span>Jumlah Robux:</span>
                 <span id="summary-robux-page2"></span>
             </div>
-            <div class="flex justify-between">
+            <div style="display: flex; justify-content: space-between;">
                 <span>Harga:</span>
                 <span id="summary-harga-page2"></span>
             </div>
-            <div class="flex justify-between">
+            <div style="display: flex; justify-content: space-between;">
                 <span>Biaya Admin:</span>
                 <span id="summary-admin-page2"></span>
             </div>
-            <div class="flex justify-between text-lg font-bold text-[#f9a825]">
+            <div style="display: flex; justify-content: space-between; font-size: 1.125rem; font-weight: bold; color: #222;">
                 <span>Total Pembayaran:</span>
                 <span id="summary-total-page2"></span>
             </div>
         </div>
-        <div class="bg-[#2f3638] rounded-xl p-4 space-y-3 text-center">
-            <p>Silakan lakukan pembayaran sesuai jumlah di atas.</p>
-            <button class="w-full bg-[#f9a825] text-black rounded-full py-3 font-bold hover:bg-[#a3864f]" onclick="lanjutBayar()">
+        <div class="input-form-card" style="text-align: center;">
+            <p style="color: #666;">Silakan lakukan pembayaran sesuai jumlah di atas.</p>
+            <button class="btn" onclick="lanjutBayar()" style="margin-top: 1rem;">
                 Bayar Sekarang
             </button>
         </div>
@@ -249,29 +357,28 @@
 
 <div class="overlay" id="beliSekarangOverlay">
     <div class="popup" id="beliSekarangBox">
-        <h2 class="text-xl font-bold">Buat Game Pass Senilai <span id="gamepassValue"></span></h2>
-        <button class="bg-[#f9a825] text-black rounded-full py-3 hover:bg-[#a3864f]"
-                onclick="window.open('https://www.roblox.com/develop','_blank')">
+        <h2 style="font-size: 1.5em; font-weight: bold; color: #222;">Buat Game Pass Senilai <span id="gamepassValue" style="color: #f9a825;"></span></h2>
+        <button class="btn" onclick="window.open('https://www.roblox.com/develop','_blank')" style="background-color: #222; margin-top: 1rem;">
             Buat GamePass
         </button>
         <div class="youtube-container">
             <iframe src="https://www.youtube.com/embed/GCXRAvli2KE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <p class="text-gray-400 mb-4 text-sm">Klik Pass yang baru saja dibuat</p>
-        <div class="flex gap-4">
-            <button class="flex-grow bg-[#7f6a3a] rounded-full py-3" onclick="lanjutBeli()">Sudah Buat Gamepass</button>
-            <button class="flex-grow border border-[#f9a825] text-[#f9a825] rounded-full py-3 hover:bg-[#f9a825] hover:text-[#121515]" onclick="closeBeliSekarangPopup()">Kembali</button>
+        <p style="color: #666; margin-bottom: 1rem; font-size: 0.9em;">Klik Pass yang baru saja dibuat</p>
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn" style="flex-grow: 1;" onclick="lanjutBeli()">Sudah Buat Gamepass</button>
+            <button class="btn-outline" style="flex-grow: 1;" onclick="closeBeliSekarangPopup()">Kembali</button>
         </div>
     </div>
 </div>
 
-<footer class="text-center mt-8 py-4 text-gray-500 text-sm">
+<footer style="text-align: center; margin-top: 2rem; padding: 1.5rem 0; color: #777; font-size: 0.9rem; border-top: 1px solid #ccc;">
     <p>&copy; 2024 robuxnow.xyz. All Rights Reserved.</p>
 </footer>
 
 <script>
     let locked = false;
-    let selectedMethod = null; // Variabel untuk menyimpan metode pembayaran yang dipilih
+    let selectedMethod = null;
 
     function showPopup(msg) {
         document.getElementById('popupMessage').innerText = msg;
@@ -305,19 +412,11 @@
         'shopeepay': 50
     };
 
-    // Fungsi untuk memilih metode pembayaran
     function selectPaymentMethod(element, metode) {
-        // Hapus kelas 'selected' dari semua item
         const allItems = document.querySelectorAll('.payment-method-item');
         allItems.forEach(item => item.classList.remove('selected'));
-
-        // Tambahkan kelas 'selected' ke item yang diklik
         element.classList.add('selected');
-
-        // Simpan metode yang dipilih ke variabel global
         selectedMethod = metode;
-
-        // Perbarui ringkasan harga
         updateHarga();
     }
 
@@ -329,12 +428,12 @@
         const summaryAdminFinal = document.getElementById('summary-admin-final');
         const summaryTotalFinal = document.getElementById('summary-total-final');
 
-        if (isNaN(jumlah)||jumlah<1){
-            priceField.value="";
-            summaryJumlah.innerText="0";
-            summaryHarga.innerText="Rp 0";
-            summaryAdminFinal.innerText="Rp 0";
-            summaryTotalFinal.innerText="Rp 0";
+        if (isNaN(jumlah) || jumlah < 1) {
+            priceField.value = "";
+            summaryJumlah.innerText = "0";
+            summaryHarga.innerText = "Rp 0";
+            summaryAdminFinal.innerText = "Rp 0";
+            summaryTotalFinal.innerText = "Rp 0";
             return;
         }
 
@@ -342,7 +441,6 @@
         let admin = 0;
         let total = harga;
 
-        // Cek apakah ada metode pembayaran yang dipilih
         if (selectedMethod) {
             admin = biayaAdmin[selectedMethod];
             total = harga + admin;
@@ -353,10 +451,6 @@
         summaryHarga.innerText = "Rp " + harga.toLocaleString('id-ID');
         summaryAdminFinal.innerText = "Rp " + admin.toLocaleString('id-ID');
         summaryTotalFinal.innerText = "Rp " + total.toLocaleString('id-ID');
-    }
-
-    function konfirmasiKupon() {
-        showPopup("Fitur ini sedang dalam pengembangan, ya! Maaf atas ketidaknyamanannya. 😅");
     }
 
     async function cekUsername() {
@@ -376,15 +470,15 @@
             const thumbRes = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${id}&size=150x150&format=Png`);
             const thumbData = await thumbRes.json();
             const img = thumbData.data[0].imageUrl;
-            previewDiv.innerHTML = `<div class="flex items-center gap-3 border border-[#f9a825] rounded-full px-4 py-2 cursor-pointer" onclick="toggleLock()">
-                <img src="${img}" class="w-10 h-10 rounded-full"><span class="font-bold">${data.data[0].name}</span></div>`;
+            previewDiv.innerHTML = `<div style="display: flex; align-items: center; gap: 1rem; border: 2px solid #444; border-radius: 9999px; padding: 8px 16px; cursor: pointer; display: inline-flex;" onclick="toggleLock()">
+                <img src="${img}" style="width: 40px; height: 40px; border-radius: 9999px;"><span style="font-weight: bold; color: #444;">${data.data[0].name}</span></div>`;
         } catch {}
     }
     function toggleLock() {
         locked = !locked;
         const box = document.getElementById('preview').firstElementChild;
-        if (locked) box.classList.add("ring-2","ring-yellow-500");
-        else box.classList.remove("ring-2","ring-yellow-500");
+        if (locked) box.style.borderColor = "#f9a825";
+        else box.style.borderColor = "#444";
     }
 
     function beliSekarang(){
