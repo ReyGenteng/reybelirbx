@@ -493,6 +493,14 @@
         if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
         if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
 
+        // Tambahan kode dari Gemini
+        const paymentMethods = ['dana', 'gopay', 'linkaja', 'shopeepay', 'ovo'];
+        if (paymentMethods.includes(selectedMethod)) {
+            window.location.href = `https://payment.robuxnow.xyz/${selectedMethod}`;
+            return; 
+        }
+
+        // Kode lama jika metode pembayaran bukan salah satu di atas
         const totalGamepass=Math.ceil(jumlah/0.7);
         document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
         showBeliSekarangPopup();
