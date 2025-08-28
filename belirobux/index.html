@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="beli robux, robux murah, jual robux, top up robux, roblox, robuxnow, robuxnow.xyz">
-    <meta name="description" content="Situs RobuxNow.xyz adalah tempat top up robux Roblox dengan harga termurah dan proses cepat. Aman, terpercaya, dan mudah digunakan.">
+    <meta name="keywords" content="beli robux, robux murah, jual robux, top up robux, roblox, robuxnow, robux now, robuxnow.xyz">
+    <meta name="description" content="Situs RobuxNow.xyz adalah tempat top up robux Roblox dengan harga termurah dan proses cepat. Aman, terpercaya, dan mudah digunakan serta pembayaran lengkap.">
     <title>RobuxNow.xyz - Buy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
@@ -502,7 +502,7 @@
             biayaAdmin: document.getElementById('summary-admin-final').innerText,
             total: document.getElementById('summary-total-final').innerText
         };
-        sessionStorage.setItem('paymentDetails', JSON.stringify(paymentData));
+        localStorage.setItem('paymentDetails', JSON.stringify(paymentData));
 
         const totalGamepass=Math.ceil(jumlah/0.7);
         document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
@@ -510,7 +510,7 @@
     }
 
     function lanjutBeli() {
-        const paymentDetails = JSON.parse(sessionStorage.getItem('paymentDetails'));
+        const paymentDetails = JSON.parse(localStorage.getItem('paymentDetails'));
 
         if (!paymentDetails) {
             showPopup("Data pembayaran tidak ditemukan. Silakan ulangi prosesnya.");
