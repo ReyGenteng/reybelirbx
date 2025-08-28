@@ -484,8 +484,9 @@
     function beliSekarang(){
         const username=document.getElementById('username').value.trim();
         const jumlah=parseInt(document.getElementById('jumlah').value);
+        const metode = selectedMethod;
 
-        if(!selectedMethod) {
+        if(!metode) {
              showPopup("Pilih metode pembayaran terlebih dahulu ya! 💳");
              return;
         }
@@ -493,24 +494,38 @@
         if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
         if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
 
-        // Tambahan kode dari Gemini
-        const paymentMethods = ['dana', 'gopay', 'linkaja', 'shopeepay', 'ovo'];
-        if (paymentMethods.includes(selectedMethod)) {
-            window.location.href = `https://payment.robuxnow.xyz/${selectedMethod}`;
-            return; 
-        }
+        const paymentData = {
+            username: username,
+            jumlah: jumlah,
+            metode: metode,
+            harga: document.getElementById('summary-harga').innerText,
+            biayaAdmin: document.getElementById('summary-admin-final').innerText,
+            total: document.getElementById('summary-total-final').innerText
+        };
+        sessionStorage.setItem('paymentDetails', JSON.stringify(paymentData));
 
-        // Kode lama jika metode pembayaran bukan salah satu di atas
         const totalGamepass=Math.ceil(jumlah/0.7);
         document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
         showBeliSekarangPopup();
     }
 
     function lanjutBeli() {
-        const username=document.getElementById('username').value.trim();
-        const jumlah=parseInt(document.getElementById('jumlah').value);
+        const paymentDetails = JSON.parse(sessionStorage.getItem('paymentDetails'));
 
-        const metode=selectedMethod;
+        if (!paymentDetails) {
+            showPopup("Data pembayaran tidak ditemukan. Silakan ulangi prosesnya.");
+            return;
+        }
+
+        const username = paymentDetails.username;
+        const jumlah = paymentDetails.jumlah;
+        const metode = paymentDetails.metode;
+        
+        const paymentMethods = ['dana', 'gopay', 'linkaja', 'shopeepay', 'ovo'];
+        if (paymentMethods.includes(metode)) {
+            window.location.href = `https://payment.robuxnow.xyz`;
+            return;
+        }
 
         const numbers = [
             "6287887028120",
