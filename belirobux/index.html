@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="beli robux, robux murah, jual robux, top up robux, roblox, robuxnow, robux now, robuxnow.xyz">
-    <meta name="description" content="Situs RobuxNow.xyz adalah tempat top up robux Roblox dengan harga termurah dan proses cepat. Aman, terpercaya, dan mudah digunakan serta pembayaran lengkap.">
+    <meta name="keywords" content="beli robux, robux murah, jual robux, top up robux, roblox, robuxnow, robuxnow.xyz">
+    <meta name="description" content="Situs RobuxNow.xyz adalah tempat top up robux Roblox dengan harga termurah dan proses cepat. Aman, terpercaya, dan mudah digunakan.">
     <title>RobuxNow.xyz - Buy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
@@ -494,36 +494,22 @@
         if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
         if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
 
-        const paymentData = {
-            username: username,
-            jumlah: jumlah,
-            metode: metode,
-            harga: document.getElementById('summary-harga').innerText,
-            biayaAdmin: document.getElementById('summary-admin-final').innerText,
-            total: document.getElementById('summary-total-final').innerText
-        };
-        localStorage.setItem('paymentDetails', JSON.stringify(paymentData));
-
         const totalGamepass=Math.ceil(jumlah/0.7);
         document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
         showBeliSekarangPopup();
     }
 
     function lanjutBeli() {
-        const paymentDetails = JSON.parse(localStorage.getItem('paymentDetails'));
-
-        if (!paymentDetails) {
-            showPopup("Data pembayaran tidak ditemukan. Silakan ulangi prosesnya.");
-            return;
-        }
-
-        const username = paymentDetails.username;
-        const jumlah = paymentDetails.jumlah;
-        const metode = paymentDetails.metode;
+        const username = document.getElementById('username').value.trim();
+        const jumlah = parseInt(document.getElementById('jumlah').value);
+        const metode = selectedMethod;
+        const harga = document.getElementById('summary-harga').innerText;
+        const biayaAdmin = document.getElementById('summary-admin-final').innerText;
+        const total = document.getElementById('summary-total-final').innerText;
         
         const paymentMethods = ['dana', 'gopay', 'linkaja', 'shopeepay', 'ovo'];
         if (paymentMethods.includes(metode)) {
-            window.location.href = `https://payment.robuxnow.xyz`;
+            window.location.href = `https://payment.robuxnow.xyz/?username=${encodeURIComponent(username)}&jumlah=${encodeURIComponent(jumlah)}&metode=${encodeURIComponent(metode)}&harga=${encodeURIComponent(harga)}&admin=${encodeURIComponent(biayaAdmin)}&total=${encodeURIComponent(total)}`;
             return;
         }
 
@@ -531,7 +517,6 @@
             "6287887028120",
             "6282148327806"
         ];
-
         const randomNumberIndex = Math.random() < 0.5 ? 0 : 1;
         const selectedNumber = numbers[randomNumberIndex];
 
