@@ -83,14 +83,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/fireba
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
-  authDomain: "reystore-support.firebaseapp.com",
-  databaseURL: "https://reystore-support-default-rtdb.firebaseio.com",
-  projectId: "reystore-support",
-  storageBucket: "reystore-support.firebasestorage.app",
-  messagingSenderId: "446513200960",
-  appId: "1:446513200960:web:cbd40ca4315a8bf47044a5",
-  measurementId: "G-YEBFKLREK5"
+  apiKey: "AIzaSyDMrg2agHatw9REIXs0Pj-894UMhMB08NI",
+  authDomain: "databaseku-4e72e.firebaseapp.com",
+  databaseURL: "https://databaseku-4e72e-default-rtdb.firebaseio.com",
+  projectId: "databaseku-4e72e",
+  storageBucket: "databaseku-4e72e.firebasestorage.app",
+  messagingSenderId: "586627388924",
+  appId: "1:586627388924:web:8b39ecd9f5e5d34ee78e79",
+  measurementId: "G-JSP6R4FN49"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -98,7 +98,6 @@ const db = getDatabase(app);
 const hasilSemuaDiv = document.getElementById("hasil-semua");
 const loadingStatus = document.getElementById("loading-status");
 
-// Fungsi yang akan dijalankan secara real-time setiap kali ada perubahan data
 window.tampilkanSemuaPesanan = function() {
   const pesananRef = ref(db, 'pesanan');
   
@@ -113,11 +112,9 @@ window.tampilkanSemuaPesanan = function() {
     const semuaDataPesanan = snapshot.val();
     let invoicesHTML = '';
     
-    // Loop untuk setiap username
     for (const username in semuaDataPesanan) {
       const pesananPerUsername = semuaDataPesanan[username];
       
-      // Loop untuk setiap pesanan di bawah username tersebut
       for (const orderId in pesananPerUsername) {
         const data = pesananPerUsername[orderId];
         const statusText = data.status || "Menunggu";
@@ -145,7 +142,6 @@ window.tampilkanSemuaPesanan = function() {
   });
 }
 
-// Jalankan fungsi real-time saat halaman dimuat
 window.onload = tampilkanSemuaPesanan;
 </script>
 </body>
