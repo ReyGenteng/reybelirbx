@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobuxNow.xyz - Jual Robux Terpercaya</title>
+<meta name="keywords" content="beli robux, robux murah, jual robux, robux terpercaya, roblox, top up robux, robux aman, robux instant, robux preorder, robuxnow, robux now, robux ku, robux sekarang">
+<meta name="description" content="RobuxNow.xyz adalah situs terpercaya untuk membeli Robux dengan harga termurah dan proses tercepat. Kami menyediakan berbagai metode top up Robux yang aman dan resmi. Kunjungi kami untuk pengalaman jual beli Robux yang terjamin asli dan aman.">
+<link rel="icon" type="image/x-icon" href="https://reygenteng.github.io/reybelirbx/favicon.ico">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+    .container {
+        max-width: 500px;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.8s ease-out;
+    }
+    h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #ffd369;
+        text-shadow: 0 0 10px rgba(255, 211, 105, 0.6);
+        margin-bottom: 1rem;
+    }
+    .text-center { text-align: center; }
+    input, button {
+        width: 100%;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 0.5rem;
+    }
+    input {
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        outline: none;
+    }
+    input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    button {
+        font-weight: bold;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ffd369, #ffb74d);
+        color: #222;
+        border: none;
+    }
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 183, 77, 0.4);
+    }
+    .status-container {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        display: none;
+    }
+    #qrisImage {
+        width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    .text-sm { font-size: 0.875rem; }
+    .mt-4 { margin-top: 1rem; }
+    #message-box {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="text-center">
+        <h1>RobuxNow.xyz</h1>
+        <p class="text-white/80">Pembayaran Cepat dengan QRIS</p>
+    </div>
+
+    <!-- Area input nominal -->
+    <div class="mt-4">
+        <label for="nominalInput" class="block text-sm font-medium text-white/90">Nominal Deposit (IDR)</label>
+        <input type="number" id="nominalInput" placeholder="Masukkan nominal (cth: 10000)" class="mt-1">
+        <button id="createDepositBtn" class="mt-4">Buat Kode QRIS</button>
+    </div>
+
+    <!-- Area Status Pembayaran -->
+    <div id="statusContainer" class="status-container">
+        <h2 class="text-lg font-bold text-center mb-4 text-white">Status Pembayaran</h2>
+        <div id="qrCodeDisplay" class="text-center mb-4">
+            <!-- QR code akan muncul di sini -->
+        </div>
+        <p class="text-center text-sm mb-2 text-white/80">ID Transaksi:</p>
+        <p id="transactionId" class="text-center text-lg font-bold mb-4 text-yellow-300"></p>
+        <button id="checkStatusBtn">Cek Status Pembayaran</button>
+        <button id="cancelDepositBtn" class="mt-2" style="background: linear-gradient(135deg, #ef4444, #dc2626);">Batalkan Transaksi</button>
+    </div>
+
+</div>
+
+<!-- Message Box untuk notifikasi -->
+<div id="message-box"></div>
+
+<script>
+    const API_KEY = 'VPedia_z7i0gmtynfq53leu';
+    const API_DEPOSIT_URL = 'https://v-pedia.web.id/h2h/deposit/create';
+    const API_STATUS_URL = 'https://v-pedia.web.id/h2h/deposit/status';
+    const API_CANCEL_URL = 'https://v-pedia.web.id/h2h/deposit/cancel';
+
+    const nominalInput = document.getElementById('nominalInput');
+    const createDepositBtn = document.getElementById('createDepositBtn');
+    const statusContainer = document.getElementById('statusContainer');
+    const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+    const transactionIdDisplay = document.getElementById('transactionId');
+    const checkStatusBtn = document.getElementById('checkStatusBtn');
+    const cancelDepositBtn = document.getElementById('cancelDepositBtn');
+    const messageBox = document.getElementById('message-box');
+
+    let currentTransactionId = null;
+    let pollInterval = null;
+
+    function showMessage(message, duration = 3000) {
+        messageBox.textContent = message;
+        messageBox.style.display = 'block';
+        setTimeout(() => {
+            messageBox.style.display = 'none';
+        }, duration);
+    }
+
+    createDepositBtn.addEventListener('click', async () => {
+        const nominal = parseInt(nominalInput.value);
+
+        if (isNaN(nominal) || nominal <= 0) {
+            showMessage('Nominal tidak valid!');
+            return;
+        }
+
+        // PERBAIKAN: API Key dipindahkan ke query parameter
+        const params = new URLSearchParams({
+            nominal: nominal,
+            metode: 'QRISFAST',
+            apikey: API_KEY
+        });
+
+        try {
+            const response = await fetch(`${API_DEPOSIT_URL}?${params}`, {
+                method: 'GET',
+                // Header X-APIKEY tidak lagi dibutuhkan karena sudah ada di URL
+                // Tapi kita biarkan saja, siapa tahu API-nya butuh keduanya
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                // Tambahkan pengecekan ini untuk melihat response dari server
+                const errorData = await response.json();
+                console.error('API Error:', errorData); // Menampilkan error di console
+                throw new Error(errorData.message || 'Gagal membuat deposit');
+            }
+
+            const data = await response.json();
+            
+            if (data.status === 'success' && data.data && data.data.qr && data.data.id) {
+                currentTransactionId = data.data.id;
+                transactionIdDisplay.textContent = currentTransactionId;
+                qrCodeDisplay.innerHTML = `<img id="qrisImage" src="${data.data.qr}" alt="QRIS Code">`;
+                statusContainer.style.display = 'block';
+                showMessage('Kode QRIS berhasil dibuat!', 3000);
+
+                pollInterval = setInterval(checkDepositStatus, 5000);
+
+            } else {
+                showMessage('Gagal membuat kode QRIS: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Terjadi kesalahan: ' + error.message);
+        }
+    });
+
+    async function checkDepositStatus() {
+        if (!currentTransactionId) {
+            showMessage('Tidak ada transaksi untuk dicek.');
+            clearInterval(pollInterval);
+            return;
+        }
+
+        // PERBAIKAN: API Key dipindahkan ke query parameter
+        const params = new URLSearchParams({
+            id: currentTransactionId,
+            apikey: API_KEY
+        });
+
+        try {
+            const response = await fetch(`${API_STATUS_URL}?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Gagal cek status');
+            }
+
+            const data = await response.json();
+            
+            if (data.status === 'success' && data.data) {
+                if (data.data.status === 'PAID') {
+                    showMessage('Pembayaran berhasil! 🎉 Robux akan segera masuk ke akunmu!');
+                    clearInterval(pollInterval);
+                    statusContainer.style.display = 'none';
+                    qrCodeDisplay.innerHTML = '';
+                    currentTransactionId = null;
+                } else if (data.data.status === 'EXPIRED') {
+                    showMessage('Transaksi kadaluarsa. Silakan buat transaksi baru.');
+                    clearInterval(pollInterval);
+                    statusContainer.style.display = 'none';
+                    qrCodeDisplay.innerHTML = '';
+                    currentTransactionId = null;
+                } else {
+                    showMessage('Status: ' + data.data.status);
+                }
+            } else {
+                showMessage('Gagal cek status: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Terjadi kesalahan saat cek status.');
+        }
+    }
+
+    checkStatusBtn.addEventListener('click', checkDepositStatus);
+
+    cancelDepositBtn.addEventListener('click', async () => {
+        if (!currentTransactionId) {
+            showMessage('Tidak ada transaksi untuk dibatalkan.');
+            return;
+        }
+
+        // PERBAIKAN: API Key dipindahkan ke query parameter
+        const params = new URLSearchParams({
+            id: currentTransactionId,
+            apikey: API_KEY
+        });
+
+        try {
+            const response = await fetch(`${API_CANCEL_URL}?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Gagal membatalkan deposit');
+            }
+
+            const data = await response.json();
+            
+            if (data.status === 'success' && data.message) {
+                showMessage('Transaksi berhasil dibatalkan. ✅');
+                clearInterval(pollInterval);
+                statusContainer.style.display = 'none';
+                qrCodeDisplay.innerHTML = '';
+                currentTransactionId = null;
+            } else {
+                showMessage('Gagal membatalkan transaksi: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Terjadi kesalahan saat membatalkan transaksi.');
+        }
+    });
+
+</script>
+</body>
+</html>
