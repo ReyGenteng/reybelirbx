@@ -380,10 +380,6 @@
     let locked = false;
     let selectedMethod = null;
 
-    // Tambahkan API Key dan URL di sini
-    const KUNCI_API = 'CiaaTopUp_l9aohdltv5xo11bg';
-    const URL_API_DEPOSIT = '/api/deposit/create';
-
     function showPopup(msg) {
         document.getElementById('popupMessage').innerText = msg;
         const overlay = document.getElementById('popupOverlay');
@@ -485,66 +481,20 @@
         else box.style.borderColor = "#444";
     }
 
-    async function processQrisPayment() {
-        const username = document.getElementById('username').value.trim();
-        const jumlah = parseInt(document.getElementById('jumlah').value);
-        
-        showPopup("Membuat kode QRIS, mohon tunggu...");
-        
-        const nominal = jumlah * 150 + (biayaAdmin['qris'] || 0);
-        const params = new URLSearchParams({
-            nominal: nominal,
-            metode: 'QRISFAST'
-        });
-
-        try {
-            const response = await fetch(`${URL_API_DEPOSIT}?${params}`, {
-                method: 'GET',
-                headers: {
-                    'X-APIKEY': KUNCI_API,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.message || 'Gagal membuat deposit');
-            }
-
-            if (data.success && data.data) {
-                const transactionData = {
-                    ...data.data,
-                    username: username,
-                    robux: jumlah,
-                    createdAt: new Date().toISOString()
-                };
-
-                localStorage.setItem('currentTransaction', JSON.stringify(transactionData));
-                
-                window.location.href = `paymentqris.html`;
-            } else {
-                throw new Error(data.message || 'Gagal membuat deposit');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showPopup(`Error: ${error.message}`);
-        }
-    }
-
     function beliSekarang(){
-        const username = document.getElementById('username').value.trim();
-        const jumlah = parseInt(document.getElementById('jumlah').value);
+        const username=document.getElementById('username').value.trim();
+        const jumlah=parseInt(document.getElementById('jumlah').value);
         const metode = selectedMethod;
 
         if(!metode) {
              showPopup("Pilih metode pembayaran terlebih dahulu ya! 💳");
              return;
         }
-        if (!username) { showPopup("Username Roblox tidak boleh kosong!"); return; }
-        if (isNaN(jumlah) || jumlah < 1) { showPopup("Jumlah Robux belum diisi!"); return; }
 
-        const totalGamepass = Math.ceil(jumlah / 0.7);
+        if(!username){showPopup("Username Roblox tidak boleh kosong!");return;}
+        if(isNaN(jumlah)||jumlah<1){showPopup("Jumlah Robux belum diisi!");return;}
+
+        const totalGamepass=Math.ceil(jumlah/0.7);
         document.getElementById('gamepassValue').innerText = totalGamepass.toLocaleString('id-ID');
         showBeliSekarangPopup();
     }
@@ -553,30 +503,25 @@
         const username = document.getElementById('username').value.trim();
         const jumlah = parseInt(document.getElementById('jumlah').value);
         const metode = selectedMethod;
+        const harga = document.getElementById('summary-harga').innerText;
+        const biayaAdmin = document.getElementById('summary-admin-final').innerText;
         const total = document.getElementById('summary-total-final').innerText;
         
-        // Cek metode pembayaran setelah popup Gamepass
-        if (metode === 'qris') {
-            // Jika QRIS, proses pembayaran melalui sistem API
-            processQrisPayment();
-        } else if (metode === 'alfamart' || metode === 'indomaret') {
-            // Jika Alfamart atau Indomaret, gunakan WhatsApp
-            const pesan = `Halo, saya mau beli robux dengan username ${username}. Total yang harus dibayar adalah ${total}. Metode pembayarannya melalui ${metode}.`;
-            const waUrl = `https://wa.me/62895610804471?text=${encodeURIComponent(pesan)}`;
-            window.open(waUrl, '_blank');
-        } else {
-            // Jika E-wallet, redirect ke halaman pembayaran khusus
-            const paymentMethods = ['dana', 'gopay', 'linkaja', 'shopeepay', 'ovo'];
-            if (paymentMethods.includes(metode)) {
-                const harga = document.getElementById('summary-harga').innerText;
-                const biayaAdmin = document.getElementById('summary-admin-final').innerText;
-                const url = `https://payment.robuxnow.xyz/?username=${encodeURIComponent(username)}&jumlah=${encodeURIComponent(jumlah)}&metode=${encodeURIComponent(metode)}&harga=${encodeURIComponent(harga)}&admin=${encodeURIComponent(biayaAdmin)}&total=${encodeURIComponent(total)}`;
-                window.location.href = url;
-            } else {
-                // Untuk jaga-jaga, jika ada metode lain yang tidak terdefinisi
-                showPopup("Mohon maaf, pembayaran via " + metode + " saat ini belum tersedia. Silakan pilih metode lain.");
-            }
+        const paymentMethods = ['dana', 'gopay', 'linkaja', 'shopeepay', 'ovo'];
+        if (paymentMethods.includes(metode)) {
+            window.location.href = `https://payment.robuxnow.xyz/?username=${encodeURIComponent(username)}&jumlah=${encodeURIComponent(jumlah)}&metode=${encodeURIComponent(metode)}&harga=${encodeURIComponent(harga)}&admin=${encodeURIComponent(biayaAdmin)}&total=${encodeURIComponent(total)}`;
+            return;
         }
+
+        const numbers = [
+            "6287887028120",
+            "6282148327806"
+        ];
+        const randomNumberIndex = Math.random() < 0.5 ? 0 : 1;
+        const selectedNumber = numbers[randomNumberIndex];
+
+        const wa = `https://wa.me/${selectedNumber}?text=Halo%20Kak,%20Username%20${username}%20Topup%20${jumlah}%20Robux%20via%20${metode}`;
+        window.location.href = wa;
     }
 
     document.addEventListener('DOMContentLoaded', updateHarga);
