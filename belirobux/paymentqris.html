@@ -413,8 +413,8 @@
     tombolBuatDeposit.addEventListener('click', async () => {
         const nominal = parseInt(inputNominal.value);
 
-        if (isNaN(nominal) || nominal < 10000) {
-            tampilkanPesan('Nominal minimal Rp 10.000!', 3000, true);
+        if (isNaN(nominal) || nominal < 2000) {
+            tampilkanPesan('Nominal minimal Rp 2.000!', 3000, true);
             return;
         }
 
