@@ -180,6 +180,37 @@
         font-size: 0.875rem;
         color: rgba(255, 255, 255, 0.7);
     }
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+    .modal-content {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        max-width: 400px;
+        width: 90%;
+        animation: fadeIn 0.3s ease-out;
+    }
+    .modal-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    .modal-buttons button {
+        flex: 1;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
     @keyframes fadeIn { 
         from { opacity: 0; transform: scale(0.95); } 
         to { opacity: 1; transform: scale(1); } 
@@ -255,12 +286,23 @@
 <!-- Message Box untuk notifikasi -->
 <div id="message-box"></div>
 
+<!-- Modal untuk konfirmasi pembatalan -->
+<div id="cancelModal" class="modal-overlay">
+    <div class="modal-content">
+        <p class="text-lg font-bold">Batalkan Transaksi?</p>
+        <p class="mt-4 text-sm text-white/80">Apakah Anda yakin ingin membatalkan transaksi ini? Proses ini tidak bisa dibatalkan.</p>
+        <div class="modal-buttons">
+            <button id="confirmCancelBtn">Ya, Batalkan</button>
+            <button id="closeModalBtn" style="background: #2c5364;">Kembali</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Konstanta API
-    const KUNCI_API = 'CiaaTopUp_l9aohdltv5xo11bg';
-    const URL_API_DEPOSIT = 'https://ciaatopup.my.id/h2h/deposit/create';
-    const URL_API_STATUS = 'https://ciaatopup.my.id/h2h/deposit/status';
-    const URL_API_BATAL = 'https://ciaatopup.my.id/h2h/deposit/cancel';
+    // URL API sekarang mengarah ke Cloudflare Worker, yang berfungsi sebagai proxy
+    const URL_API_DEPOSIT = '/api/deposit/create';
+    const URL_API_STATUS = '/api/deposit/status';
+    const URL_API_BATAL = '/api/deposit/cancel';
     
     // Waktu kadaluarsa dalam menit
     const WAKTU_KADALUARSA = 15;
@@ -284,12 +326,14 @@
     const loadingBatal = document.getElementById('cancelLoading');
     const kotakPesan = document.getElementById('message-box');
     const infoWaktuKadaluarsa = document.getElementById('expiryTimeInfo');
+    const modalBatalkan = document.getElementById('cancelModal');
+    const tombolKonfirmasiBatal = document.getElementById('confirmCancelBtn');
+    const tombolTutupModal = document.getElementById('closeModalBtn');
 
     // Variabel global
     let idTransaksiSaatIni = null;
     let intervalPolling = null;
     let intervalHitungMundur = null;
-    let waktuKadaluarsa = null;
     let waktuSisa = WAKTU_KADALUARSA * 60; // dalam detik
 
     // Fungsi untuk menampilkan pesan
@@ -325,13 +369,6 @@
         }
     }
 
-    // Fungsi untuk mengatur waktu kadaluarsa
-    function aturWaktuKadaluarsa() {
-        waktuSisa = WAKTU_KADALUARSA * 60; // reset ke 15 menit
-        waktuKadaluarsa = new Date(Date.now() + waktuSisa * 1000);
-        mulaiHitungMundur();
-    }
-
     // Fungsi untuk memulai hitung mundur
     function mulaiHitungMundur() {
         clearInterval(intervalHitungMundur);
@@ -361,6 +398,16 @@
     function hapusKodeQR() {
         tampilanKodeQR.innerHTML = '<p class="text-sm text-yellow-300">Kode QRIS telah kadaluarsa. Silakan buat transaksi baru.</p>';
     }
+    
+    // Fungsi untuk menampilkan modal konfirmasi
+    function tampilkanModal() {
+        modalBatalkan.style.display = 'flex';
+    }
+
+    // Fungsi untuk menyembunyikan modal konfirmasi
+    function sembunyikanModal() {
+        modalBatalkan.style.display = 'none';
+    }
 
     // Event listener untuk tombol Buat Kode QRIS
     tombolBuatDeposit.addEventListener('click', async () => {
@@ -379,10 +426,11 @@
         });
 
         try {
+            // Fetch ke Cloudflare Worker
             const response = await fetch(`${URL_API_DEPOSIT}?${params}`, {
                 method: 'GET',
+                // API Key tidak perlu lagi di sini, worker yang akan menambahkannya
                 headers: {
-                    'X-APIKEY': KUNCI_API,
                     'Content-Type': 'application/json'
                 }
             });
@@ -397,7 +445,6 @@
                 idTransaksiSaatIni = data.data.id;
                 tampilanIdTransaksi.textContent = idTransaksiSaatIni;
                 
-                // Tampilkan QR code
                 tampilanKodeQR.innerHTML = `
                     <p class="text-sm mb-2">Scan QR code berikut untuk melakukan pembayaran:</p>
                     <img id="qrisImage" src="${data.data.qr_image}" alt="QRIS Code">
@@ -405,22 +452,20 @@
                     <textarea class="w-full bg-gray-800 text-white p-2 rounded mt-1 text-xs" rows="3" readonly>${data.data.qr_string}</textarea>
                 `;
                 
-                // Tampilkan info transaksi
                 infoTransaksi.innerHTML = `
                     <p>Nominal: <span>${formatRupiah(data.data.nominal)}</span></p>
                     <p>Biaya: <span>${formatRupiah(data.data.fee)}</span></p>
                     <p>Saldo diterima: <span>${formatRupiah(data.data.get_balance)}</span></p>
                 `;
                 
-                // Atur waktu kadaluarsa lokal 15 menit
-                aturWaktuKadaluarsa();
+                waktuSisa = WAKTU_KADALUARSA * 60;
+                mulaiHitungMundur();
                 
                 kontainerStatus.style.display = 'block';
                 tampilkanPesan('Kode QRIS berhasil dibuat! Silakan scan untuk melakukan pembayaran.');
 
-                // Mulai polling status otomatis
                 clearInterval(intervalPolling);
-                intervalPolling = setInterval(cekStatusPembayaran, 10000); // Cek setiap 10 detik
+                intervalPolling = setInterval(cekStatusPembayaran, 10000);
             } else {
                 throw new Error(data.message || 'Gagal membuat deposit');
             }
@@ -437,10 +482,10 @@
         if (!idTransaksiSaatIni) return;
 
         try {
+            // Fetch ke Cloudflare Worker
             const response = await fetch(`${URL_API_STATUS}?id=${idTransaksiSaatIni}`, {
                 method: 'GET',
                 headers: {
-                    'X-APIKEY': KUNCI_API,
                     'Content-Type': 'application/json'
                 }
             });
@@ -467,14 +512,14 @@
                     clearInterval(intervalPolling);
                     clearInterval(intervalHitungMundur);
                     hitungMundurEl.textContent = "Waktu pembayaran telah habis!";
-                    hapusKodeQR(); // Hapus kode QR jika sudah kadaluarsa
+                    hapusKodeQR();
                 } else if (status === 'CANCELLED') {
                     statusPembayaran.textContent = "Dibatalkan";
                     statusPembayaran.className = "payment-status status-expired";
                     clearInterval(intervalPolling);
                     clearInterval(intervalHitungMundur);
                     hitungMundurEl.textContent = "Transaksi dibatalkan!";
-                    hapusKodeQR(); // Hapus kode QR jika dibatalkan
+                    hapusKodeQR();
                 }
             }
         } catch (error) {
@@ -495,23 +540,24 @@
     });
 
     // Event listener untuk tombol Batalkan
-    tombolBatalkan.addEventListener('click', async () => {
+    tombolBatalkan.addEventListener('click', () => {
         if (!idTransaksiSaatIni) {
             tampilkanPesan('Tidak ada transaksi aktif', 3000, true);
             return;
         }
+        tampilkanModal();
+    });
 
-        if (!confirm('Apakah Anda yakin ingin membatalkan transaksi ini?')) {
-            return;
-        }
-
+    // Event listener untuk tombol konfirmasi pembatalan di modal
+    tombolKonfirmasiBatal.addEventListener('click', async () => {
+        sembunyikanModal();
         aturLoading(tombolBatalkan, teksBatal, loadingBatal, true);
 
         try {
+            // Fetch ke Cloudflare Worker
             const response = await fetch(`${URL_API_BATAL}?id=${idTransaksiSaatIni}`, {
                 method: 'GET',
                 headers: {
-                    'X-APIKEY': KUNCI_API,
                     'Content-Type': 'application/json'
                 }
             });
@@ -528,7 +574,7 @@
                 clearInterval(intervalPolling);
                 clearInterval(intervalHitungMundur);
                 hitungMundurEl.textContent = "Transaksi dibatalkan!";
-                hapusKodeQR(); // Hapus kode QR jika dibatalkan
+                hapusKodeQR();
                 tampilkanPesan('Transaksi berhasil dibatalkan');
             } else {
                 throw new Error(data.message || 'Gagal membatalkan transaksi');
@@ -541,8 +587,11 @@
         }
     });
 
+    // Event listener untuk menutup modal
+    tombolTutupModal.addEventListener('click', sembunyikanModal);
+
     // Inisialisasi halaman
     infoWaktuKadaluarsa.textContent = `${WAKTU_KADALUARSA} menit`;
 </script>
 </body>
-</html>
+    </html>
