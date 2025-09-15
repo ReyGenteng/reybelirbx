@@ -1,563 +1,361 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RobuxNow.xyz - Jual Robux Terpercaya</title>
-<meta name="keywords" content="beli robux, robux murah, jual robux, robux terpercaya, roblox, top up robux, robux aman, robux instant, robux preorder, robuxnow, robux now, robux ku, robux sekarang">
-<meta name="description" content="RobuxNow.xyz adalah situs terpercaya untuk membeli Robux dengan harga termurah dan proses tercepat. Kami menyediakan berbagai metode top up Robux yang aman dan resmi. Kunjungi kami untuk pengalaman jual beli Robux yang terjamin asli dan aman.">
-<link rel="icon" type="image/x-icon" href="https://reygenteng.github.io/reybelirbx/favicon.ico">
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #fff;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem;
-    }
-    .container {
-        max-width: 500px;
-        width: 100%;
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 1.5rem;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        animation: fadeIn 0.8s ease-out;
-    }
-    h1 {
-        font-size: 2.25rem;
-        font-weight: 700;
-        color: #ffd369;
-        text-shadow: 0 0 10px rgba(255, 211, 105, 0.6);
-        margin-bottom: 1rem;
-    }
-    .text-center { text-align: center; }
-    input, button {
-        width: 100%;
-        border-radius: 0.75rem;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-        margin-top: 0.5rem;
-    }
-    input {
-        background-color: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: #fff;
-        outline: none;
-    }
-    input::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-    }
-    input:focus {
-        border-color: #ffd369;
-        box-shadow: 0 0 0 2px rgba(255, 211, 105, 0.3);
-    }
-    button {
-        font-weight: bold;
-        cursor: pointer;
-        background: linear-gradient(135deg, #ffd369, #ffb74d);
-        color: #222;
-        border: none;
-        position: relative;
-        overflow: hidden;
-    }
-    button:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 183, 77, 0.4);
-    }
-    button:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-    .status-container {
-        margin-top: 1.5rem;
-        padding: 1.5rem;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 1rem;
-        display: none;
-    }
-    #qrisImage {
-        width: 100%;
-        max-width: 250px;
-        height: auto;
-        border-radius: 0.75rem;
-        margin: 0 auto 1rem;
-        display: block;
-    }
-    .text-sm { font-size: 0.875rem; }
-    .mt-4 { margin-top: 1rem; }
-    #message-box {
-        position: fixed;
-        top: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #333;
-        color: #fff;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        display: none;
-    }
-    .loader {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-        margin-right: 8px;
-        vertical-align: middle;
-    }
-    .transaction-info {
-        background-color: rgba(255, 255, 255, 0.05);
-        padding: 1rem;
-        border-radius: 0.75rem;
-        margin-bottom: 1rem;
-    }
-    .transaction-info p {
-        margin: 0.5rem 0;
-        display: flex;
-        justify-content: space-between;
-    }
-    .transaction-info span {
-        font-weight: bold;
-        color: #ffd369;
-    }
-    .countdown {
-        font-size: 1.2rem;
-        font-weight: bold;
-        text-align: center;
-        margin: 1rem 0;
-        color: #ff6b6b;
-    }
-    .payment-status {
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        text-align: center;
-        margin-bottom: 1rem;
-        font-weight: bold;
-    }
-    .status-pending {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #ffc107;
-    }
-    .status-paid {
-        background-color: rgba(40, 167, 69, 0.2);
-        color: #28a745;
-    }
-    .status-expired {
-        background-color: rgba(220, 53, 69, 0.2);
-        color: #dc3545;
-    }
-    .input-group {
-        margin-bottom: 1rem;
-    }
-    .input-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.9);
-    }
-    .button-group {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
-    }
-    .button-group button {
-        flex: 1;
-    }
-    .expiry-info {
-        text-align: center;
-        margin-top: 0.5rem;
-        font-size: 0.875rem;
-        color: rgba(255, 255, 255, 0.7);
-    }
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-    }
-    .modal-content {
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        padding: 2rem;
-        border-radius: 1rem;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        max-width: 400px;
-        width: 90%;
-        animation: fadeIn 0.3s ease-out;
-    }
-    .modal-buttons {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
-    }
-    .modal-buttons button {
-        flex: 1;
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-    }
-    @keyframes fadeIn { 
-        from { opacity: 0; transform: scale(0.95); } 
-        to { opacity: 1; transform: scale(1); } 
-    }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    @media (max-width: 640px) {
-        .container {
-            padding: 1.5rem;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RobuxNow.xyz - Pembayaran QRIS</title>
+    <meta name="keywords" content="beli robux, robux murah, jual robux, robux terpercaya, roblox, top up robux, robux aman, robux instant, robux preorder, robuxnow, robux now, robux ku, robux sekarang">
+    <meta name="description" content="Halaman pembayaran RobuxNow.xyz untuk QRIS. Dapatkan Robux dengan cepat dan aman dengan metode pembayaran QRIS.">
+    <link rel="icon" type="image/x-icon" href="https://reygenteng.github.io/reybelirbx/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
         }
-        h1 {
-            font-size: 1.75rem;
-        }
-        .button-group {
+
+        .header {
+            padding: 2rem 1rem;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-    }
-</style>
+
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        .header-logo-container img {
+            max-width: 80px;
+            height: auto;
+        }
+
+        .header h1 {
+            color: #222;
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .qr-container {
+            position: relative;
+            background-color: #f0f0f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            display: inline-block;
+        }
+
+        #qr-code {
+            width: 100%;
+            height: auto;
+            max-width: 250px;
+            border-radius: 8px;
+        }
+
+        .payment-status {
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            color: #fff;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .status-waiting { background-color: #f9a825; }
+        .status-success { background-color: #4CAF50; }
+        .status-expired { background-color: #f44336; }
+        .status-cancelled { background-color: #777; }
+        .status-failed { background-color: #f44336; }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            background-color: #444;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        .btn:hover {
+            background-color: #222;
+        }
+        .btn-loading .spinner {
+            border: 2px solid #fff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            width: 1em;
+            height: 1em;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        .btn-loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .overlay {
+            position: fixed;top:0;left:0;right:0;bottom:0;
+            background:rgba(0,0,0,0.7);
+            display:none;align-items:center;justify-content:center;
+            z-index:999;
+        }
+        .popup {
+            background:#ffffff;color:#333;padding:25px;border-radius:10px;
+            width:90%;max-width:400px;text-align:center;transform:scale(0.7);
+            transition:transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .popup.show { transform:scale(1); opacity: 1; }
+        .popup h2 { color:#222;margin-bottom:10px; }
+        .popup button {
+            margin-top:10px;border:none;cursor:pointer;padding:12px 20px;border-radius:9999px;
+            width: 100%;
+            background-color: #444; color: white;
+            transition: background-color 0.3s;
+        }
+        .popup button:hover {
+            background-color: #222;
+        }
+        .popup .info-message {
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="text-center">
-        <h1>RobuxNow.xyz</h1>
-        <p class="text-white/80">Pembayaran Cepat dengan QRIS</p>
+    <h1 style="font-weight: bold; font-size: 1.5rem; margin-bottom: 0.5rem;">Pembayaran</h1>
+    <p style="color: #666;">Segera selesaikan pembayaran sebelum waktu habis.</p>
+
+    <div class="qr-container">
+        <img id="qr-code" src="" alt="QR Code">
     </div>
 
-    <!-- Area input nominal -->
-    <div class="input-group">
-        <label for="nominalInput" class="input-label">Nominal Deposit (IDR)</label>
-        <input type="number" id="nominalInput" placeholder="Masukkan nominal (cth: 10000)" min="10000" step="1000">
-        <button id="createDepositBtn">
-            <span id="createText">Buat Kode QRIS</span>
-            <span id="createLoading" class="loader" style="display: none;"></span>
-        </button>
-        <p class="expiry-info">Batas waktu pembayaran: <span id="expiryTimeInfo">15 menit</span></p>
+    <div class="mt-4">
+        <div class="flex items-center justify-center space-x-2 mb-2">
+            <span id="status-pembayaran" class="payment-status status-waiting">Menunggu Pembayaran</span>
+        </div>
+        <p id="hitung-mundur" style="font-weight: bold; font-size: 1.2rem; color: #f44336;"></p>
     </div>
 
-    <!-- Area Status Pembayaran -->
-    <div id="statusContainer" class="status-container">
-        <h2 class="text-lg font-bold text-center mb-4 text-white">Status Pembayaran</h2>
-        
-        <div id="paymentStatus" class="payment-status status-pending">Menunggu Pembayaran</div>
-        
-        <div id="countdown" class="countdown"></div>
-        
-        <div id="qrCodeDisplay" class="text-center mb-4">
-            <!-- QR code akan muncul di sini -->
+    <div class="mt-6 text-left space-y-2">
+        <div class="info-item">
+            <span>ID Transaksi</span>
+            <span style="font-weight: bold;" id="id-transaksi"></span>
         </div>
-        
-        <div id="transactionInfo" class="transaction-info">
-            <!-- Informasi transaksi akan muncul di sini -->
+        <div class="info-item">
+            <span>Username Roblox</span>
+            <span style="font-weight: bold;" id="username-roblox"></span>
         </div>
-        
-        <p class="text-center text-sm mb-2 text-white/80">ID Transaksi:</p>
-        <p id="transactionId" class="text-center text-lg font-bold mb-4 text-yellow-300"></p>
-        
-        <div class="button-group">
-            <button id="checkStatusBtn">
-                <span id="checkText">Cek Status</span>
-                <span id="checkLoading" class="loader" style="display: none;"></span>
-            </button>
-            <button id="cancelDepositBtn" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                <span id="cancelText">Batalkan</span>
-                <span id="cancelLoading" class="loader" style="display: none;"></span>
-            </button>
+        <div class="info-item">
+            <span>Jumlah Robux</span>
+            <span style="font-weight: bold;" id="jumlah-robux"></span>
+        </div>
+        <div class="info-item">
+            <span>Total Pembayaran</span>
+            <span style="font-weight: bold; font-size: 1.1rem; color: #444;" id="total-pembayaran"></span>
         </div>
     </div>
-
+    
+    <button id="tombol-batal" class="btn">
+        <span class="btn-text">Batalkan Transaksi</span>
+        <span class="spinner" style="display: none;"></span>
+    </button>
 </div>
 
-<!-- Message Box untuk notifikasi -->
-<div id="message-box"></div>
-
-<!-- Modal untuk konfirmasi pembatalan -->
-<div id="cancelModal" class="modal-overlay">
-    <div class="modal-content">
-        <p class="text-lg font-bold">Batalkan Transaksi?</p>
-        <p class="mt-4 text-sm text-white/80">Apakah Anda yakin ingin membatalkan transaksi ini? Proses ini tidak bisa dibatalkan.</p>
-        <div class="modal-buttons">
-            <button id="confirmCancelBtn">Ya, Batalkan</button>
-            <button id="closeModalBtn" style="background: #2c5364;">Kembali</button>
-        </div>
+<!-- Popup Modal -->
+<div class="overlay" id="popupOverlay">
+    <div class="popup" id="popupBox">
+        <i id="popupIcon" class="fas fa-check-circle" style="font-size:50px;color:#4CAF50;margin-bottom:10px;"></i>
+        <h2 id="popupTitle">Sukses</h2>
+        <p class="info-message" id="popupMessage">Pesan</p>
+        <button onclick="closePopup()">OK</button>
     </div>
 </div>
 
 <script>
-    // URL API sekarang mengarah ke Cloudflare Worker, yang berfungsi sebagai proxy
-    const URL_API_DEPOSIT = '/api/deposit/create';
+    // Konfigurasi API dan Waktu
+    const KUNCI_API = 'CiaaTopUp_l9aohdltv5xo11bg';
     const URL_API_STATUS = '/api/deposit/status';
     const URL_API_BATAL = '/api/deposit/cancel';
-    
-    // Waktu kadaluarsa dalam menit
-    const WAKTU_KADALUARSA = 15;
+    const WAKTU_KADALUARSA = 15 * 60; // 15 menit dalam detik
 
     // Elemen DOM
-    const inputNominal = document.getElementById('nominalInput');
-    const tombolBuatDeposit = document.getElementById('createDepositBtn');
-    const teksBuat = document.getElementById('createText');
-    const loadingBuat = document.getElementById('createLoading');
-    const kontainerStatus = document.getElementById('statusContainer');
-    const tampilanKodeQR = document.getElementById('qrCodeDisplay');
-    const tampilanIdTransaksi = document.getElementById('transactionId');
-    const infoTransaksi = document.getElementById('transactionInfo');
-    const statusPembayaran = document.getElementById('paymentStatus');
-    const hitungMundurEl = document.getElementById('countdown');
-    const tombolCekStatus = document.getElementById('checkStatusBtn');
-    const teksCek = document.getElementById('checkText');
-    const loadingCek = document.getElementById('checkLoading');
-    const tombolBatalkan = document.getElementById('cancelDepositBtn');
-    const teksBatal = document.getElementById('cancelText');
-    const loadingBatal = document.getElementById('cancelLoading');
-    const kotakPesan = document.getElementById('message-box');
-    const infoWaktuKadaluarsa = document.getElementById('expiryTimeInfo');
-    const modalBatalkan = document.getElementById('cancelModal');
-    const tombolKonfirmasiBatal = document.getElementById('confirmCancelBtn');
-    const tombolTutupModal = document.getElementById('closeModalBtn');
+    const qrCodeEl = document.getElementById('qr-code');
+    const idTransaksiEl = document.getElementById('id-transaksi');
+    const usernameRobloxEl = document.getElementById('username-roblox');
+    const jumlahRobuxEl = document.getElementById('jumlah-robux');
+    const totalPembayaranEl = document.getElementById('total-pembayaran');
+    const hitungMundurEl = document.getElementById('hitung-mundur');
+    const statusPembayaranEl = document.getElementById('status-pembayaran');
+    const tombolBatalEl = document.getElementById('tombol-batal');
 
-    // Variabel global
-    let idTransaksiSaatIni = null;
-    let intervalPolling = null;
-    let intervalHitungMundur = null;
-    let waktuSisa = WAKTU_KADALUARSA * 60; // dalam detik
+    let waktuTersisa = WAKTU_KADALUARSA;
+    let intervalHitungMundur;
+    let intervalPolling;
+    let idTransaksiSaatIni;
 
-    // Fungsi untuk menampilkan pesan
-    function tampilkanPesan(pesan, durasi = 3000, adalahError = false) {
-        kotakPesan.textContent = pesan;
-        kotakPesan.style.display = 'block';
-        kotakPesan.style.background = adalahError ? '#dc2626' : '#16a34a';
+    // Fungsi untuk menampilkan popup
+    function tampilkanPesan(pesan, sukses = true) {
+        document.getElementById('popupTitle').textContent = sukses ? 'Sukses' : 'Error';
+        document.getElementById('popupMessage').textContent = pesan;
+        const icon = document.getElementById('popupIcon');
+        icon.className = sukses ? 'fas fa-check-circle' : 'fas fa-times-circle';
+        icon.style.color = sukses ? '#4CAF50' : '#f44336';
         
-        setTimeout(() => {
-            kotakPesan.style.display = 'none';
-        }, durasi);
+        const overlay = document.getElementById('popupOverlay');
+        const box = document.getElementById('popupBox');
+        overlay.style.display = 'flex';
+        setTimeout(() => box.classList.add('show'), 10);
     }
 
-    // Fungsi untuk memformat mata uang Rupiah
-    function formatRupiah(jumlah) {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(jumlah);
-    }
-
-    // Fungsi untuk mengatur status loading
-    function aturLoading(tombol, elemenTeks, elemenLoading, sedangLoading) {
-        if (sedangLoading) {
-            elemenTeks.style.display = 'none';
-            elemenLoading.style.display = 'inline-block';
-            tombol.disabled = true;
-        } else {
-            elemenTeks.style.display = 'inline';
-            elemenLoading.style.display = 'none';
-            tombol.disabled = false;
-        }
-    }
-
-    // Fungsi untuk memulai hitung mundur
-    function mulaiHitungMundur() {
-        clearInterval(intervalHitungMundur);
-        perbaruiHitungMundur();
-        intervalHitungMundur = setInterval(perbaruiHitungMundur, 1000);
-    }
-
-    // Fungsi untuk memperbarui hitung mundur
-    function perbaruiHitungMundur() {
-        if (waktuSisa <= 0) {
-            clearInterval(intervalHitungMundur);
-            hitungMundurEl.textContent = "Waktu pembayaran telah habis!";
-            statusPembayaran.textContent = "Kadaluarsa";
-            statusPembayaran.className = "payment-status status-expired";
-            hapusKodeQR(); // Hapus kode QR jika sudah kadaluarsa
-            return;
-        }
-        
-        const menit = Math.floor(waktuSisa / 60);
-        const detik = waktuSisa % 60;
-        
-        hitungMundurEl.textContent = `Sisa waktu: ${menit} menit ${detik} detik`;
-        waktuSisa--;
-    }
-
-    // Fungsi untuk menghapus kode QR
-    function hapusKodeQR() {
-        tampilanKodeQR.innerHTML = '<p class="text-sm text-yellow-300">Kode QRIS telah kadaluarsa. Silakan buat transaksi baru.</p>';
+    // Fungsi untuk menutup popup
+    function closePopup() {
+        const overlay = document.getElementById('popupOverlay');
+        const box = document.getElementById('popupBox');
+        box.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 200);
     }
     
-    // Fungsi untuk menampilkan modal konfirmasi
-    function tampilkanModal() {
-        modalBatalkan.style.display = 'flex';
-    }
-
-    // Fungsi untuk menyembunyikan modal konfirmasi
-    function sembunyikanModal() {
-        modalBatalkan.style.display = 'none';
-    }
-
-    // Event listener untuk tombol Buat Kode QRIS
-    tombolBuatDeposit.addEventListener('click', async () => {
-        const nominal = parseInt(inputNominal.value);
-
-        if (isNaN(nominal) || nominal < 10000) {
-            tampilkanPesan('Nominal minimal Rp 10.000!', 3000, true);
-            return;
-        }
-
-        aturLoading(tombolBuatDeposit, teksBuat, loadingBuat, true);
-
-        const params = new URLSearchParams({
-            nominal: nominal,
-            metode: 'QRISFAST'
-        });
-
-        try {
-            // Fetch ke Cloudflare Worker
-            const response = await fetch(`${URL_API_DEPOSIT}?${params}`, {
-                method: 'GET',
-                // API Key tidak perlu lagi di sini, worker yang akan menambahkannya
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.message || 'Gagal membuat deposit');
-            }
-
-            if (data.success && data.data) {
-                idTransaksiSaatIni = data.data.id;
-                tampilanIdTransaksi.textContent = idTransaksiSaatIni;
-                
-                tampilanKodeQR.innerHTML = `
-                    <p class="text-sm mb-2">Scan QR code berikut untuk melakukan pembayaran:</p>
-                    <img id="qrisImage" src="${data.data.qr_image}" alt="QRIS Code">
-                    <p class="text-sm mt-2">Atau gunakan kode berikut:</p>
-                    <textarea class="w-full bg-gray-800 text-white p-2 rounded mt-1 text-xs" rows="3" readonly>${data.data.qr_string}</textarea>
-                `;
-                
-                infoTransaksi.innerHTML = `
-                    <p>Nominal: <span>${formatRupiah(data.data.nominal)}</span></p>
-                    <p>Biaya: <span>${formatRupiah(data.data.fee)}</span></p>
-                    <p>Saldo diterima: <span>${formatRupiah(data.data.get_balance)}</span></p>
-                `;
-                
-                waktuSisa = WAKTU_KADALUARSA * 60;
-                mulaiHitungMundur();
-                
-                kontainerStatus.style.display = 'block';
-                tampilkanPesan('Kode QRIS berhasil dibuat! Silakan scan untuk melakukan pembayaran.');
-
-                clearInterval(intervalPolling);
-                intervalPolling = setInterval(cekStatusPembayaran, 10000);
-            } else {
-                throw new Error(data.message || 'Gagal membuat deposit');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            tampilkanPesan(`Error: ${error.message}`, 5000, true);
-        } finally {
-            aturLoading(tombolBuatDeposit, teksBuat, loadingBuat, false);
-        }
-    });
-
-    // Fungsi untuk memeriksa status pembayaran
-    async function cekStatusPembayaran() {
-        if (!idTransaksiSaatIni) return;
-
-        try {
-            // Fetch ke Cloudflare Worker
-            const response = await fetch(`${URL_API_STATUS}?id=${idTransaksiSaatIni}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.message || 'Gagal memeriksa status');
-            }
-
-            if (data.success && data.data) {
-                const status = data.data.status;
-                
-                if (status === 'PAID') {
-                    statusPembayaran.textContent = "Dibayar";
-                    statusPembayaran.className = "payment-status status-paid";
-                    clearInterval(intervalPolling);
-                    clearInterval(intervalHitungMundur);
-                    hitungMundurEl.textContent = "Pembayaran berhasil!";
-                    tampilkanPesan('Pembayaran berhasil! Saldo akan segera ditambahkan.', 5000);
-                } else if (status === 'EXPIRED') {
-                    statusPembayaran.textContent = "Kadaluarsa";
-                    statusPembayaran.className = "payment-status status-expired";
-                    clearInterval(intervalPolling);
-                    clearInterval(intervalHitungMundur);
-                    hitungMundurEl.textContent = "Waktu pembayaran telah habis!";
-                    hapusKodeQR();
-                } else if (status === 'CANCELLED') {
-                    statusPembayaran.textContent = "Dibatalkan";
-                    statusPembayaran.className = "payment-status status-expired";
-                    clearInterval(intervalPolling);
-                    clearInterval(intervalHitungMundur);
-                    hitungMundurEl.textContent = "Transaksi dibatalkan!";
-                    hapusKodeQR();
-                }
-            }
-        } catch (error) {
-            console.error('Error memeriksa status:', error);
+    // Fungsi untuk mengaktifkan/menonaktifkan loading pada tombol
+    function aturLoading(tombol, teksEl, spinnerEl, sedangMemuat) {
+        tombol.disabled = sedangMemuat;
+        if (sedangMemuat) {
+            tombol.classList.add('btn-loading');
+            teksEl.style.display = 'none';
+            spinnerEl.style.display = 'inline-block';
+        } else {
+            tombol.classList.remove('btn-loading');
+            teksEl.style.display = 'inline-block';
+            spinnerEl.style.display = 'none';
         }
     }
 
-    // Event listener untuk tombol Cek Status
-    tombolCekStatus.addEventListener('click', async () => {
-        if (!idTransaksiSaatIni) {
-            tampilkanPesan('Tidak ada transaksi aktif', 3000, true);
-            return;
+    // Mengambil data transaksi dari localStorage
+    const transaksi = JSON.parse(localStorage.getItem('currentTransaction'));
+
+    if (!transaksi) {
+        tampilkanPesan("Tidak ada data transaksi ditemukan. Kembali ke halaman utama.", false);
+        setTimeout(() => window.location.href = 'index.html', 3000);
+    } else {
+        idTransaksiSaatIni = transaksi.refId;
+        qrCodeEl.src = transaksi.qr_url;
+        idTransaksiEl.textContent = transaksi.refId;
+        usernameRobloxEl.textContent = transaksi.username;
+        jumlahRobuxEl.textContent = transaksi.robux.toLocaleString('id-ID');
+        totalPembayaranEl.textContent = "Rp " + transaksi.amount.toLocaleString('id-ID');
+
+        // Hitung waktu kadaluarsa dari waktu pembuatan
+        const waktuDibuat = new Date(transaksi.createdAt).getTime();
+        const waktuSekarang = new Date().getTime();
+        waktuTersisa = WAKTU_KADALUARSA - Math.floor((waktuSekarang - waktuDibuat) / 1000);
+
+        if (waktuTersisa <= 0) {
+            tampilkanPesan("Transaksi sudah kadaluarsa. Silakan buat pesanan baru.", false);
+            statusPembayaranEl.textContent = "Kadaluarsa";
+            statusPembayaranEl.className = "payment-status status-expired";
+            tombolBatalEl.disabled = true;
+            hitungMundurEl.textContent = "Transaksi kadaluarsa!";
+        } else {
+            // Mulai hitung mundur
+            intervalHitungMundur = setInterval(() => {
+                if (waktuTersisa <= 0) {
+                    clearInterval(intervalHitungMundur);
+                    clearInterval(intervalPolling);
+                    statusPembayaranEl.textContent = "Kadaluarsa";
+                    statusPembayaranEl.className = "payment-status status-expired";
+                    hitungMundurEl.textContent = "Transaksi kadaluarsa!";
+                    tombolBatalEl.disabled = true;
+                    tampilkanPesan("Waktu pembayaran telah habis.", false);
+                } else {
+                    const menit = Math.floor(waktuTersisa / 60);
+                    const detik = waktuTersisa % 60;
+                    hitungMundurEl.textContent = `${menit}:${detik.toString().padStart(2, '0')}`;
+                    waktuTersisa--;
+                }
+            }, 1000);
+
+            // Mulai polling status pembayaran
+            intervalPolling = setInterval(async () => {
+                try {
+                    const response = await fetch(`${URL_API_STATUS}?id=${idTransaksiSaatIni}`, {
+                        method: 'GET',
+                        headers: { 'X-APIKEY': KUNCI_API }
+                    });
+                    const data = await response.json();
+
+                    if (data.success && data.data && data.data.status === 'PAID') {
+                        clearInterval(intervalPolling);
+                        clearInterval(intervalHitungMundur);
+                        statusPembayaranEl.textContent = "Berhasil";
+                        statusPembayaranEl.className = "payment-status status-success";
+                        hitungMundurEl.textContent = "Pembayaran berhasil!";
+                        tombolBatalEl.disabled = true;
+                        tampilkanPesan("Pembayaran berhasil. Robux akan segera diproses!", true);
+                        localStorage.removeItem('currentTransaction');
+                    }
+                } catch (error) {
+                    console.error("Gagal memeriksa status:", error);
+                }
+            }, 5000); // Poll setiap 5 detik
         }
+    }
+    
+    // Logika tombol Batalkan Transaksi
+    tombolBatalEl.addEventListener('click', async () => {
+        const teksBatal = tombolBatalEl.querySelector('.btn-text');
+        const loadingBatal = tombolBatalEl.querySelector('.spinner');
 
-        aturLoading(tombolCekStatus, teksCek, loadingCek, true);
-        await cekStatusPembayaran();
-        aturLoading(tombolCekStatus, teksCek, loadingCek, false);
-    });
-
-    // Event listener untuk tombol Batalkan
-    tombolBatalkan.addEventListener('click', () => {
-        if (!idTransaksiSaatIni) {
-            tampilkanPesan('Tidak ada transaksi aktif', 3000, true);
-            return;
-        }
-        tampilkanModal();
-    });
-
-    // Event listener untuk tombol konfirmasi pembatalan di modal
-    tombolKonfirmasiBatal.addEventListener('click', async () => {
-        sembunyikanModal();
-        aturLoading(tombolBatalkan, teksBatal, loadingBatal, true);
+        aturLoading(tombolBatalEl, teksBatal, loadingBatal, true);
 
         try {
-            // Fetch ke Cloudflare Worker
             const response = await fetch(`${URL_API_BATAL}?id=${idTransaksiSaatIni}`, {
                 method: 'GET',
                 headers: {
+                    'X-APIKEY': KUNCI_API,
                     'Content-Type': 'application/json'
                 }
             });
@@ -569,29 +367,24 @@
             }
 
             if (data.success) {
-                statusPembayaran.textContent = "Dibatalkan";
-                statusPembayaran.className = "payment-status status-expired";
+                statusPembayaranEl.textContent = "Dibatalkan";
+                statusPembayaranEl.className = "payment-status status-cancelled";
                 clearInterval(intervalPolling);
                 clearInterval(intervalHitungMundur);
                 hitungMundurEl.textContent = "Transaksi dibatalkan!";
-                hapusKodeQR();
-                tampilkanPesan('Transaksi berhasil dibatalkan');
+                tombolBatalEl.disabled = true;
+                tampilkanPesan('Transaksi berhasil dibatalkan. Dana tidak terpotong.');
+                localStorage.removeItem('currentTransaction');
             } else {
                 throw new Error(data.message || 'Gagal membatalkan transaksi');
             }
         } catch (error) {
             console.error('Error:', error);
-            tampilkanPesan(`Error: ${error.message}`, 5000, true);
+            tampilkanPesan(`Error: ${error.message}`, false);
         } finally {
-            aturLoading(tombolBatalkan, teksBatal, loadingBatal, false);
+            aturLoading(tombolBatalEl, teksBatal, loadingBatal, false);
         }
     });
-
-    // Event listener untuk menutup modal
-    tombolTutupModal.addEventListener('click', sembunyikanModal);
-
-    // Inisialisasi halaman
-    infoWaktuKadaluarsa.textContent = `${WAKTU_KADALUARSA} menit`;
 </script>
 </body>
-    </html>
+</html>
