@@ -63,8 +63,17 @@
             color: var(--secondary-color);
             margin-bottom: 10px;
         }
+        /* Style baru untuk ID Akun */
+        .account-info {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
         .saldo-container button {
-            background-color: #28a745;
+            /* Warna hijau khas WhatsApp/Tambah Saldo */
+            background-color: #28a745; 
             color: white;
             padding: 12px 25px;
             border: none;
@@ -89,16 +98,20 @@
 
     <div class="saldo-container">
         <h2>Saldo Sekarang</h2>
+        <div class="account-info">
+            ID Akun: <span id="accountIdDisplay">Loading...</span> 🔑
+        </div>
         <div class="saldo-item">
             Rp <span id="saldoRupiah">0</span>
         </div>
-        <button onclick="tambahSaldo(100)">Tambah Saldo (Simulasi)</button>
+        <button onclick="pesanTambahSaldo()">Tambah Saldo (Via WhatsApp)</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
         import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
+        // Konfigurasi Firebase Anda
         const firebaseConfig = {
           apiKey: "AIzaSyAcFRkbZT3PD3BDObS-7T1769uH5Macvd0",
           authDomain: "reystore-support.firebaseapp.com",
@@ -114,6 +127,7 @@
         const db = getDatabase(app);
         const saldoRupiahElement = document.getElementById('saldoRupiah');
         const usernameDisplay = document.getElementById('usernameDisplay');
+        const accountIdDisplay = document.getElementById('accountIdDisplay');
         const logoutButton = document.getElementById('logoutButton');
 
         const loggedInUsername = localStorage.getItem('loggedInUsername');
@@ -121,7 +135,9 @@
         if (!loggedInUsername) {
             window.location.href = 'login.html';
         } else {
+            // Menampilkan Username dan menetapkan ID Akun
             usernameDisplay.innerText = loggedInUsername;
+            accountIdDisplay.innerText = loggedInUsername; // Gunakan username sebagai ID Akun
             muatSaldo(loggedInUsername);
         }
 
@@ -138,21 +154,26 @@
             });
         }
 
-        window.tambahSaldo = function(jumlah) {
+        // Fungsi baru untuk mengirim pesan ke WhatsApp
+        window.pesanTambahSaldo = function() {
             const username = localStorage.getItem('loggedInUsername');
+            const nomorAdmin = "6287887028120"; // Nomor WhatsApp yang kamu minta
+            
             if (username) {
-                const saldoRef = ref(db, "users/" + username);
-                get(saldoRef).then((snapshot) => {
-                    let userData = snapshot.val();
-                    if (!userData) {
-                        userData = { rupiah: 0 };
-                    }
-                    userData.rupiah += jumlah;
-                    set(saldoRef, userData);
-                    alert(`Saldo berhasil ditambah ${jumlah} Rupiah!`);
-                });
+                // Teks pesan yang akan dikirim, termasuk ID Akun
+                const pesan = encodeURIComponent(`Halo, saya ${username} (ID Akun: ${username}), mau menambahkan saldo di dashboard saya. Berapa nominal minimal untuk topup ya? Terima kasih!`);
+                
+                // Link WhatsApp
+                const waLink = `https://wa.me/${nomorAdmin}?text=${pesan}`;
+                
+                // Buka link di tab baru
+                window.open(waLink, '_blank');
+            } else {
+                alert('Tidak ada pengguna yang login. Silakan login dulu.');
             }
         };
+
+        /* Hapus fungsi tambahSaldo(jumlah) lama karena diganti dengan pesanTambahSaldo() */
     </script>
 </body>
 </html>
