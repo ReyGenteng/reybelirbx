@@ -20,6 +20,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
         }
+        /* ... (CSS yang sudah ada) ... */
         .header {
             display: flex;
             justify-content: space-between;
@@ -82,6 +83,91 @@
         .edit-btn:hover {
             background-color: #218838;
         }
+
+        /* ---------------------------------- */
+        /* CSS Untuk Custom Modal/Dialog Box */
+        /* ---------------------------------- */
+        .modal {
+            display: none; /* Sembunyikan secara default */
+            position: fixed;
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4); /* Background gelap */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .modal-content input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .modal-content input[type="number"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .modal-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        #confirmEdit {
+            background-color: #28a745; 
+            color: white;
+        }
+
+        #cancelEdit {
+            background-color: var(--secondary-color);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -93,6 +179,7 @@
     <table>
         <thead>
             <tr>
+                <th>ID Akun</th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Saldo Rupiah</th>
@@ -103,6 +190,17 @@
             </tbody>
     </table>
 
+    <div id="editSaldoModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Ubah Saldo Akun</h3>
+            <p>Masukkan nilai saldo baru (akan menimpa nilai lama):</p>
+            <input type="number" id="newSaldoInput" placeholder="Contoh: 9000" min="0">
+            <div class="modal-buttons">
+                <button id="cancelEdit">Batal</button>
+                <button id="confirmEdit">Simpan Saldo Baru</button>
+            </div>
+        </div>
+    </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
         import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -123,6 +221,14 @@
         const userTableBody = document.getElementById('userTableBody');
         const logoutButton = document.getElementById('logoutButton');
 
+        // Elemen Modal
+        const editSaldoModal = document.getElementById('editSaldoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const newSaldoInput = document.getElementById('newSaldoInput');
+        const confirmEditButton = document.getElementById('confirmEdit');
+        const cancelEditButton = document.getElementById('cancelEdit');
+        let currentEditingUsername = null; // Variabel untuk menyimpan username yang sedang diedit
+
         const urlParams = new URLSearchParams(window.location.search);
         const loggedInUser = urlParams.get('username');
 
@@ -132,6 +238,7 @@
         };
 
         if (!adminUsers[loggedInUser]) {
+            // Kita bisa pakai modal custom juga untuk alert, tapi ini cepat saja
             alert("Akses ditolak. Anda bukan admin!");
             window.location.href = 'login.html';
         }
@@ -154,52 +261,71 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${username}</td>
+                        <td>${username}</td>
                         <td>${user.email || 'N/A'}</td>
-                        <td>Rp ${user.rupiah || 0}</td>
-                        <td><button class="edit-btn" onclick="ubahSaldo('${username}')">Ubah Saldo</button></td>
+                        <td>Rp <span id="saldo-${username}">${user.rupiah || 0}</span></td>
+                        <td><button class="edit-btn" onclick="openEditModal('${username}', ${user.rupiah || 0})">Ubah Saldo</button></td>
                     `;
                     userTableBody.appendChild(row);
                 });
             }
         });
 
-        window.ubahSaldo = function(username) {
-            const input = prompt(`Masukkan jumlah yang ingin ditambah/dikurangi untuk ${username}:\nContoh: +1000 atau -500`);
-            
-            if (input === null || input.trim() === '') {
+        // 1. Fungsi untuk MEMBUKA Modal
+        window.openEditModal = function(username, currentSaldo) {
+            currentEditingUsername = username;
+            modalTitle.innerText = `Ubah Saldo Akun: ${username}`;
+            newSaldoInput.value = currentSaldo; // Isi dengan saldo saat ini
+            editSaldoModal.style.display = 'flex'; // Tampilkan modal
+            newSaldoInput.focus(); // Fokus ke input
+        };
+
+        // 2. Fungsi untuk MENUTUP Modal
+        const closeModal = function() {
+            editSaldoModal.style.display = 'none';
+            currentEditingUsername = null;
+            newSaldoInput.value = '';
+        };
+
+        cancelEditButton.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === editSaldoModal) {
+                closeModal();
+            }
+        });
+
+        // 3. Fungsi untuk KONFIRMASI dan Mengupdate Firebase
+        confirmEditButton.addEventListener('click', () => {
+            if (!currentEditingUsername) return;
+
+            const newAmountInput = newSaldoInput.value.trim();
+            const newAmount = parseInt(newAmountInput);
+
+            if (newAmountInput === '' || isNaN(newAmount) || newAmount < 0) {
+                alert("Nilai saldo tidak valid! Harap masukkan angka positif."); 
+                newSaldoInput.focus();
                 return;
             }
 
-            const amount = parseInt(input);
-            if (isNaN(amount)) {
-                alert("Input tidak valid. Harap masukkan angka!");
-                return;
-            }
-
+            const username = currentEditingUsername;
             const userRef = ref(db, `users/${username}`);
-            get(userRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    let currentRupiah = snapshot.val().rupiah || 0;
-                    let newRupiah = currentRupiah + amount;
-
-                    if (newRupiah < 0) {
-                        alert("Saldo tidak bisa minus!");
-                        return;
-                    }
-                    
-                    update(userRef, {
-                        rupiah: newRupiah
-                    }).then(() => {
-                        alert(`Saldo Rupiah untuk ${username} berhasil diubah. Saldo sekarang: ${newRupiah}.`);
-                    }).catch(error => {
-                        alert("Gagal mengubah saldo: " + error.message);
-                    });
-                } else {
-                    alert("Pengguna tidak ditemukan.");
-                }
+            
+            // Lakukan update (SET) langsung nilai baru
+            update(userRef, {
+                rupiah: newAmount
+            }).then(() => {
+                alert(`Saldo Rupiah untuk ${username} berhasil diubah menjadi ${newAmount}.`);
+                document.getElementById(`saldo-${username}`).innerText = newAmount;
+                closeModal();
             }).catch(error => {
-                alert("Gagal membaca data: " + error.message);
+                alert("Gagal mengubah saldo: " + error.message);
+                closeModal();
             });
+        });
+
+        // ubahSaldo sekarang memanggil openEditModal
+        window.ubahSaldo = function(username) {
+            // Logic ini tidak lagi digunakan, sekarang digantikan oleh openEditModal yang dipanggil langsung di HTML
         };
     </script>
 </body>
