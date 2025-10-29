@@ -9,7 +9,6 @@
 <link rel="icon" type="image/x-icon" href="https://reygenteng.github.io/reybelirbx/favicon.ico">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-    /* 🎨 CSS-nya sama persis seperti kode lamamu, tidak ada perubahan */
     body {
         font-family: 'Inter', sans-serif;
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -76,7 +75,6 @@
         opacity: 0.7;
         cursor: not-allowed;
     }
-    /* Tombol Batal (baru) */
     .button-cancel {
         background: linear-gradient(135deg, #8A2387, #E94057, #F27121);
         color: white;
@@ -140,7 +138,6 @@
         font-weight: bold;
         color: #ffd369;
     }
-    /* Kita kembalikan hitung mundur */
     .countdown {
         font-size: 1.2rem;
         font-weight: bold;
@@ -167,7 +164,6 @@
         background-color: rgba(220, 53, 69, 0.2);
         color: #dc3545;
     }
-    /* Status baru: Dibatalkan */
     .status-cancel {
         background-color: rgba(108, 117, 125, 0.2);
         color: #6c757d;
@@ -181,7 +177,6 @@
         font-weight: 500;
         color: rgba(255, 255, 255, 0.9);
     }
-    /* Kita kembalikan grup tombol */
     .button-group {
         display: flex;
         gap: 0.5rem;
@@ -190,7 +185,6 @@
     .button-group button {
         flex: 1;
     }
-    /* Kita kembalikan info expiry */
     .expiry-info {
         text-align: center;
         margin-top: 0.5rem;
@@ -224,38 +218,26 @@
         <h1>RobuxNow.xyz</h1>
         <p class="text-white/80">Pembayaran Cepat dengan AtlanticH2H</p>
     </div>
-
     <div class="input-group">
         <label for="nominalInput" class="input-label">Nominal Deposit (IDR)</label>
         <input type="number" id="nominalInput" placeholder="Masukkan nominal (cth: 5000)" min="1" step="1000">
     </div>
-
     <button id="createDepositBtn" class="mt-4">
         <span id="createText">Buat Pembayaran</span>
         <span id="createLoading" class="loader" style="display: none;"></span>
     </button>
-    
     <p class="expiry-info">Lakukan pembayaran dalam <span id="expiryTimeInfo">batas waktu API</span></p>
-
-
     <div id="statusContainer" class="status-container">
         <h2 class="text-lg font-bold text-center mb-4 text-white">Status Pembayaran</h2>
-        
         <div id="paymentStatus" class="payment-status status-pending">Menunggu Pembayaran</div>
-        
         <div id="countdown" class="countdown">00m 00s</div>
-        
-        <div id="qrCodeDisplay" class="text-center mb-4">
-            </div>
-        
+        <div id="qrCodeDisplay" class="text-center mb-4"></div>
         <div id="transactionInfo" class="transaction-info">
             <p>Nominal: <span id="infoNominal"></span></p>
             <p>Biaya Admin: <span id="infoBiayaAdmin">Memeriksa...</span></p>
         </div>
-        
         <p class="text-center text-sm mb-2 text-white/80">ID Transaksi (Reff ID):</p>
         <p id="transactionId" class="text-center text-lg font-bold mb-4 text-yellow-300"></p>
-        
         <div class="button-group">
             <button id="checkStatusBtn">
                 <span id="checkText">Cek Status</span>
@@ -267,9 +249,7 @@
             </button>
         </div>
     </div>
-
 </div>
-
 <div id="message-box"></div>
 
 <script>
@@ -277,7 +257,14 @@
     const API_KEY = 'FTW3QIWAUHpNj8JFlswhQms20APM1CwcxQZchHiREFyRiMcSpMsmrli4QSlsbf3ZcjOXxiUWQjU6t2ugFLaT7DazgIhstAycbteN'; // 👈 GANTI INI
     
     // 🌐 URL API AtlanticH2H
-    const BASE_URL = 'https://atlantich2h.com'; // 👈 Pastikan ini benar
+    //
+    // ⚠️ PERUBAHAN PENTING ADA DI SINI ⚠️
+    // Ganti URL ini dengan URL Cloudflare Worker kamu yang tadi di-copy!
+    //
+    const BASE_URL = 'https://sparkling-bread-10a9.csrobuxnow-xyz.workers.dev/'; // 👈 GANTI INI
+    
+    // -----------------------------------------------------------------
+    
     const URL_API_CREATE = `${BASE_URL}/deposit/create`;
     const URL_API_STATUS = `${BASE_URL}/deposit/status`;
     const URL_API_CANCEL = `${BASE_URL}/deposit/cancel`;
@@ -294,27 +281,25 @@
     const tampilanKodeQR = document.getElementById('qrCodeDisplay');
     const tampilanIdTransaksi = document.getElementById('transactionId');
     const infoNominal = document.getElementById('infoNominal');
-    const infoBiayaAdmin = document.getElementById('infoBiayaAdmin'); // Kita kembalikan
+    const infoBiayaAdmin = document.getElementById('infoBiayaAdmin');
     const statusPembayaran = document.getElementById('paymentStatus');
-    const hitungMundurEl = document.getElementById('countdown'); // Kita kembalikan
-    const tombolCekStatus = document.getElementById('checkStatusBtn'); // Kita kembalikan
+    const hitungMundurEl = document.getElementById('countdown');
+    const tombolCekStatus = document.getElementById('checkStatusBtn');
     const teksCek = document.getElementById('checkText');
     const loadingCek = document.getElementById('checkLoading');
-    const tombolBatal = document.getElementById('cancelBtn'); // Baru
+    const tombolBatal = document.getElementById('cancelBtn');
     const teksBatal = document.getElementById('cancelText');
     const loadingBatal = document.getElementById('cancelLoading');
     const kotakPesan = document.getElementById('message-box');
     const infoWaktuKadaluarsa = document.getElementById('expiryTimeInfo');
 
     // Variabel global
-    // PENTING: Kita butuh 2 ID
-    let atlanticID = null;   // ID dari Atlantic (cth: 'txIsgoOtPkl...')
-    let reffIdKita = null;   // ID buatan kita (cth: 'T123456...')
-    
+    let atlanticID = null;
+    let reffIdKita = null;
     let intervalPolling = null;
     let intervalHitungMundur = null;
 
-    // --- FUNGSI UTAMA ---
+    // --- (SEMUA FUNGSI JavaScript di bawah ini SAMA PERSIS, tidak ada perubahan) ---
 
     // Fungsi untuk menghasilkan Reff ID unik
     function buatReffIdUnik() {
@@ -362,20 +347,16 @@
         clearInterval(intervalHitungMundur);
         atlanticID = null;
         reffIdKita = null;
-        tombolBatal.style.display = 'inline-block'; // Tampilkan tombol batal
+        tombolBatal.style.display = 'inline-block';
         loadingBatal.style.display = 'none';
         teksBatal.style.display = 'inline';
     }
 
-    // Fungsi Hitung Mundur (BARU!)
+    // Fungsi Hitung Mundur
     function mulaiHitungMundur(waktuKadaluarsa) {
-        // Format waktu: "2023-12-26 13:16:19"
-        // Kita ubah jadi format ISO: "2023-12-26T13:16:19"
         const targetWaktu = new Date(waktuKadaluarsa.replace(' ', 'T')).getTime();
-
         infoWaktuKadaluarsa.textContent = `sampai ${waktuKadaluarsa}`;
-
-        clearInterval(intervalHitungMundur); // Hentikan hitung mundur lama
+        clearInterval(intervalHitungMundur);
 
         intervalHitungMundur = setInterval(() => {
             const sekarang = new Date().getTime();
@@ -387,15 +368,12 @@
                 statusPembayaran.textContent = "Kadaluarsa ⏳";
                 statusPembayaran.className = "payment-status status-expired";
                 tampilanKodeQR.innerHTML = '<p class="text-sm text-red-400">QR Code telah kadaluarsa. Silakan buat transaksi baru.</p>';
-                tombolBatal.style.display = 'none'; // Sembunyikan tombol batal
+                tombolBatal.style.display = 'none';
             } else {
                 const menit = Math.floor((selisih % (1000 * 60 * 60)) / (1000 * 60));
                 const detik = Math.floor((selisih % (1000 * 60)) / 1000);
-                
-                // Format jadi 2 digit (09, 08, 07...)
                 const m = String(menit).padStart(2, '0');
                 const s = String(detik).padStart(2, '0');
-
                 hitungMundurEl.textContent = `${m}m ${s}s`;
             }
         }, 1000);
@@ -410,23 +388,20 @@
             return;
         }
 
-        // Hentikan polling dan countdown lama
         bersihkanStatus();
         aturLoading(tombolBuatDeposit, teksBuat, loadingBuat, true);
-
-        // Buat Reff ID baru
         const reffIdBaru = buatReffIdUnik();
-        reffIdKita = reffIdBaru; // Simpan reff_id kita
+        reffIdKita = reffIdBaru;
 
-        // Data yang akan dikirim ke API
         const bodyParams = new URLSearchParams();
         bodyParams.append('api_key', API_KEY);
         bodyParams.append('reff_id', reffIdBaru);
         bodyParams.append('nominal', nominal.toString());
-        bodyParams.append('type', 'ewallet'); // Sesuai contoh API
-        bodyParams.append('metode', 'qris');   // Sesuai contoh API
+        bodyParams.append('type', 'ewallet');
+t        bodyParams.append('metode', 'qris');
 
         try {
+            // Fetch sekarang memanggil URL_API_CREATE (Worker kamu)
             const response = await fetch(URL_API_CREATE, {
                 method: 'POST',
                 headers: {
@@ -438,32 +413,20 @@
             const data = await response.json();
             console.log('Respon /deposit/create:', data); 
 
-            // Sesuai example response kamu
             if (data.status === true && data.data) {
-                // PENTING: Simpan ID dari Atlantic
                 atlanticID = data.data.id; 
-                
-                tampilanIdTransaksi.textContent = data.data.reff_id; // Tampilkan reff_id
-                
+                tampilanIdTransaksi.textContent = data.data.reff_id;
                 tampilanKodeQR.innerHTML = `
                     <p class="text-sm mb-2">Scan QR code berikut untuk melakukan pembayaran:</p>
                     <img id="qrisImage" src="${data.data.qr_image}" alt="QRIS Code">
                 `;
-
                 infoNominal.textContent = formatRupiah(data.data.nominal);
-                infoBiayaAdmin.textContent = "Memeriksa..."; // Biaya admin akan didapat dari /status
-
-                // Atur status pending awal
+                infoBiayaAdmin.textContent = "Memeriksa...";
                 statusPembayaran.textContent = "Menunggu Pembayaran";
                 statusPembayaran.className = "payment-status status-pending";
-                
-                // Mulai hitung mundur (BARU!)
                 mulaiHitungMundur(data.data.expired_at);
-                
                 kontainerStatus.style.display = 'block';
                 tampilkanPesan('Pembayaran berhasil dibuat! Silakan scan QR.');
-
-                // Mulai polling status (BARU!)
                 intervalPolling = setInterval(cekStatusPembayaran, WAKTU_POLLING);
             } else {
                 throw new Error(data.message || 'Gagal membuat pembayaran.');
@@ -476,15 +439,16 @@
         }
     });
 
-    // Fungsi untuk memeriksa status pembayaran (BARU!)
+    // Fungsi untuk memeriksa status pembayaran
     async function cekStatusPembayaran(manual = false) {
-        if (!atlanticID) return; // Harus pakai ID dari Atlantic
+        if (!atlanticID) return;
 
         const bodyParams = new URLSearchParams();
         bodyParams.append('api_key', API_KEY);
         bodyParams.append('id', atlanticID);
 
         try {
+            // Fetch sekarang memanggil URL_API_STATUS (Worker kamu)
             const response = await fetch(URL_API_STATUS, {
                 method: 'POST',
                 headers: {
@@ -498,20 +462,17 @@
 
             if (data.status === true && data.data) {
                 const statusAPI = data.data.status;
-                
-                // Tampilkan Biaya Admin jika sudah ada
                 if (data.data.fee) {
                     infoBiayaAdmin.textContent = formatRupiah(data.data.fee);
                 }
 
-                // Status: "success", "pending", "cancel", (mungkin "expired"?)
                 if (statusAPI === 'success') {
                     statusPembayaran.textContent = "Dibayar (LUNAS) 🎉";
                     statusPembayaran.className = "payment-status status-paid";
-                    bersihkanStatus(); // Hentikan polling & countdown
+                    bersihkanStatus();
                     tampilkanPesan('Pembayaran berhasil! Saldo akan segera ditambahkan.', 5000);
                     tampilanKodeQR.innerHTML = '<p class="text-sm text-green-400">Pembayaran Lunas. Terima kasih!</p>';
-                    tombolBatal.style.display = 'none'; // Sembunyikan tombol batal
+                    tombolBatal.style.display = 'none';
                 } else if (statusAPI === 'cancel') {
                     statusPembayaran.textContent = "Dibatalkan 🚫";
                     statusPembayaran.className = "payment-status status-cancel";
@@ -547,22 +508,19 @@
             return;
         }
         aturLoading(tombolCekStatus, teksCek, loadingCek, true);
-        await cekStatusPembayaran(true); // 'true' menandakan ini cek manual
+        await cekStatusPembayaran(true);
         aturLoading(tombolCekStatus, teksCek, loadingCek, false);
     });
 
-    // Event listener untuk tombol Batalkan (BARU!)
+    // Event listener untuk tombol Batalkan
     tombolBatal.addEventListener('click', async () => {
         if (!atlanticID) {
             tampilkanPesan('Tidak ada transaksi aktif', 3000, true);
             return;
         }
-
-        // Konfirmasi dulu
         if (!confirm('Apakah kamu yakin ingin membatalkan transaksi ini?')) {
             return;
         }
-        
         aturLoading(tombolBatal, teksBatal, loadingBatal, true);
 
         const bodyParams = new URLSearchParams();
@@ -570,6 +528,7 @@
         bodyParams.append('id', atlanticID);
 
         try {
+            // Fetch sekarang memanggil URL_API_CANCEL (Worker kamu)
             const response = await fetch(URL_API_CANCEL, {
                 method: 'POST',
                 headers: {
@@ -582,7 +541,6 @@
             console.log('Respon /deposit/cancel:', data);
 
             if (data.status === true && data.data.status === 'cancel') {
-                // Panggil cekStatusPembayaran untuk update UI secara konsisten
                 await cekStatusPembayaran(true); 
             } else {
                 throw new Error(data.message || 'Gagal membatalkan transaksi.');
